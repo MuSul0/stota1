@@ -1,8 +1,11 @@
-// ... existing imports ...
+import Header from '@/components/Header';
+import Hero from '@/components/Hero';
+import Footer from '@/components/Footer';
 import ParallaxSection from '@/components/ParallaxSection';
+import { useRef } from 'react';
 
 const Index = () => {
-  // ... existing code ...
+  const serviceRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
