@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Menu, X, Phone, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link, useLocation } from 'react-router-dom';
+import Logo from '@/components/Logo'; // Import the new Logo component
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -40,9 +41,7 @@ const Header = () => {
       {/* Main Navigation */}
       <nav className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
-          <Link to="/" className="text-2xl font-bold text-blue-600">
-            Nikolai Transport
-          </Link>
+          <Logo /> {/* Use the new Logo component here */}
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
