@@ -4,7 +4,7 @@ import Footer from '@/components/Footer';
 import ServiceCard from '@/components/ServiceCard';
 import ParallaxSection from '@/components/ParallaxSection';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, Clock, Truck, Home, Sparkles, Star, Quote, Users, Lightbulb, Handshake, Briefcase, Smile, Tool, Euro } from 'lucide-react';
+import { CheckCircle, Clock, Truck, Home, Sparkles, Star, Quote, Users, Lightbulb, Handshake, Briefcase, Smile, Tool, Euro, PhoneCall, CalendarCheck, Wrench, ThumbsUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
@@ -78,7 +78,7 @@ const Index = () => {
 
   // Map icon strings to LucideIcon components
   const getIconComponent = (iconName: string) => {
-    const icons: { [key: string]: any } = { Sparkles, Truck, Home, CheckCircle, Clock, Euro, Star, Quote, Users, Lightbulb, Handshake, Briefcase, Smile, Tool };
+    const icons: { [key: string]: any } = { Sparkles, Truck, Home, CheckCircle, Clock, Euro, Star, Quote, Users, Lightbulb, Handshake, Briefcase, Smile, Tool, PhoneCall, CalendarCheck, Wrench, ThumbsUp };
     return icons[iconName] || Sparkles; // Default to Sparkles if not found
   };
 
@@ -109,6 +109,29 @@ const Index = () => {
       icon: Euro,
       title: 'Transparente Preise',
       description: 'Faire und nachvollziehbare Kosten ohne versteckte Gebühren. Sie wissen immer, woran Sie sind.'
+    }
+  ];
+
+  const howItWorksSteps = [
+    {
+      icon: PhoneCall,
+      title: '1. Kontakt & Beratung',
+      description: 'Nehmen Sie unverbindlich Kontakt mit uns auf. Wir besprechen Ihr Anliegen und beraten Sie umfassend zu unseren Leistungen.'
+    },
+    {
+      icon: CalendarCheck,
+      title: '2. Planung & Angebot',
+      description: 'Basierend auf Ihren Anforderungen erstellen wir ein maßgeschneidertes Angebot und planen den Ablauf detailliert mit Ihnen.'
+    },
+    {
+      icon: Wrench,
+      title: '3. Professionelle Ausführung',
+      description: 'Unser erfahrenes Team führt den Auftrag pünktlich, zuverlässig und mit höchster Sorgfalt aus.'
+    },
+    {
+      icon: ThumbsUp,
+      title: '4. Zufriedenheit & Nachbereitung',
+      description: 'Nach Abschluss des Projekts stellen wir Ihre vollkommene Zufriedenheit sicher und stehen für Rückfragen bereit.'
     }
   ];
 
@@ -284,9 +307,66 @@ const Index = () => {
         </div>
       </section>
 
+      {/* How It Works Section */}
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <motion.div 
+              className="inline-block bg-purple-100 text-purple-600 px-4 py-2 rounded-full text-sm font-medium mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.6 }}
+            >
+              ⚙️ Unser Prozess
+            </motion.div>
+            <motion.h2 
+              className="text-3xl md:text-4xl font-bold mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              So arbeiten wir – Schritt für Schritt
+            </motion.h2>
+            <motion.p 
+              className="text-xl text-gray-600 max-w-2xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              Transparenz und Effizienz in jedem Schritt Ihrer Dienstleistung
+            </motion.p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {howItWorksSteps.map((step, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.7, delay: index * 0.15 }}
+              >
+                <Card className="text-center h-full hover:shadow-xl transition-shadow duration-300">
+                  <CardContent className="p-6">
+                    <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <step.icon className="h-8 w-8 text-purple-600" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-2 text-gray-800">{step.title}</h3>
+                    <p className="text-gray-600">{step.description}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* About Us Teaser Section */}
       <ParallaxSection speed={0.05}>
-        <section className="py-20 bg-gray-50">
+        <section className="py-20 bg-white">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <motion.div
