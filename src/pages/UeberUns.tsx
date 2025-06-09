@@ -12,36 +12,36 @@ const UeberUns = () => {
     {
       icon: Shield,
       title: 'Zuverlässigkeit',
-      description: 'Auf uns können Sie sich verlassen. Pünktlichkeit und Verlässlichkeit sind die Grundpfeiler unserer Arbeit.',
+      description: 'Ihre Termine sind uns heilig. Pünktlichkeit und absolute Verlässlichkeit sind nicht nur Versprechen, sondern unser täglicher Standard.',
       color: 'from-blue-500 to-cyan-500'
     },
     {
       icon: Heart,
       title: 'Menschlichkeit',
-      description: 'Wir behandeln jeden Kunden mit Respekt und gehen individuell auf Ihre Bedürfnisse ein.',
+      description: 'Hinter jedem Auftrag steht ein Mensch. Wir hören zu, verstehen und handeln mit Empathie, um Ihre individuellen Wünsche zu erfüllen.',
       color: 'from-red-500 to-pink-500'
     },
     {
       icon: Clock,
       title: 'Effizienz',
-      description: 'Schnell, aber gründlich – wir erledigen Ihre Aufträge termingerecht und in höchster Qualität.',
+      description: 'Zeit ist Geld – und Ihre Zeit ist uns kostbar. Wir arbeiten zügig, präzise und ohne Kompromisse bei der Qualität.',
       color: 'from-green-500 to-emerald-500'
     },
     {
       icon: Award,
       title: 'Qualität',
-      description: 'Höchste Standards bei allen unseren Dienstleistungen. Ihre Zufriedenheit ist unser Erfolg.',
+      description: 'Wir streben nach Perfektion. Jeder Handgriff, jede Lösung ist darauf ausgelegt, Ihre Erwartungen nicht nur zu erfüllen, sondern zu übertreffen.',
       color: 'from-purple-500 to-indigo-500'
     }
   ];
 
   const milestones = [
-    { year: '2014', title: 'Gründung', description: 'Nikolai startet mit einem kleinen Transporter' },
-    { year: '2016', title: 'Expansion', description: 'Erstes eigenes Büro und 3 Mitarbeiter' },
-    { year: '2018', title: 'Wachstum', description: '100+ zufriedene Kunden erreicht' },
-    { year: '2020', title: 'Digitalisierung', description: 'Online-Buchungssystem eingeführt' },
-    { year: '2022', title: 'Auszeichnung', description: 'Bester Dienstleister der Region' },
-    { year: '2024', title: 'Heute', description: '500+ Kunden, 15 Mitarbeiter, 3 Standorte' }
+    { year: '2014', title: 'Gründung', description: 'Nikolai startet mit einem kleinen Transporter und einer großen Vision.' },
+    { year: '2016', title: 'Expansion', description: 'Erstes eigenes Büro und ein wachsendes Team von 3 engagierten Mitarbeitern.' },
+    { year: '2018', title: 'Wachstum', description: 'Die Marke Nikolai Transport etabliert sich – über 100 zufriedene Kunden erreicht.' },
+    { year: '2020', title: 'Digitalisierung', description: 'Einführung eines modernen Online-Buchungssystems für mehr Komfort.' },
+    { year: '2022', title: 'Auszeichnung', description: 'Als bester Dienstleister der Region für herausragenden Service prämiert.' },
+    { year: '2024', title: 'Heute', description: 'Ein starkes Team von 15 Mitarbeitern, 3 Standorte und über 500 begeisterte Kunden.' }
   ];
 
   return (
@@ -75,9 +75,8 @@ const UeberUns = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
             >
-              Seit über 10 Jahren Ihr vertrauensvoller Partner für Reinigung, 
-              Transport und Umzugshilfe in der Region. Eine Geschichte von Leidenschaft, 
-              Wachstum und unermüdlichem Einsatz für unsere Kunden.
+              Seit über einem Jahrzehnt gestalten wir Räume neu und bewegen Leben vorwärts. 
+              Entdecken Sie die Geschichte hinter Nikolai Transport – wo Leidenschaft auf Präzision trifft und jeder Auftrag ein Versprechen ist.
             </motion.p>
           </div>
         </div>
@@ -100,21 +99,10 @@ const UeberUns = () => {
                 <h2 className="text-4xl font-bold mb-8 text-gray-800">Von der Vision zur Realität</h2>
                 <div className="space-y-6 text-gray-600 text-lg leading-relaxed">
                   <p>
-                    Was 2014 als kleines Familienunternehmen begann, hat sich zu einem 
-                    der vertrauenswürdigsten Dienstleister in der Region entwickelt. 
-                    Nikolai gründete das Unternehmen mit einer einfachen, aber kraftvollen Vision: 
-                    <strong className="text-blue-600"> ehrliche, zuverlässige Arbeit zu fairen Preisen</strong>.
+                    Im Jahr 2014 begann unsere Reise mit einer klaren Vision: Nikolai wollte einen Dienstleister schaffen, der nicht nur arbeitet, sondern Werte lebt. Aus einem kleinen Familienunternehmen ist eine feste Größe in der Region geworden, bekannt für <strong className="text-blue-600">ehrliche Arbeit, unerschütterliche Zuverlässigkeit und faire Preise</strong>.
                   </p>
                   <p>
-                    Heute sind wir stolz darauf, über <strong className="text-green-600">500 zufriedene Kunden</strong> zu haben 
-                    und täglich neue Herausforderungen anzunehmen. Unser Team besteht 
-                    aus erfahrenen Fachkräften, die mit Leidenschaft und Professionalität 
-                    bei der Sache sind.
-                  </p>
-                  <p>
-                    Ob Reinigung, Transport oder Umzug – wir behandeln jeden Auftrag 
-                    mit der gleichen Sorgfalt und dem gleichen Engagement, als wäre 
-                    es für unsere eigene Familie. <strong className="text-purple-600">Das ist unser Versprechen an Sie.</strong>
+                    Heute blicken wir stolz auf über <strong className="text-green-600">500 begeisterte Kunden</strong> und ein Team von <strong className="text-purple-600">passionierten Experten</strong>. Jeder Auftrag, ob Reinigung, Transport oder Umzug, wird mit der Hingabe behandelt, die wir unserer eigenen Familie entgegenbringen würden. <strong className="text-purple-600">Das ist unser unumstößliches Versprechen an Sie.</strong>
                   </p>
                 </div>
                 <div className="mt-8">
@@ -169,7 +157,7 @@ const UeberUns = () => {
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              Meilensteine unserer Entwicklung
+              Unsere Evolution: Eine Reise durch die Zeit
             </motion.h2>
             <motion.p 
               className="text-xl text-gray-600 max-w-2xl mx-auto"
@@ -178,7 +166,7 @@ const UeberUns = () => {
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              Von den ersten Schritten bis heute – eine Erfolgsgeschichte in Zahlen
+              Von der ersten Idee bis zum Branchenführer – die entscheidenden Momente, die uns geprägt haben.
             </motion.p>
           </div>
 
@@ -225,7 +213,7 @@ const UeberUns = () => {
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.6 }}
             >
-              💎 Unsere Werte
+              💎 Unser Fundament
             </motion.div>
             <motion.h2 
               className="text-4xl font-bold mb-6 text-gray-800"
@@ -234,7 +222,7 @@ const UeberUns = () => {
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              Was uns antreibt
+              Werte, die uns tragen
             </motion.h2>
             <motion.p 
               className="text-xl text-gray-600 max-w-2xl mx-auto"
@@ -243,7 +231,7 @@ const UeberUns = () => {
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              Diese Grundsätze leiten uns bei allem, was wir tun
+              Diese Prinzipien sind der Herzschlag unserer Arbeit und garantieren Ihre Zufriedenheit.
             </motion.p>
           </div>
 
@@ -291,7 +279,7 @@ const UeberUns = () => {
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              Die Menschen hinter Nikolai Transport
+              Das Herz von Nikolai Transport: Unser Team
             </motion.h2>
             <motion.p 
               className="text-xl text-gray-600 max-w-2xl mx-auto"
@@ -300,7 +288,7 @@ const UeberUns = () => {
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              Lernen Sie unser erfahrenes und leidenschaftliches Team kennen
+              Treffen Sie die Gesichter, die Ihre Projekte zum Erfolg führen.
             </motion.p>
           </div>
 
@@ -326,9 +314,7 @@ const UeberUns = () => {
                   <h3 className="text-xl font-bold mb-2 text-gray-800">Nikolai Müller</h3>
                   <p className="text-blue-600 mb-3 font-medium">Geschäftsführer & Gründer</p>
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    Mit über 15 Jahren Erfahrung in der Branche leitet Nikolai 
-                    das Unternehmen mit Herz und Verstand. Seine Leidenschaft 
-                    für exzellenten Service spiegelt sich in jedem Projekt wider.
+                    Als Visionär und treibende Kraft hinter Nikolai Transport führt Nikolai das Unternehmen mit über 15 Jahren Branchenerfahrung. Seine unermüdliche Leidenschaft für exzellenten Service ist der Funke, der jedes Projekt zum Leuchten bringt.
                   </p>
                 </CardContent>
               </Card>
@@ -355,9 +341,7 @@ const UeberUns = () => {
                   <h3 className="text-xl font-bold mb-2 text-gray-800">Maria Schmidt</h3>
                   <p className="text-green-600 mb-3 font-medium">Teamleiterin Reinigung</p>
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    Maria bringt 8 Jahre Erfahrung in der professionellen Reinigung mit. 
-                    Ihre Aufmerksamkeit für Details und ihr freundliches Wesen 
-                    machen sie zu einer geschätzten Teamleiterin.
+                    Mit 8 Jahren Expertise ist Maria unsere Meisterin der Sauberkeit. Ihre akribische Detailverliebtheit und ihr ansteckendes Lächeln machen sie zur unverzichtbaren Teamleiterin im Reinigungsbereich.
                   </p>
                 </CardContent>
               </Card>
@@ -384,9 +368,7 @@ const UeberUns = () => {
                   <h3 className="text-xl font-bold mb-2 text-gray-800">Thomas Weber</h3>
                   <p className="text-orange-600 mb-3 font-medium">Spezialist Transport & Umzug</p>
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    Thomas ist unser Experte für alle Transport- und Umzugsangelegenheiten. 
-                    Mit seiner ruhigen Art und seinem technischen Know-how 
-                    meistert er jede Herausforderung.
+                    Wenn es um Transport und Umzug geht, ist Thomas Ihr Mann. Mit ruhiger Hand und tiefgreifendem Fachwissen navigiert er selbst die komplexesten Herausforderungen sicher ans Ziel.
                   </p>
                 </CardContent>
               </Card>
@@ -400,7 +382,7 @@ const UeberUns = () => {
             viewport={{ once: true, amount: 0.5 }}
             transition={{ duration: 0.6, delay: 0.6 }}
           >
-            <p className="text-gray-600 mb-6">Und viele weitere talentierte Mitarbeiter, die täglich ihr Bestes geben</p>
+            <p className="text-gray-600 mb-6">Und viele weitere talentierte Mitarbeiter, die täglich ihr Bestes geben, um Ihre Erwartungen zu übertreffen.</p>
             <Button size="lg" variant="outline" className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white" asChild>
               <Link to="/kontakt">Lernen Sie unser Team persönlich kennen</Link>
             </Button>
@@ -429,7 +411,7 @@ const UeberUns = () => {
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              Was uns jeden Tag motiviert
+              Was uns jeden Tag antreibt: Ihre Zufriedenheit
             </motion.h2>
             <motion.blockquote 
               className="text-2xl text-blue-100 mb-8 leading-relaxed italic"
@@ -438,9 +420,7 @@ const UeberUns = () => {
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              "Wir möchten das Leben unserer Kunden einfacher machen, indem wir 
-              zuverlässige, qualitativ hochwertige Dienstleistungen anbieten. 
-              Jeder Kunde verdient unsere volle Aufmerksamkeit und unser Bestes."
+              "Wir sind angetreten, um das Leben unserer Kunden spürbar zu erleichtern. Durch zuverlässige, erstklassige Dienstleistungen schaffen wir Freiräume und sorgen für ein Lächeln. Jeder Kunde ist für uns einzigartig und verdient unsere volle Hingabe."
             </motion.blockquote>
             <motion.div 
               className="flex items-center justify-center space-x-4"
