@@ -11,12 +11,13 @@ import Bewertungen from "./pages/Bewertungen";
 import Kontakt from "./pages/Kontakt";
 import Impressum from "./pages/Impressum";
 import Datenschutz from "./pages/Datenschutz";
-import Empfehlungsprogramm from "./pages/Empfehlungsprogramm"; // Import the new page
+import Empfehlungsprogramm from "./pages/Empfehlungsprogramm";
 import NotFound from "./pages/NotFound";
-import Login from "./pages/Login"; // Import Login page
-import AdminDashboard from "./pages/Admin"; // Import AdminDashboard
-import AdminServices from "./pages/Admin/Services"; // Import AdminServices
-import { SessionProvider } from "./components/SessionProvider"; // Import SessionProvider
+import Login from "./pages/Login";
+import AdminDashboard from "./pages/Admin";
+import AdminServices from "./pages/Admin/Services";
+import { SessionProvider } from "./components/SessionProvider";
+import ScrollToTop from "./components/ScrollToTop"; // Import the new ScrollToTop component
 
 const queryClient = new QueryClient();
 
@@ -26,7 +27,8 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <SessionProvider> {/* Wrap routes with SessionProvider */}
+        <SessionProvider>
+          <ScrollToTop /> {/* Add ScrollToTop here */}
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/ueber-uns" element={<UeberUns />} />
@@ -36,10 +38,10 @@ const App = () => (
             <Route path="/kontakt" element={<Kontakt />} />
             <Route path="/impressum" element={<Impressum />} />
             <Route path="/datenschutz" element={<Datenschutz />} />
-            <Route path="/empfehlungsprogramm" element={<Empfehlungsprogramm />} /> {/* Add new route here */}
-            <Route path="/login" element={<Login />} /> {/* Add Login route */}
-            <Route path="/admin" element={<AdminDashboard />} /> {/* Admin Dashboard */}
-            <Route path="/admin/services" element={<AdminServices />} /> {/* Admin Services */}
+            <Route path="/empfehlungsprogramm" element={<Empfehlungsprogramm />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/services" element={<AdminServices />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
