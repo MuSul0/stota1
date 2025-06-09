@@ -14,6 +14,7 @@ const Header = () => {
     { name: 'Leistungen', href: '/leistungen' },
     { name: 'Galerie', href: '/galerie' },
     { name: 'Bewertungen', href: '/bewertungen' },
+    { name: 'Empfehlungsprogramm', href: '/empfehlungsprogramm' }, // Dieser Link wurde bereits hinzugefügt
     { name: 'Kontakt', href: '/kontakt' },
   ];
 
