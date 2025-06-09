@@ -11,6 +11,7 @@ import Bewertungen from "./pages/Bewertungen";
 import Kontakt from "./pages/Kontakt";
 import Impressum from "./pages/Impressum";
 import Datenschutz from "./pages/Datenschutz";
+import Empfehlungsprogramm from "./pages/Empfehlungsprogramm"; // Import the new page
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login"; // Import Login page
 import AdminDashboard from "./pages/Admin"; // Import AdminDashboard
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/kontakt" element={<Kontakt />} />
             <Route path="/impressum" element={<Impressum />} />
             <Route path="/datenschutz" element={<Datenschutz />} />
+            <Route path="/empfehlungsprogramm" element={<Empfehlungsprogramm />} /> {/* Add new route here */}
             <Route path="/login" element={<Login />} /> {/* Add Login route */}
             <Route path="/admin" element={<AdminDashboard />} /> {/* Admin Dashboard */}
             <Route path="/admin/services" element={<AdminServices />} /> {/* Admin Services */}
