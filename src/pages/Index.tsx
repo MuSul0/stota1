@@ -4,13 +4,13 @@ import Footer from '@/components/Footer';
 import ServiceCard from '@/components/ServiceCard';
 import ParallaxSection from '@/components/ParallaxSection';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, Clock, Truck, Home, Sparkles, Star, Quote, Users, Lightbulb, Handshake } from 'lucide-react';
+import { CheckCircle, Clock, Truck, Home, Sparkles, Star, Quote, Users, Lightbulb, Handshake, Briefcase, Smile, Tool, Euro } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { useEffect, useState, useRef } from 'react'; // Added useState and useEffect
+import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { supabase } from '@/integrations/supabase/client'; // Import supabase client
+import { supabase } from '@/integrations/supabase/client';
 
 interface Service {
   id: string;
@@ -78,7 +78,7 @@ const Index = () => {
 
   // Map icon strings to LucideIcon components
   const getIconComponent = (iconName: string) => {
-    const icons: { [key: string]: any } = { Sparkles, Truck, Home, CheckCircle, Clock, Euro, Star, Quote, Users, Lightbulb, Handshake };
+    const icons: { [key: string]: any } = { Sparkles, Truck, Home, CheckCircle, Clock, Euro, Star, Quote, Users, Lightbulb, Handshake, Briefcase, Smile, Tool };
     return icons[iconName] || Sparkles; // Default to Sparkles if not found
   };
 
@@ -87,6 +87,29 @@ const Index = () => {
     { value: '24/7', label: 'Erreichbarkeit', icon: Clock },
     { value: '10+', label: 'Jahre Erfahrung', icon: Lightbulb },
     { value: '98%', label: 'Weiterempfehlungen', icon: Handshake }
+  ];
+
+  const advantages = [
+    {
+      icon: Briefcase,
+      title: 'Erfahrung & Expertise',
+      description: 'Über 10 Jahre Branchenerfahrung garantieren höchste Qualität und Effizienz bei jedem Auftrag.'
+    },
+    {
+      icon: Smile,
+      title: 'Kundenzufriedenheit',
+      description: 'Ihre Bedürfnisse stehen im Mittelpunkt. Wir bieten maßgeschneiderte Lösungen und persönlichen Service.'
+    },
+    {
+      icon: Tool,
+      title: 'Modernste Ausstattung',
+      description: 'Dank modernem Equipment und bewährten Methoden führen wir alle Arbeiten sicher und präzise aus.'
+    },
+    {
+      icon: Euro,
+      title: 'Transparente Preise',
+      description: 'Faire und nachvollziehbare Kosten ohne versteckte Gebühren. Sie wissen immer, woran Sie sind.'
+    }
   ];
 
   const testimonials = [
@@ -204,9 +227,66 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Why Choose Us Section */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <motion.div 
+              className="inline-block bg-green-100 text-green-600 px-4 py-2 rounded-full text-sm font-medium mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.6 }}
+            >
+              ✅ Ihre Vorteile
+            </motion.div>
+            <motion.h2 
+              className="text-3xl md:text-4xl font-bold mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              Warum Nikolai Transport?
+            </motion.h2>
+            <motion.p 
+              className="text-xl text-gray-600 max-w-2xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              Wir bieten Ihnen nicht nur Dienstleistungen, sondern echte Lösungen mit Mehrwert.
+            </motion.p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {advantages.map((advantage, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.7, delay: index * 0.15 }}
+              >
+                <Card className="text-center h-full hover:shadow-xl transition-shadow duration-300">
+                  <CardContent className="p-6">
+                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <advantage.icon className="h-8 w-8 text-blue-600" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-2 text-gray-800">{advantage.title}</h3>
+                    <p className="text-gray-600">{advantage.description}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* About Us Teaser Section */}
       <ParallaxSection speed={0.05}>
-        <section className="py-20 bg-white">
+        <section className="py-20 bg-gray-50">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <motion.div
@@ -222,9 +302,10 @@ const Index = () => {
                   Ihr vertrauensvoller Partner seit 2014
                 </h2>
                 <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-                  Was als kleines Familienunternehmen begann, hat sich zu einem 
+                  Was 2014 als kleines Familienunternehmen begann, hat sich zu einem 
                   der führenden Dienstleister in der Region entwickelt. Wir stehen 
-                  für Zuverlässigkeit, Qualität und einen Service, der von Herzen kommt.
+                  für Zuverlässigkeit, Qualität und einen Service, der von Herzen kommt. 
+                  Unser engagiertes Team arbeitet täglich daran, Ihre Erwartungen zu übertreffen.
                 </p>
                 <Button size="lg" asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
                   <Link to="/ueber-uns">Mehr über uns erfahren</Link>
@@ -249,7 +330,7 @@ const Index = () => {
 
       {/* Testimonials Section */}
       <ParallaxSection speed={0.08}>
-        <section className="py-20 bg-gray-50">
+        <section className="py-20 bg-white">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <motion.h2 
