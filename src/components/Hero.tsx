@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, CheckCircle, Play, Phone, Mail } from 'lucide-react';
+import { ArrowRight, CheckCircle, Play, Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
@@ -123,7 +123,31 @@ const Hero = () => {
           >
             {/* Contact Card */}
             <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-white/20 transform transition-all duration-500 hover:rotate-1 hover:shadow-2xl">
-              {/* ... rest of the contact card content ... */}
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">Direkt Kontakt aufnehmen</h3>
+              <p className="text-gray-600 mb-6">
+                Wir sind für Sie da! Kontaktieren Sie uns für ein unverbindliches Angebot oder bei Fragen.
+              </p>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <Phone className="h-6 w-6 text-blue-600" />
+                  <a href="tel:+49123456789" className="text-lg text-gray-700 font-medium hover:text-blue-600 transition-colors">+49 123 456 789</a>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Mail className="h-6 w-6 text-blue-600" />
+                  <a href="mailto:info@nikolai-transport.de" className="text-lg text-gray-700 font-medium hover:text-blue-600 transition-colors">info@nikolai-transport.de</a>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <MapPin className="h-6 w-6 text-blue-600" />
+                  <span className="text-lg text-gray-700">Musterstraße 123, 12345 Musterstadt</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Clock className="h-6 w-6 text-blue-600" />
+                  <span className="text-lg text-gray-700">Mo-Fr: 7:00 - 18:00 Uhr</span>
+                </div>
+              </div>
+              <Button asChild className="w-full mt-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                <Link to="/kontakt">Zum Kontaktformular</Link>
+              </Button>
             </div>
 
             {/* 3D Floating Elements */}
