@@ -1,46 +1,86 @@
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
-import ServiceCard from '@/components/ServiceCard'; // Import the enhanced ServiceCard
-import ParallaxSection from '@/components/ParallaxSection'; // Import ParallaxSection
+import ServiceCard from '@/components/ServiceCard';
+import ParallaxSection from '@/components/ParallaxSection';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, Clock, Truck, Home, Sparkles, Star, Quote, Users, Lightbulb, Handshake } from 'lucide-react'; // Added more icons
+import { CheckCircle, Clock, Truck, Home, Sparkles, Star, Quote, Users, Lightbulb, Handshake } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { useRef } from 'react';
-import { motion } from 'framer-motion'; // Import motion for animations
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'; // Import Avatar components
+import { useEffect, useState, useRef } from 'react'; // Added useState and useEffect
+import { motion } from 'framer-motion';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { supabase } from '@/integrations/supabase/client'; // Import supabase client
+
+interface Service {
+  id: string;
+  icon: string;
+  title: string;
+  description: string;
+  features: string[];
+  image_url: string;
+  price: string;
+  popular: boolean;
+}
 
 const Index = () => {
   const servicesRef = useRef<HTMLDivElement>(null);
+  const [services, setServices] = useState<Service[]>([]);
+  const [loadingServices, setLoadingServices] = useState(true);
 
-  const services = [
-    {
-      icon: Sparkles,
-      title: 'Reinigungsservice',
-      description: 'Professionelle Reinigung für Büros, Praxen und Privathaushalte – für ein makelloses Ergebnis.',
-      features: ['Büro- & Praxisreinigung', 'Haushaltsreinigung', 'Fenster- & Glasreinigung', 'Grundreinigung'],
-      imageUrl: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      price: 'Ab 25€/Std.',
-      popular: true
-    },
-    {
-      icon: Truck,
-      title: 'Transportdienst',
-      description: 'Sicherer und pünktlicher Transport Ihrer Güter – von Möbeln bis zu Spezialsendungen.',
-      features: ['Möbeltransport', 'Express-Kurier', 'Sperrguttransport', 'Regionale Fahrten'],
-      imageUrl: 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      price: 'Ab 45€/Fahrt'
-    },
-    {
-      icon: Home,
-      title: 'Umzugshilfe & Montage',
-      description: 'Ihr stressfreier Umzug mit Rundum-Service – wir kümmern uns um alles.',
-      features: ['Komplette Umzugsplanung', 'Verpackungsservice', 'Möbelmontage', 'Entrümpelung'],
-      imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      price: 'Ab 35€/Std.'
-    }
-  ];
+  useEffect(() => {
+    const fetchServices = async () => {
+      setLoadingServices(true);
+      const { data, error } = await supabase.from('services').select('*');
+      if (error) {
+        console.error('Error fetching services:', error);
+        // Fallback to static data if fetching fails
+        setServices([
+          {
+            id: 'static-1',
+            icon: 'Sparkles',
+            title: 'Reinigungsservice',
+            description: 'Professionelle Reinigung für Büros, Praxen und Privathaushalte – für ein makelloses Ergebnis.',
+            features: ['Büro- & Praxisreinigung', 'Haushaltsreinigung', 'Fenster- & Glasreinigung', 'Grundreinigung'],
+            imageUrl: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+            price: 'Ab 25€/Std.',
+            popular: true
+          },
+          {
+            id: 'static-2',
+            icon: 'Truck',
+            title: 'Transportdienst',
+            description: 'Sicherer und pünktlicher Transport Ihrer Güter – von Möbeln bis zu Spezialsendungen.',
+            features: ['Möbeltransport', 'Express-Kurier', 'Sperrguttransport', 'Regionale Fahrten'],
+            imageUrl: 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+            price: 'Ab 45€/Fahrt',
+            popular: false
+          },
+          {
+            id: 'static-3',
+            icon: 'Home',
+            title: 'Umzugshilfe & Montage',
+            description: 'Ihr stressfreier Umzug mit Rundum-Service – wir kümmern uns um alles.',
+            features: ['Komplette Umzugsplanung', 'Verpackungsservice', 'Möbelmontage', 'Entrümpelung'],
+            imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+            price: 'Ab 35€/Std.',
+            popular: false
+          }
+        ]);
+      } else {
+        setServices(data as Service[]);
+      }
+      setLoadingServices(false);
+    };
+
+    fetchServices();
+  }, []);
+
+  // Map icon strings to LucideIcon components
+  const getIconComponent = (iconName: string) => {
+    const icons: { [key: string]: any } = { Sparkles, Truck, Home, CheckCircle, Clock, Euro, Star, Quote, Users, Lightbulb, Handshake };
+    return icons[iconName] || Sparkles; // Default to Sparkles if not found
+  };
 
   const stats = [
     { value: '500+', label: 'Zufriedene Kunden', icon: Users },
@@ -113,20 +153,24 @@ const Index = () => {
               </motion.p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {services.map((service, index) => (
-                <ServiceCard
-                  key={index}
-                  icon={service.icon}
-                  title={service.title}
-                  description={service.description}
-                  features={service.features}
-                  imageUrl={service.imageUrl}
-                  price={service.price}
-                  popular={service.popular}
-                />
-              ))}
-            </div>
+            {loadingServices ? (
+              <div className="text-center text-gray-600">Services werden geladen...</div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {services.map((service, index) => (
+                  <ServiceCard
+                    key={service.id}
+                    icon={getIconComponent(service.icon)}
+                    title={service.title}
+                    description={service.description}
+                    features={service.features}
+                    imageUrl={service.image_url}
+                    price={service.price}
+                    popular={service.popular}
+                  />
+                ))}
+              </div>
+            )}
             <div className="text-center mt-12">
               <Button size="lg" asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
                 <Link to="/leistungen">Alle Leistungen entdecken</Link>

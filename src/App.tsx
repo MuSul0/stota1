@@ -12,6 +12,10 @@ import Kontakt from "./pages/Kontakt";
 import Impressum from "./pages/Impressum";
 import Datenschutz from "./pages/Datenschutz";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login"; // Import Login page
+import AdminDashboard from "./pages/Admin"; // Import AdminDashboard
+import AdminServices from "./pages/Admin/Services"; // Import AdminServices
+import { SessionProvider } from "./components/SessionProvider"; // Import SessionProvider
 
 const queryClient = new QueryClient();
 
@@ -21,18 +25,23 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/ueber-uns" element={<UeberUns />} />
-          <Route path="/leistungen" element={<Leistungen />} />
-          <Route path="/galerie" element={<Galerie />} />
-          <Route path="/bewertungen" element={<Bewertungen />} />
-          <Route path="/kontakt" element={<Kontakt />} />
-          <Route path="/impressum" element={<Impressum />} />
-          <Route path="/datenschutz" element={<Datenschutz />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <SessionProvider> {/* Wrap routes with SessionProvider */}
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/ueber-uns" element={<UeberUns />} />
+            <Route path="/leistungen" element={<Leistungen />} />
+            <Route path="/galerie" element={<Galerie />} />
+            <Route path="/bewertungen" element={<Bewertungen />} />
+            <Route path="/kontakt" element={<Kontakt />} />
+            <Route path="/impressum" element={<Impressum />} />
+            <Route path="/datenschutz" element={<Datenschutz />} />
+            <Route path="/login" element={<Login />} /> {/* Add Login route */}
+            <Route path="/admin" element={<AdminDashboard />} /> {/* Admin Dashboard */}
+            <Route path="/admin/services" element={<AdminServices />} /> {/* Admin Services */}
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </SessionProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
