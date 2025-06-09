@@ -4,7 +4,7 @@ import Footer from '@/components/Footer';
 import ServiceCard from '@/components/ServiceCard';
 import ParallaxSection from '@/components/ParallaxSection';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, Clock, Truck, Home, Sparkles, Star, Quote, Users, Lightbulb, Handshake, Briefcase, Smile, Euro, PhoneCall, CalendarCheck, Wrench, ThumbsUp } from 'lucide-react';
+import { CheckCircle, Clock, Truck, Home, Sparkles, Star, Quote, Users, Lightbulb, Handshake, Briefcase, Smile, Euro, PhoneCall, CalendarCheck, Wrench, ThumbsUp, Gift } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
@@ -78,7 +78,7 @@ const Index = () => {
 
   // Map icon strings to LucideIcon components
   const getIconComponent = (iconName: string) => {
-    const icons: { [key: string]: any } = { Sparkles, Truck, Home, CheckCircle, Clock, Euro, Star, Quote, Users, Lightbulb, Handshake, Briefcase, Smile, Wrench, PhoneCall, CalendarCheck, ThumbsUp };
+    const icons: { [key: string]: any } = { Sparkles, Truck, Home, CheckCircle, Clock, Euro, Star, Quote, Users, Lightbulb, Handshake, Briefcase, Smile, Wrench, PhoneCall, CalendarCheck, ThumbsUp, Gift };
     return icons[iconName] || Sparkles; // Default to Sparkles if not found
   };
 
@@ -303,6 +303,52 @@ const Index = () => {
                 </Card>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Referral Program Teaser Section */}
+      <section className="py-20 bg-gradient-to-br from-blue-50 to-purple-50">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="inline-block bg-purple-100 text-purple-600 px-4 py-2 rounded-full text-sm font-medium mb-6">
+                🎁 Empfehlen & Belohnt werden
+              </div>
+              <h2 className="text-4xl font-bold mb-6 text-gray-800">
+                Teilen Sie Ihre Begeisterung und profitieren Sie!
+              </h2>
+              <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+                Sind Sie zufrieden mit unserem Service? Dann erzählen Sie es weiter! 
+                Mit unserem Empfehlungsprogramm belohnen wir Sie und Ihre Freunde für jedes erfolgreiche Projekt. 
+                Eine Win-Win-Situation für alle!
+              </p>
+              <Button size="lg" asChild className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white">
+                <Link to="/empfehlungsprogramm">Mehr über das Programm erfahren</Link>
+              </Button>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <div className="relative rounded-xl overflow-hidden shadow-xl">
+                <img 
+                  src="https://images.unsplash.com/photo-1529156069091-ce95f6887714?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  alt="Freunde teilen eine Empfehlung"
+                  className="w-full h-96 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-center justify-center">
+                  <Gift className="h-20 w-20 text-white opacity-80" />
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
