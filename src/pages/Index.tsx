@@ -4,7 +4,7 @@ import Footer from '@/components/Footer';
 import ServiceCard from '@/components/ServiceCard';
 import ParallaxSection from '@/components/ParallaxSection';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, Clock, Truck, Home, Sparkles, Star, Quote, Users, Lightbulb, Handshake, Briefcase, Smile, Tool, Euro, PhoneCall, CalendarCheck, Wrench, ThumbsUp } from 'lucide-react';
+import { CheckCircle, Clock, Truck, Home, Sparkles, Star, Quote, Users, Lightbulb, Handshake, Briefcase, Smile, Euro, PhoneCall, CalendarCheck, Wrench, ThumbsUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
@@ -78,7 +78,7 @@ const Index = () => {
 
   // Map icon strings to LucideIcon components
   const getIconComponent = (iconName: string) => {
-    const icons: { [key: string]: any } = { Sparkles, Truck, Home, CheckCircle, Clock, Euro, Star, Quote, Users, Lightbulb, Handshake, Briefcase, Smile, Tool, PhoneCall, CalendarCheck, Wrench, ThumbsUp };
+    const icons: { [key: string]: any } = { Sparkles, Truck, Home, CheckCircle, Clock, Euro, Star, Quote, Users, Lightbulb, Handshake, Briefcase, Smile, Wrench, PhoneCall, CalendarCheck, ThumbsUp };
     return icons[iconName] || Sparkles; // Default to Sparkles if not found
   };
 
@@ -101,7 +101,7 @@ const Index = () => {
       description: 'Ihre Bedürfnisse stehen im Mittelpunkt. Wir bieten maßgeschneiderte Lösungen und persönlichen Service.'
     },
     {
-      icon: Tool,
+      icon: Wrench, // Changed from Tool to Wrench
       title: 'Modernste Ausstattung',
       description: 'Dank modernem Equipment und bewährten Methoden führen wir alle Arbeiten sicher und präzise aus.'
     },
