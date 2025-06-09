@@ -8,10 +8,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 const Kontakt = () => {
-  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,8 +23,7 @@ const Kontakt = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-    toast({
-      title: "Nachricht gesendet!",
+    toast.success("Ihre Nachricht wurde erfolgreich gesendet!", {
       description: "Wir melden uns schnellstmöglich bei Ihnen zurück.",
     });
     setFormData({ name: '', email: '', phone: '', service: '', message: '' });
@@ -39,27 +38,45 @@ const Kontakt = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')] bg-cover bg-center opacity-20"></div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Kontakt</h1>
-            <p className="text-xl text-blue-100">
-              Haben Sie Fragen oder benötigen Sie ein Angebot? 
+            <motion.h1 
+              className="text-4xl md:text-5xl font-bold mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              Kontaktieren Sie uns
+            </motion.h1>
+            <motion.p 
+              className="text-xl text-blue-100"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              Haben Sie Fragen, benötigen Sie ein unverbindliches Angebot oder möchten Sie einen Termin vereinbaren? 
               Wir sind gerne für Sie da und freuen uns auf Ihre Nachricht.
-            </p>
+            </motion.p>
           </div>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section className="py-20">
+      <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
-            <div>
-              <Card>
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.8 }}
+            >
+              <Card className="h-full shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <CardHeader>
-                  <CardTitle className="text-2xl">Nachricht senden</CardTitle>
+                  <CardTitle className="text-2xl">Ihre Nachricht an uns</CardTitle>
                   <CardDescription>
                     Füllen Sie das Formular aus und wir melden uns schnellstmöglich bei Ihnen zurück.
                   </CardDescription>
@@ -129,7 +146,7 @@ const Kontakt = () => {
                       />
                     </div>
 
-                    <Button type="submit" size="lg" className="w-full">
+                    <Button type="submit" size="lg" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
                       <Send className="mr-2 h-4 w-4" />
                       Nachricht senden
                     </Button>
@@ -140,15 +157,21 @@ const Kontakt = () => {
                   </form>
                 </CardContent>
               </Card>
-            </div>
+            </motion.div>
 
             {/* Contact Information */}
-            <div className="space-y-8">
-              <Card>
+            <motion.div 
+              className="space-y-8"
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <CardHeader>
-                  <CardTitle className="text-2xl">Kontaktinformationen</CardTitle>
+                  <CardTitle className="text-2xl">Direkter Kontakt</CardTitle>
                   <CardDescription>
-                    Erreichen Sie uns direkt über diese Kanäle
+                    Erreichen Sie uns schnell und unkompliziert über diese Kanäle.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -158,7 +181,7 @@ const Kontakt = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Telefon</h3>
-                      <p className="text-gray-600">+49 123 456 789</p>
+                      <p className="text-gray-700">+49 123 456 789</p>
                       <p className="text-sm text-gray-500">Mo-Fr: 7:00-18:00 Uhr</p>
                     </div>
                   </div>
@@ -169,7 +192,7 @@ const Kontakt = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">E-Mail</h3>
-                      <p className="text-gray-600">info@nikolai-transport.de</p>
+                      <p className="text-gray-700">info@nikolai-transport.de</p>
                       <p className="text-sm text-gray-500">Antwort innerhalb von 24h</p>
                     </div>
                   </div>
@@ -180,7 +203,7 @@ const Kontakt = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Adresse</h3>
-                      <p className="text-gray-600">
+                      <p className="text-gray-700">
                         Musterstraße 123<br />
                         12345 Musterstadt<br />
                         Deutschland
@@ -194,7 +217,7 @@ const Kontakt = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Öffnungszeiten</h3>
-                      <div className="text-gray-600 text-sm space-y-1">
+                      <div className="text-gray-700 text-sm space-y-1">
                         <p>Montag - Freitag: 7:00 - 18:00</p>
                         <p>Samstag: 8:00 - 16:00</p>
                         <p>Sonntag: Nach Vereinbarung</p>
@@ -205,13 +228,13 @@ const Kontakt = () => {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <CardHeader>
                   <CardTitle>WhatsApp</CardTitle>
                   <CardDescription>Schnelle Kommunikation über WhatsApp</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button asChild className="w-full" variant="outline">
+                  <Button asChild className="w-full bg-green-500 hover:bg-green-600 text-white">
                     <a href="https://wa.me/49123456789" target="_blank" rel="noopener noreferrer">
                       WhatsApp Chat starten
                     </a>
@@ -220,21 +243,31 @@ const Kontakt = () => {
               </Card>
 
               {/* Map Placeholder */}
-              <Card>
+              <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <CardHeader>
-                  <CardTitle>Standort</CardTitle>
+                  <CardTitle>Unser Standort</CardTitle>
                   <CardDescription>Finden Sie uns auf der Karte</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="bg-gray-200 rounded-lg h-64 flex items-center justify-center">
-                    <span className="text-gray-500 text-center px-4">
-                      Google Maps Integration<br />
-                      Standort: Musterstraße 123, 12345 Musterstadt
-                    </span>
+                  <div className="bg-gray-200 rounded-lg h-64 flex items-center justify-center overflow-hidden">
+                    {/* Hier könnte eine tatsächliche Google Maps Einbettung erfolgen */}
+                    <iframe 
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2436.4700000000003!2d11.576124!3d48.137154!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x479e75f9f2b3b3b3%3A0x123456789abcdef!2sMusterstra%C3%9Fe%20123%2C%2012345%20Musterstadt%2C%20Germany!5e0!3m2!1sen!2sus!4v1678901234567!5m2!1sen!2sus" 
+                      width="100%" 
+                      height="100%" 
+                      style={{ border: 0 }} 
+                      allowFullScreen={true} 
+                      loading="lazy" 
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title="Google Maps Standort"
+                    ></iframe>
                   </div>
+                  <p className="text-sm text-gray-500 mt-2 text-center">
+                    Standort: Musterstraße 123, 12345 Musterstadt
+                  </p>
                 </CardContent>
               </Card>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
