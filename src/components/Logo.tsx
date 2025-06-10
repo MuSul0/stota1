@@ -16,8 +16,8 @@ const Logo = () => {
 
         {/* Text */}
         <div className="leading-tight">
-          <h1 className="text-[15px] font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
-            Nikolai Transport
+          <h1 className="text-base font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+            Nikolai
           </h1>
           <p className="text-[11px] text-gray-500">
             Reinigung • Transport • Umzug
