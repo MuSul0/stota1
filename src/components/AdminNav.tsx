@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Settings, Package, BookUser } from 'lucide-react';
+import { LayoutDashboard, Users, Settings, Package, BookUser, Image } from 'lucide-react';
 
 export default function AdminNav() {
   const location = useLocation();
@@ -7,6 +7,7 @@ export default function AdminNav() {
   const navItems = [
     { path: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/admin/services', icon: Package, label: 'Services' },
+    { path: '/admin/media', icon: Image, label: 'Medien' },
     { path: '/admin/users', icon: BookUser, label: 'Benutzer' },
     { path: '/admin/settings', icon: Settings, label: 'Einstellungen' }
   ];
