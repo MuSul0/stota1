@@ -20,32 +20,50 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const navigate = useNavigate();
 
   useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setSession(session);
-      setLoading(true);
-      
-      if (session) {
-        const { data: profile, error } = await supabase
+    const fetchSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) throw error;
+        if (!session) {
+          navigate('/login');
+          return;
+        }
+
+        const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('role')
           .eq('id', session.user.id)
           .single();
 
-        if (!error && profile?.role === 'admin') {
-          setIsAdmin(true);
-          setUser(session.user);
-        } else {
-          setIsAdmin(false);
+        if (profileError) throw profileError;
+
+        setSession(session);
+        setUser(session.user);
+        setIsAdmin(profile?.role === 'admin');
+        
+        if (profile?.role !== 'admin') {
           navigate('/login');
         }
-      } else {
-        setIsAdmin(false);
+      } catch (error) {
+        console.error('Session error:', error);
         navigate('/login');
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
+    };
+
+    fetchSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_OUT') {
+        navigate('/login');
+      } else if (session) {
+        await fetchSession();
+      }
     });
 
-    return () => authListener.subscription.unsubscribe();
+    return () => subscription.unsubscribe();
   }, [navigate]);
 
   return (

@@ -7,15 +7,19 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 const Login = () => {
-  const { session, loading } = useSession();
+  const { session, isAdmin, loading } = useSession();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!loading && session) {
-      // Direkte Weiterleitung nach erfolgreichem Login
-      navigate('/admin');
+      if (isAdmin) {
+        navigate('/admin');
+      } else {
+        toast.error('Keine Admin-Berechtigung');
+        navigate('/');
+      }
     }
-  }, [session, loading, navigate]);
+  }, [session, isAdmin, loading, navigate]);
 
   if (loading) {
     return (
@@ -47,7 +51,6 @@ const Login = () => {
             },
           }}
           theme="light"
-          redirectTo={window.location.origin + '/admin'}
         />
       </div>
     </div>
