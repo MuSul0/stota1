@@ -12,7 +12,7 @@ interface SessionContextType {
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
 
-export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<any | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
@@ -80,3 +80,5 @@ export const useSession = () => {
   }
   return context;
 };
+
+export default SessionProvider;
