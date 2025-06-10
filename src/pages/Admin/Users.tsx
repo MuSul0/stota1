@@ -6,32 +6,60 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { Loader2, User, UserCheck, UserX } from 'lucide-react';
+import { Loader2, User, UserCheck, UserX, Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 
 interface User {
   id: string;
   email: string;
   role: string;
   created_at: string;
+  last_sign_in_at: string | null;
+  is_active: boolean;
 }
 
 export default function AdminUsers() {
   const [users, setUsers] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchUsers();
   }, []);
 
+  useEffect(() => {
+    const filtered = users.filter(user =>
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredUsers(filtered);
+  }, [searchTerm, users]);
+
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
+      const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('*');
-      
-      if (error) throw error;
-      setUsers(data || []);
+
+      if (authError || profileError) throw authError || profileError;
+
+      // Combine auth and profile data
+      const combinedUsers = authData.users.map(authUser => {
+        const profile = profileData.find(p => p.id === authUser.id) || {};
+        return {
+          id: authUser.id,
+          email: authUser.email || '',
+          role: profile.role || 'user',
+          created_at: authUser.created_at,
+          last_sign_in_at: authUser.last_sign_in_at,
+          is_active: authUser.last_sign_in_at !== null
+        };
+      });
+
+      setUsers(combinedUsers);
+      setFilteredUsers(combinedUsers);
     } catch (error) {
       toast.error('Fehler beim Laden der Benutzer');
       console.error(error);
@@ -48,10 +76,27 @@ export default function AdminUsers() {
         .eq('id', userId);
       
       if (error) throw error;
+      
       toast.success('Benutzerrolle aktualisiert');
       fetchUsers();
     } catch (error) {
       toast.error('Fehler beim Aktualisieren der Rolle');
+      console.error(error);
+    }
+  };
+
+  const toggleUserStatus = async (userId: string, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase.auth.admin.updateUserById(userId, {
+        user_metadata: { is_active: !currentStatus }
+      });
+
+      if (error) throw error;
+      
+      toast.success(`Benutzer ${currentStatus ? 'deaktiviert' : 'aktiviert'}`);
+      fetchUsers();
+    } catch (error) {
+      toast.error('Fehler beim Ändern des Status');
       console.error(error);
     }
   };
@@ -66,8 +111,21 @@ export default function AdminUsers() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Benutzerverwaltung</h1>
-      
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <h1 className="text-3xl font-bold">Benutzerverwaltung</h1>
+        <div className="flex w-full md:w-auto gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              placeholder="Benutzer suchen..."
+              className="pl-10"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+
       <Card>
         <CardHeader>
           <CardTitle>Alle Benutzer</CardTitle>
@@ -79,11 +137,13 @@ export default function AdminUsers() {
                 <TableHead>E-Mail</TableHead>
                 <TableHead>Rolle</TableHead>
                 <TableHead>Registriert am</TableHead>
+                <TableHead>Letzte Anmeldung</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead className="text-right">Aktionen</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.map((user) => (
+              {filteredUsers.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
@@ -97,13 +157,30 @@ export default function AdminUsers() {
                   <TableCell>
                     {new Date(user.created_at).toLocaleDateString()}
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell>
+                    {user.last_sign_in_at 
+                      ? new Date(user.last_sign_in_at).toLocaleString() 
+                      : 'Nie'}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={user.is_active ? 'default' : 'secondary'}>
+                      {user.is_active ? 'Aktiv' : 'Inaktiv'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right space-x-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => toggleUserStatus(user.id, user.is_active)}
+                    >
+                      {user.is_active ? 'Deaktivieren' : 'Aktivieren'}
+                    </Button>
                     <Select
                       value={user.role}
                       onValueChange={(value) => updateUserRole(user.id, value)}
                     >
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Rolle wählen" />
+                      <SelectTrigger className="w-[120px]">
+                        <SelectValue placeholder="Rolle" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="admin">Admin</SelectItem>
