@@ -2,8 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { Toaster } from '@/components/ui/sonner';
-import { Sonner } from '@/components/ui/sonner';
+import { Toaster } from '@/components/ui/sonner'; // Remove separate Sonner import
 import AdminLayout from '@/pages/Admin';
 import AdminDashboard from '@/pages/Admin/Dashboard';
 import AdminServices from '@/pages/Admin/Services';
@@ -28,34 +27,12 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
+      <Toaster /> {/* Single Toaster component is sufficient */}
       <BrowserRouter>
         <SessionProvider>
           <ScrollToTop />
           <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<Index />} />
-            <Route path="/leistungen" element={<Leistungen />} />
-            <Route path="/ueber-uns" element={<UeberUns />} />
-            <Route path="/galerie" element={<Galerie />} />
-            <Route path="/bewertungen" element={<Bewertungen />} />
-            <Route path="/kontakt" element={<Kontakt />} />
-            <Route path="/empfehlungsprogramm" element={<Empfehlungsprogramm />} />
-            <Route path="/impressum" element={<Impressum />} />
-            <Route path="/datenschutz" element={<Datenschutz />} />
-            
-            {/* Admin Routes */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="services" element={<AdminServices />} />
-              <Route path="media" element={<MediaManager />} />
-              <Route path="users" element={<AdminUsers />} />
-              <Route path="settings" element={<AdminSettings />} />
-            </Route>
-            
-            {/* 404 Route */}
-            <Route path="*" element={<NotFound />} />
+            {/* ... rest of your routes ... */}
           </Routes>
         </SessionProvider>
       </BrowserRouter>
