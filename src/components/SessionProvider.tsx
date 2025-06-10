@@ -12,7 +12,7 @@ interface SessionContextType {
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
 
-const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const SessionProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<any | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
@@ -20,47 +20,24 @@ const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchSession = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) throw error;
-        if (!session) {
-          navigate('/login');
-          return;
-        }
-
-        const { data: profile, error: profileError } = await supabase
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_OUT') {
+        setSession(null);
+        setUser(null);
+        setIsAdmin(false);
+        navigate('/login');
+      } else if (session) {
+        const { data: profile } = await supabase
           .from('profiles')
           .select('role')
           .eq('id', session.user.id)
           .single();
-
-        if (profileError) throw profileError;
-
+        
         setSession(session);
         setUser(session.user);
         setIsAdmin(profile?.role === 'admin');
-        
-        if (profile?.role !== 'admin') {
-          navigate('/login');
-        }
-      } catch (error) {
-        console.error('Session error:', error);
-        navigate('/login');
-      } finally {
-        setLoading(false);
       }
-    };
-
-    fetchSession();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_OUT') {
-        navigate('/login');
-      } else if (session) {
-        await fetchSession();
-      }
+      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -75,10 +52,8 @@ const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
 
 export const useSession = () => {
   const context = useContext(SessionContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useSession must be used within a SessionProvider');
   }
   return context;
 };
-
-export default SessionProvider;

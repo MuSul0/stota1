@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { Toaster } from '@/components/ui/sonner'; // Remove separate Sonner import
+import { Toaster } from 'sonner';
 import AdminLayout from '@/pages/Admin';
 import AdminDashboard from '@/pages/Admin/Dashboard';
 import AdminServices from '@/pages/Admin/Services';
@@ -27,12 +27,28 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster /> {/* Single Toaster component is sufficient */}
+      <Toaster position="top-center" richColors expand={true} />
       <BrowserRouter>
         <SessionProvider>
           <ScrollToTop />
           <Routes>
-            {/* ... rest of your routes ... */}
+            <Route path="/" element={<Index />} />
+            <Route path="/leistungen" element={<Leistungen />} />
+            <Route path="/ueber-uns" element={<UeberUns />} />
+            <Route path="/galerie" element={<Galerie />} />
+            <Route path="/bewertungen" element={<Bewertungen />} />
+            <Route path="/kontakt" element={<Kontakt />} />
+            <Route path="/empfehlungsprogramm" element={<Empfehlungsprogramm />} />
+            <Route path="/impressum" element={<Impressum />} />
+            <Route path="/datenschutz" element={<Datenschutz />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="services" element={<AdminServices />} />
+              <Route path="media" element={<MediaManager />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="settings" element={<AdminSettings />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </SessionProvider>
       </BrowserRouter>
