@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect, useState } from 'react';
 import { Activity, Users, CheckCircle, Clock, DollarSign, TrendingUp } from 'lucide-react';
-import { AreaChart } from '@/components/ui/chart';
+import { Button } from '@/components/ui/button';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -11,7 +11,6 @@ export default function AdminDashboard() {
     completedServices: 0,
     pendingRequests: 0
   });
-  const [revenueData, setRevenueData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,23 +26,12 @@ export default function AdminDashboard() {
         .from('services')
         .select('*', { count: 'exact' });
 
-      // Beispiel-Daten für das Diagramm
-      const monthlyRevenue = [
-        { month: 'Jan', revenue: 12500 },
-        { month: 'Feb', revenue: 18000 },
-        { month: 'Mar', revenue: 14200 },
-        { month: 'Apr', revenue: 19500 },
-        { month: 'May', revenue: 21000 },
-        { month: 'Jun', revenue: 23200 },
-      ];
-
       setStats({
         totalRevenue: revenue || 0,
         activeUsers: users || 0,
         completedServices: services || 0,
         pendingRequests: 8 // Beispielwert
       });
-      setRevenueData(monthlyRevenue);
     };
 
     fetchData();
@@ -99,29 +87,12 @@ export default function AdminDashboard() {
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Umsatzentwicklung</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <AreaChart
-            data={revenueData}
-            xKey="month"
-            yKey="revenue"
-            height={300}
-            colors={['#3b82f6']}
-            showTooltip
-          />
-        </CardContent>
-      </Card>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
             <CardTitle>Aktivitäten</CardTitle>
           </CardHeader>
           <CardContent>
-            {/* Hier könnten aktuelle Aktivitäten angezeigt werden */}
             <div className="space-y-4">
               <div className="flex items-center">
                 <TrendingUp className="h-4 w-4 mr-2 text-green-500" />
