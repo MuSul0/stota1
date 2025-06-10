@@ -12,6 +12,7 @@ interface SessionContextType {
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
 
+// Export als named export
 export const SessionProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<any | null>(null);
@@ -57,3 +58,6 @@ export const useSession = () => {
   }
   return context;
 };
+
+// Default export hinzufügen
+export default SessionProvider;
