@@ -1,46 +1,46 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { LogOut, LayoutDashboard, Users, Settings } from 'lucide-react';
-import { Link, Outlet } from 'react-router-dom';
-import { toast } from 'sonner';
 import AdminNav from '@/components/AdminNav';
 
-const AdminLayout = () => {
+export default function AdminLayout() {
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkSession = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      
-      if (error || !session) {
+    const verifySession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error || !session) {
+          navigate('/login');
+          return;
+        }
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .single();
+
+        if (profile?.role !== 'admin') {
+          toast.error('Keine Admin-Berechtigung');
+          await supabase.auth.signOut();
+          navigate('/login');
+          return;
+        }
+
+        setLoading(false);
+      } catch (error) {
+        console.error('Admin verification error:', error);
         navigate('/login');
-        return;
       }
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', session.user.id)
-        .single();
-
-      if (profile?.role !== 'admin') {
-        toast.error('Keine Admin-Berechtigung');
-        navigate('/');
-        return;
-      }
-
-      setUser({
-        ...session.user,
-        ...profile
-      });
-      setLoading(false);
     };
 
-    checkSession();
+    verifySession();
   }, [navigate]);
 
   const handleLogout = async () => {
@@ -58,17 +58,13 @@ const AdminLayout = () => {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
       <div className="w-64 bg-gray-800 text-white p-4 flex flex-col">
         <div className="mb-8 p-4">
           <h1 className="text-xl font-bold">Admin Dashboard</h1>
-          <p className="text-sm text-gray-400">{user?.email}</p>
         </div>
-
         <nav className="flex-1">
           <AdminNav />
         </nav>
-
         <div className="mt-auto p-4">
           <Button 
             onClick={handleLogout}
@@ -80,13 +76,9 @@ const AdminLayout = () => {
           </Button>
         </div>
       </div>
-
-      {/* Main Content */}
       <div className="flex-1 overflow-auto p-6">
         <Outlet />
       </div>
     </div>
   );
-};
-
-export default AdminLayout;
+}

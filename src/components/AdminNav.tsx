@@ -1,38 +1,32 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Users, Settings } from 'lucide-react';
 
-const AdminNav = () => {
+export default function AdminNav() {
+  const location = useLocation();
+
+  const navItems = [
+    { path: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
+    { path: '/admin/services', icon: Users, label: 'Services' },
+    { path: '/admin/settings', icon: Settings, label: 'Einstellungen' }
+  ];
+
   return (
     <ul className="space-y-2">
-      <li>
-        <Link
-          to="/admin"
-          className="flex items-center p-3 rounded-md hover:bg-gray-700 transition-colors"
-        >
-          <LayoutDashboard className="h-5 w-5 mr-3" />
-          Dashboard
-        </Link>
-      </li>
-      <li>
-        <Link
-          to="/admin/users"
-          className="flex items-center p-3 rounded-md hover:bg-gray-700 transition-colors"
-        >
-          <Users className="h-5 w-5 mr-3" />
-          Benutzer
-        </Link>
-      </li>
-      <li>
-        <Link
-          to="/admin/settings"
-          className="flex items-center p-3 rounded-md hover:bg-gray-700 transition-colors"
-        >
-          <Settings className="h-5 w-5 mr-3" />
-          Einstellungen
-        </Link>
-      </li>
+      {navItems.map((item) => (
+        <li key={item.path}>
+          <Link
+            to={item.path}
+            className={`flex items-center p-3 rounded-md transition-colors ${
+              location.pathname === item.path 
+                ? 'bg-gray-700' 
+                : 'hover:bg-gray-700'
+            }`}
+          >
+            <item.icon className="h-5 w-5 mr-3" />
+            {item.label}
+          </Link>
+        </li>
+      ))}
     </ul>
   );
-};
-
-export default AdminNav;
+}

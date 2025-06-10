@@ -7,19 +7,86 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 
-const Login = () => {
-  const [loading, setLoading] = useState(false);
-  const [sessionChecked, setSessionChecked] = useState(false);
+export default function Login() {
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // ... (rest of your component code remains the same)
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) throw error;
+        if (session) await verifyAdmin(session);
+      } catch (error) {
+        console.error('Login error:', error);
+        toast.error('Anmeldefehler aufgetreten');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+          await verifyAdmin(session);
+        }
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+  const verifyAdmin = async (session: any) => {
+    try {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', session.user.id)
+        .single();
+
+      if (error) throw error;
+      if (profile?.role !== 'admin') throw new Error('Keine Admin-Berechtigung');
+
+      navigate('/admin');
+    } catch (error) {
+      await supabase.auth.signOut();
+      toast.error('Zugang nur für Administratoren');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      {/* ... (your existing JSX) */}
+      <div className="w-full max-w-md bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="p-8">
+          <h2 className="text-2xl font-bold text-center mb-6">Admin Login</h2>
+          <Auth
+            supabaseClient={supabase}
+            providers={[]}
+            appearance={{
+              theme: ThemeSupa,
+              variables: {
+                default: {
+                  colors: {
+                    brand: '#3b82f6',
+                    brandAccent: '#2563eb'
+                  }
+                }
+              }
+            }}
+          />
+        </div>
+      </div>
     </div>
   );
-};
-
-// Make sure to have this default export
-export default Login;
+}
