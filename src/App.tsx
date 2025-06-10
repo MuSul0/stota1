@@ -14,10 +14,13 @@ import Datenschutz from "./pages/Datenschutz";
 import Empfehlungsprogramm from "./pages/Empfehlungsprogramm";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
-import AdminDashboard from "./pages/Admin";
+import AdminLayout from "./pages/Admin";
+import AdminDashboard from "./pages/Admin/Dashboard";
 import AdminServices from "./pages/Admin/Services";
+import AdminUsers from "./pages/Admin/Users";
+import AdminSettings from "./pages/Admin/Settings";
 import { SessionProvider } from "./components/SessionProvider";
-import ScrollToTop from "./components/ScrollToTop"; // Import the new ScrollToTop component
+import ScrollToTop from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -28,8 +31,9 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <SessionProvider>
-          <ScrollToTop /> {/* Add ScrollToTop here */}
+          <ScrollToTop />
           <Routes>
+            {/* Public Routes */}
             <Route path="/" element={<Index />} />
             <Route path="/ueber-uns" element={<UeberUns />} />
             <Route path="/leistungen" element={<Leistungen />} />
@@ -40,9 +44,16 @@ const App = () => (
             <Route path="/datenschutz" element={<Datenschutz />} />
             <Route path="/empfehlungsprogramm" element={<Empfehlungsprogramm />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/services" element={<AdminServices />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            
+            {/* Admin Routes */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="services" element={<AdminServices />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="settings" element={<AdminSettings />} />
+            </Route>
+            
+            {/* 404 Route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </SessionProvider>
