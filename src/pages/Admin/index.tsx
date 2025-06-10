@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { LogOut, LayoutDashboard, Sparkles, Users, Image, Settings } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const AdminDashboard = () => {
   const { session, isAdmin, loading } = useSession();
@@ -12,21 +13,26 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     if (!loading && (!session || !isAdmin)) {
+      toast.error('Zugriff verweigert: Keine Admin-Berechtigung');
       navigate('/login');
     }
   }, [session, isAdmin, loading, navigate]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    toast.success('Erfolgreich abgemeldet');
     navigate('/login');
   };
 
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Laden des Admin-Bereichs...</div>;
-  }
-
-  if (!session || !isAdmin) {
-    return null; // Should redirect by useEffect
+  if (loading || !isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-gray-700">Überprüfe Berechtigungen...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -48,24 +54,7 @@ const AdminDashboard = () => {
                 Services
               </Link>
             </li>
-            <li>
-              <Link to="/admin/testimonials" className="flex items-center p-3 rounded-md text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
-                <Users className="h-5 w-5 mr-3" />
-                Bewertungen
-              </Link>
-            </li>
-            <li>
-              <Link to="/admin/gallery" className="flex items-center p-3 rounded-md text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
-                <Image className="h-5 w-5 mr-3" />
-                Galerie
-              </Link>
-            </li>
-            <li>
-              <Link to="/admin/settings" className="flex items-center p-3 rounded-md text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
-                <Settings className="h-5 w-5 mr-3" />
-                Einstellungen
-              </Link>
-            </li>
+            {/* Weitere Links... */}
           </ul>
         </nav>
         <Button onClick={handleLogout} className="w-full mt-8 bg-red-600 hover:bg-red-700">
@@ -78,9 +67,8 @@ const AdminDashboard = () => {
       <main className="flex-1 p-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-6">Willkommen im Admin-Bereich!</h1>
         <p className="text-gray-600">
-          Nutzen Sie die Navigation auf der linken Seite, um Inhalte Ihrer Website zu verwalten.
+          Sie haben erfolgreich Zugriff auf das Admin-Panel.
         </p>
-        {/* Add dashboard widgets here later */}
       </main>
     </div>
   );

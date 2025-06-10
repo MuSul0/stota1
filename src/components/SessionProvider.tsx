@@ -20,54 +20,33 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const navigate = useNavigate();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
-      setSession(currentSession);
-      if (currentSession) {
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setSession(session);
+      setLoading(true);
+      
+      if (session) {
         const { data: profile, error } = await supabase
           .from('profiles')
           .select('role')
-          .eq('id', currentSession.user.id)
+          .eq('id', session.user.id)
           .single();
 
-        if (error) {
-          console.error('Error fetching profile:', error);
-          setIsAdmin(false);
+        if (!error && profile?.role === 'admin') {
+          setIsAdmin(true);
+          setUser(session.user);
         } else {
-          setUser(currentSession.user);
-          setIsAdmin(profile?.role === 'admin');
+          setIsAdmin(false);
+          navigate('/login');
         }
       } else {
-        setUser(null);
         setIsAdmin(false);
+        navigate('/login');
       }
       setLoading(false);
     });
 
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      setSession(currentSession);
-      if (currentSession) {
-        supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', currentSession.user.id)
-          .single()
-          .then(({ data: profile, error }) => {
-            if (error) {
-              console.error('Error fetching profile on initial load:', error);
-              setIsAdmin(false);
-            } else {
-              setUser(currentSession.user);
-              setIsAdmin(profile?.role === 'admin');
-            }
-            setLoading(false);
-          });
-      } else {
-        setLoading(false);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+    return () => authListener.subscription.unsubscribe();
+  }, [navigate]);
 
   return (
     <SessionContext.Provider value={{ session, user, isAdmin, loading }}>
