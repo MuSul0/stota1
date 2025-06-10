@@ -14,7 +14,7 @@ const Header = () => {
     { name: 'Leistungen', href: '/leistungen' },
     { name: 'Galerie', href: '/galerie' },
     { name: 'Bewertungen', href: '/bewertungen' },
-    { name: 'Empfehlungsprogramm', href: '/empfehlungsprogramm' },
+    { name: 'Empfehlungsprogramm', href: '/empfehlungsprogramm' }, // Dieser Link wurde bereits hinzugefügt
     { name: 'Kontakt', href: '/kontakt' },
   ];
 
@@ -58,9 +58,6 @@ const Header = () => {
               </Link>
             ))}
             <Button asChild>
-              <Link to="/customer-login">Kunden-Login</Link>
-            </Button>
-            <Button asChild>
               <Link to="/kontakt">Jetzt anfragen</Link>
             </Button>
           </div>
@@ -90,11 +87,6 @@ const Header = () => {
                   {item.name}
                 </Link>
               ))}
-              <Button asChild className="w-fit">
-                <Link to="/customer-login" onClick={() => setIsMenuOpen(false)}>
-                  Kunden-Login
-                </Link>
-              </Button>
               <Button asChild className="w-fit">
                 <Link to="/kontakt" onClick={() => setIsMenuOpen(false)}>
                   Jetzt anfragen

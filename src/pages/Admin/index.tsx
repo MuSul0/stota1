@@ -12,13 +12,13 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     if (!loading && (!session || !isAdmin)) {
-      navigate('/admin-login'); // Changed from /login to /admin-login
+      navigate('/login');
     }
   }, [session, isAdmin, loading, navigate]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate('/admin-login'); // Changed from /login to /admin-login
+    navigate('/login');
   };
 
   if (loading) {

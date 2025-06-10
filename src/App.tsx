@@ -13,12 +13,11 @@ import Impressum from "./pages/Impressum";
 import Datenschutz from "./pages/Datenschutz";
 import Empfehlungsprogramm from "./pages/Empfehlungsprogramm";
 import NotFound from "./pages/NotFound";
-import AdminLogin from "./pages/AdminLogin"; // Updated import
-import CustomerLogin from "./pages/CustomerLogin"; // New import
+import Login from "./pages/Login";
 import AdminDashboard from "./pages/Admin";
 import AdminServices from "./pages/Admin/Services";
 import { SessionProvider } from "./components/SessionProvider";
-import ScrollToTop from "./components/ScrollToTop";
+import ScrollToTop from "./components/ScrollToTop"; // Import the new ScrollToTop component
 
 const queryClient = new QueryClient();
 
@@ -29,7 +28,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <SessionProvider>
-          <ScrollToTop />
+          <ScrollToTop /> {/* Add ScrollToTop here */}
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/ueber-uns" element={<UeberUns />} />
@@ -40,8 +39,7 @@ const App = () => (
             <Route path="/impressum" element={<Impressum />} />
             <Route path="/datenschutz" element={<Datenschutz />} />
             <Route path="/empfehlungsprogramm" element={<Empfehlungsprogramm />} />
-            <Route path="/admin-login" element={<AdminLogin />} /> {/* Updated route */}
-            <Route path="/customer-login" element={<CustomerLogin />} /> {/* New route */}
+            <Route path="/login" element={<Login />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/services" element={<AdminServices />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
