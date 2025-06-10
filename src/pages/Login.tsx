@@ -1,57 +1,82 @@
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '@/integrations/supabase/client';
-import { useSession } from '@/components/SessionProvider';
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
+import { useState } from 'react';
 
 const Login = () => {
-  const { session, isAdmin, loading } = useSession();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!loading && session) {
-      if (isAdmin) {
-        navigate('/admin');
-      } else {
-        toast.error('Keine Admin-Berechtigung');
-        navigate('/');
+  const handleAuthStateChange = async (event: string, session: any) => {
+    if (event === 'SIGNED_IN') {
+      setLoading(true);
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .single();
+
+        if (profile?.role === 'admin') {
+          navigate('/admin');
+        } else {
+          await supabase.auth.signOut();
+          toast.error('Keine Admin-Berechtigungen');
+        }
+      } catch (error) {
+        toast.error('Fehler bei der Anmeldung');
+      } finally {
+        setLoading(false);
       }
     }
-  }, [session, isAdmin, loading, navigate]);
+  };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-gray-700">Überprüfe Anmeldedaten...</p>
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(handleAuthStateChange);
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center mb-6">Admin Anmeldung</h2>
-        <Auth
-          supabaseClient={supabase}
-          providers={[]}
-          appearance={{
-            theme: ThemeSupa,
-            variables: {
-              default: {
-                colors: {
-                  brand: 'hsl(var(--primary))',
-                  brandAccent: 'hsl(var(--primary-foreground))',
-                },
-              },
-            },
-          }}
-          theme="light"
-        />
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="p-8">
+          <h2 className="text-2xl font-bold text-center mb-6">Admin Login</h2>
+          {loading ? (
+            <div className="flex justify-center">
+              <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+          ) : (
+            <Auth
+              supabaseClient={supabase}
+              providers={['google']}
+              appearance={{
+                theme: ThemeSupa,
+                variables: {
+                  default: {
+                    colors: {
+                      brand: '#3b82f6',
+                      brandAccent: '#2563eb'
+                    }
+                  }
+                }
+              }}
+              theme="dark"
+            />
+          )}
+        </div>
+        <div className="bg-gray-100 px-6 py-4 text-center">
+          <Button 
+            variant="link" 
+            onClick={() => navigate('/')}
+            className="text-blue-600"
+          >
+            Zurück zur Startseite
+          </Button>
+        </div>
       </div>
     </div>
   );
