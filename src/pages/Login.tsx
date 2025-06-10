@@ -1,44 +1,85 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
-import { useState, useEffect } from 'react';
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
+  const [sessionChecked, setSessionChecked] = useState(false);
   const navigate = useNavigate();
 
-  const handleAuthStateChange = async (event: string, session: any) => {
-    if (event === 'SIGNED_IN') {
-      setLoading(true);
+  // Überprüfe bestehende Session beim Mount
+  useEffect(() => {
+    const checkSession = async () => {
       try {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', session.user.id)
-          .single();
-
-        if (profile?.role === 'admin') {
-          navigate('/admin');
-        } else {
-          await supabase.auth.signOut();
-          toast.error('Keine Admin-Berechtigungen');
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) throw error;
+        if (session) {
+          await handleUserSession(session);
         }
       } catch (error) {
-        toast.error('Fehler bei der Anmeldung');
+        console.error('Session check error:', error);
+        toast.error('Fehler bei der Sitzungsüberprüfung');
       } finally {
-        setLoading(false);
+        setSessionChecked(true);
       }
+    };
+
+    checkSession();
+  }, []);
+
+  // Behandle Auth State Changes
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+          await handleUserSession(session);
+        } else if (event === 'SIGNED_OUT') {
+          navigate('/login');
+        }
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+  const handleUserSession = async (session: any) => {
+    setLoading(true);
+    try {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', session.user.id)
+        .single();
+
+      if (error) throw error;
+
+      if (profile?.role === 'admin') {
+        navigate('/admin');
+      } else {
+        await supabase.auth.signOut();
+        toast.error('Keine Admin-Berechtigungen');
+      }
+    } catch (error) {
+      console.error('Session handling error:', error);
+      toast.error('Fehler bei der Anmeldung');
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(handleAuthStateChange);
-    return () => subscription.unsubscribe();
-  }, [navigate]);
+  if (!sessionChecked) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
