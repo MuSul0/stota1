@@ -26,7 +26,7 @@ const Leistungen = () => {
       pricing: 'Ab 25€/Stunde',
       availability: 'Mo-Sa, 7:00-18:00',
       imageAlt: 'Professionelle Reinigungskraft bei der Arbeit in modernem Büro',
-      imageUrl: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+      imageUrl: ''
     },
     {
       icon: Truck,
@@ -44,7 +44,7 @@ const Leistungen = () => {
       pricing: 'Ab 45€/Fahrt',
       availability: '24/7 verfügbar',
       imageAlt: 'Nikolai Transport Fahrzeug beim sicheren Beladen von Möbeln',
-      imageUrl: 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+      imageUrl: ''
     },
     {
       icon: Home,
@@ -62,7 +62,7 @@ const Leistungen = () => {
       pricing: 'Ab 35€/Stunde pro Person',
       availability: 'Mo-Sa, nach Vereinbarung',
       imageAlt: 'Umzugsteam beim professionellen Verpacken und Transportieren',
-      imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+      imageUrl: ''
     }
   ];
 
@@ -72,7 +72,7 @@ const Leistungen = () => {
 
       {/* Hero Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')] bg-cover bg-center opacity-20"></div>
+        <div className="absolute inset-0 bg-[url('')] bg-cover bg-center opacity-20"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <motion.h1 

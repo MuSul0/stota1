@@ -42,7 +42,7 @@ const Index = () => {
             title: 'Reinigungsservice',
             description: 'Professionelle Reinigung für Büros, Praxen und Privathaushalte – für ein makelloses Ergebnis.',
             features: ['Büro- & Praxisreinigung', 'Haushaltsreinigung', 'Fenster- & Glasreinigung', 'Grundreinigung'],
-            imageUrl: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+            image_url: '',
             price: 'Ab 25€/Std.',
             popular: true
           },
@@ -52,7 +52,7 @@ const Index = () => {
             title: 'Transportdienst',
             description: 'Sicherer und pünktlicher Transport Ihrer Güter – von Möbeln bis zu Spezialsendungen.',
             features: ['Möbeltransport', 'Express-Kurier', 'Sperrguttransport', 'Regionale Fahrten'],
-            imageUrl: 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+            image_url: '',
             price: 'Ab 45€/Fahrt',
             popular: false
           },
@@ -62,7 +62,7 @@ const Index = () => {
             title: 'Umzugshilfe & Montage',
             description: 'Ihr stressfreier Umzug mit Rundum-Service – wir kümmern uns um alles.',
             features: ['Komplette Umzugsplanung', 'Verpackungsservice', 'Möbelmontage', 'Entrümpelung'],
-            imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+            image_url: '',
             price: 'Ab 35€/Std.',
             popular: false
           }
@@ -340,7 +340,7 @@ const Index = () => {
             >
               <div className="relative rounded-xl overflow-hidden shadow-xl">
                 <img 
-                  src="https://images.unsplash.com/photo-1529156069091-ce95f6887714?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  src=""
                   alt="Freunde teilen eine Empfehlung"
                   className="w-full h-96 object-cover"
                 />
@@ -444,7 +444,7 @@ const Index = () => {
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
                 <img 
-                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  src=""
                   alt="Nikolai Müller, Gründer"
                   className="w-full h-96 object-cover rounded-xl shadow-xl"
                 />

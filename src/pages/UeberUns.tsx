@@ -50,7 +50,7 @@ const UeberUns = () => {
 
       {/* Hero Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')] bg-cover bg-center opacity-20"></div>
+        <div className="absolute inset-0 bg-[url('')] bg-cover bg-center opacity-20"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <motion.div 
@@ -120,7 +120,7 @@ const UeberUns = () => {
               >
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                   <img 
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                    src=""
                     alt="Nikolai Müller vor seinem ersten Transporter im Jahr 2014"
                     className="w-full h-96 object-cover"
                   />
@@ -303,7 +303,7 @@ const UeberUns = () => {
                 <CardContent className="p-8">
                   <div className="relative mb-6">
                     <img 
-                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                      src=""
                       alt="Nikolai Müller - Geschäftsführer"
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
@@ -330,7 +330,7 @@ const UeberUns = () => {
                 <CardContent className="p-8">
                   <div className="relative mb-6">
                     <img 
-                      src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                      src=""
                       alt="Maria Schmidt - Teamleiterin"
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
@@ -357,7 +357,7 @@ const UeberUns = () => {
                 <CardContent className="p-8">
                   <div className="relative mb-6">
                     <img 
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                      src=""
                       alt="Thomas Weber - Transport Spezialist"
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
@@ -392,7 +392,7 @@ const UeberUns = () => {
 
       {/* Mission Section */}
       <section className="py-20 bg-gradient-to-r from-blue-900 via-purple-900 to-blue-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')] bg-cover bg-center opacity-10"></div>
+        <div className="absolute inset-0 bg-[url('')] bg-cover bg-center opacity-10"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <motion.div 
@@ -430,7 +430,7 @@ const UeberUns = () => {
               transition={{ duration: 0.6, delay: 0.6 }}
             >
               <img 
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80"
+                src=""
                 alt="Nikolai Müller"
                 className="w-16 h-16 rounded-full object-cover border-2 border-white/30"
               />

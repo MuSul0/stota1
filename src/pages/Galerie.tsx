@@ -14,63 +14,63 @@ const Galerie = () => {
       title: 'Büroreinigung Innenstadt',
       category: 'Reinigung',
       description: 'Regelmäßige Reinigung eines 500m² Bürokomplexes',
-      imageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+      imageUrl: '',
       type: 'image'
     },
     {
       title: 'Familienumzug nach München',
       category: 'Umzug',
       description: 'Kompletter Umzug einer 4-Zimmer-Wohnung mit Möbelmontage',
-      imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+      imageUrl: '',
       type: 'video'
     },
     {
       title: 'Praxisreinigung Zahnarzt',
       category: 'Reinigung',
       description: 'Hygienische Reinigung einer Zahnarztpraxis nach Hygienestandards',
-      imageUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+      imageUrl: '',
       type: 'image'
     },
     {
       title: 'Klaviertransport',
       category: 'Transport',
       description: 'Sicherer Transport eines Flügels in den 3. Stock',
-      imageUrl: 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+      imageUrl: '',
       type: 'image'
     },
     {
       title: 'Grundreinigung nach Renovierung',
       category: 'Reinigung',
       description: 'Komplette Grundreinigung nach Renovierungsarbeiten',
-      imageUrl: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+      imageUrl: '',
       type: 'image'
     },
     {
       title: 'Firmenumzug IT-Unternehmen',
       category: 'Umzug',
       description: 'Umzug eines IT-Unternehmens mit sensibler Technik',
-      imageUrl: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+      imageUrl: '',
       type: 'video'
     },
     {
       title: 'Fensterreinigung Hochhaus',
       category: 'Reinigung',
       description: 'Professionelle Fensterreinigung an einem 8-stöckigen Gebäude',
-      imageUrl: 'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+      imageUrl: '',
       type: 'image'
     },
     {
       title: 'Antiquitätentransport',
       category: 'Transport',
       description: 'Vorsichtiger Transport wertvoller Antiquitäten',
-      imageUrl: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+      imageUrl: '',
       type: 'image'
     },
     {
       title: 'Hotelreinigung',
       category: 'Reinigung',
       description: 'Tägliche Reinigung eines Boutique-Hotels',
-      imageUrl: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+      imageUrl: '',
       type: 'image'
     }
   ];
@@ -87,7 +87,7 @@ const Galerie = () => {
 
       {/* Hero Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')] bg-cover bg-center opacity-20"></div>
+        <div className="absolute inset-0 bg-[url('')] bg-cover bg-center opacity-20"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6">
@@ -201,7 +201,7 @@ const Galerie = () => {
             <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
               <div className="relative">
                 <img 
-                  src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                  src=""
                   alt="Büroreinigung Zeitraffer"
                   className="w-full h-64 object-cover"
                 />
@@ -227,7 +227,7 @@ const Galerie = () => {
             <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
               <div className="relative">
                 <img 
-                  src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                  src=""
                   alt="Familienumzug dokumentiert"
                   className="w-full h-64 object-cover"
                 />
@@ -278,7 +278,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Vorher</p>
                       <img 
-                        src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                        src=""
                         alt="Unordentliches Büro vor der Reinigung"
                         className="w-full h-32 object-cover rounded-lg"
                       />
@@ -286,7 +286,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Nachher</p>
                       <img 
-                        src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                        src=""
                         alt="Perfekt gereinigtes Büro"
                         className="w-full h-32 object-cover rounded-lg"
                       />
@@ -307,7 +307,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Vorher</p>
                       <img 
-                        src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                        src=""
                         alt="Verschmutzte Küche vor der Reinigung"
                         className="w-full h-32 object-cover rounded-lg"
                       />
@@ -315,7 +315,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Nachher</p>
                       <img 
-                        src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80&sat=-100&con=20"
+                        src=""
                         alt="Glänzende saubere Küche"
                         className="w-full h-32 object-cover rounded-lg"
                       />
