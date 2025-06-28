@@ -1,18 +1,19 @@
-import { Routes, Route } from 'react-router-dom'
-import HomePage from './pages/Home'
-import AdminPage from './pages/Admin'
-import LoginPage from './pages/Login'
-import { Toaster } from '@/components/ui/sonner'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 
 export default function App() {
   return (
-    <>
+    <BrowserRouter>
+      <nav style={{padding: '20px', background: '#f0f0f0'}}>
+        <Link to="/" style={{marginRight: '10px'}}>Home</Link>
+        <Link to="/admin" style={{marginRight: '10px'}}>Admin</Link>
+        <Link to="/login">Login</Link>
+      </nav>
+      
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<div><h1>Home Page</h1></div>} />
+        <Route path="/admin" element={<div><h1>Admin Page</h1></div>} />
+        <Route path="/login" element={<div><h1>Login Page</h1></div>} />
       </Routes>
-      <Toaster />
-    </>
+    </BrowserRouter>
   )
 }
