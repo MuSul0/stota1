@@ -1,10 +1,20 @@
-// ... bestehenden Importe ...
-import CreateEmployee from './CreateEmployee';
+import { Outlet } from 'react-router-dom';
+import AdminNav from '@/components/AdminNav';
+import { LogOut } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function AdminLayout() {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/login');
+  };
+
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
       <div className="w-64 bg-gray-800 text-white p-4 flex flex-col">
         <div className="mb-8 p-4">
           <h1 className="text-xl font-bold">Admin Dashboard</h1>
@@ -12,15 +22,19 @@ export default function AdminLayout() {
         <nav className="flex-1">
           <AdminNav />
         </nav>
+        <div className="mt-auto p-4">
+          <Button 
+            onClick={handleLogout}
+            variant="destructive"
+            className="w-full"
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            Abmelden
+          </Button>
+        </div>
       </div>
-      
-      {/* Hauptinhalt */}
       <div className="flex-1 overflow-auto p-6">
-        <Routes>
-          <Route index element={<AdminDashboard />} />
-          <Route path="create-employee" element={<CreateEmployee />} />
-          {/* ... andere Routen ... */}
-        </Routes>
+        <Outlet />
       </div>
     </div>
   );
