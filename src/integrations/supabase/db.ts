@@ -1,81 +1,41 @@
 import { Pool } from 'pg';
 
-// Konfiguration für die direkte Verbindung
 const pool = new Pool({
-  host: 'db.edcuorkphchuobrfqvyb.supabase.co',
-  port: 5432,
+  host: 'aws-0-eu-central-1.pooler.supabase.com',
+  port: 6543,
   database: 'postgres',
-  user: 'postgres',
-  password: process.env.SUPABASE_DB_PASSWORD, // Setzen Sie dies in Ihrer .env Datei
+  user: 'postgres.edcuorkphchuobrfqvyb',
+  password: process.env.SUPABASE_DB_PASSWORD,
   ssl: {
-    rejectUnauthorized: false // Nur für Entwicklung empfohlen
-  }
+    rejectUnauthorized: false
+  },
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
 });
 
-// Testfunktion für die Verbindung
+// Testfunktion
 export async function testConnection() {
+  const client = await pool.connect();
   try {
-    const client = await pool.connect();
-    const res = await client.query('SELECT NOW() as current_time');
+    const res = await client.query('SELECT NOW()');
+    return res.rows[0].now;
+  } finally {
     client.release();
-    return res.rows[0].current_time;
-  } catch (err) {
-    console.error('Database connection error:', err);
-    throw err;
   }
 }
 
-// CRUD Operationen für Mitarbeiter
-export async function logWorkHours(employeeId: string, hours: number, date: Date) {
-  const query = `
-    INSERT INTO work_hours (employee_id, hours, date)
-    VALUES ($1, $2, $3)
-    RETURNING *;
-  `;
-  const values = [employeeId, hours, date];
-
+// Erweiterte Funktionen mit Fehlerbehandlung
+export async function queryWithErrorHandling<T>(text: string, params?: any[]) {
+  const client = await pool.connect();
   try {
-    const res = await pool.query(query, values);
-    return res.rows[0];
+    const res = await client.query<T>(text, params);
+    return res;
   } catch (err) {
-    console.error('Error logging work hours:', err);
+    console.error('Database query error:', err);
     throw err;
-  }
-}
-
-// Bild Upload Tracking
-export async function trackImageUpload(employeeId: string, imageUrl: string) {
-  const query = `
-    INSERT INTO employee_images (employee_id, image_url)
-    VALUES ($1, $2)
-    RETURNING *;
-  `;
-  const values = [employeeId, imageUrl];
-
-  try {
-    const res = await pool.query(query, values);
-    return res.rows[0];
-  } catch (err) {
-    console.error('Error tracking image upload:', err);
-    throw err;
-  }
-}
-
-// Empfehlungen speichern
-export async function saveRecommendation(employeeId: string, text: string) {
-  const query = `
-    INSERT INTO recommendations (employee_id, text)
-    VALUES ($1, $2)
-    RETURNING *;
-  `;
-  const values = [employeeId, text];
-
-  try {
-    const res = await pool.query(query, values);
-    return res.rows[0];
-  } catch (err) {
-    console.error('Error saving recommendation:', err);
-    throw err;
+  } finally {
+    client.release();
   }
 }
 
