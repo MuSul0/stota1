@@ -119,9 +119,9 @@ export default function Login() {
                 }}
                 localization={{ variables: germanTranslations }}
                 onAuthStateChange={handleAuthStateChange}
-                // Deaktiviere Registrierung für Admins
                 view="sign_in"
                 showLinks={false}
+                providers={[]} // Keine externen Provider für Admin
               />
               <div className="mt-4 text-center text-sm text-gray-600">
                 <p>Administrationsbereich für Systemeinstellungen</p>
