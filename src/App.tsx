@@ -1,13 +1,13 @@
-import { SessionProvider } from '@/context/SessionContext';
-import { Toaster } from '@/components/ui/sonner';
+import { Toaster } from '@/components/ui/sonner'
+import Router from '@/Router'
 
 function App() {
   return (
-    <SessionProvider>
-      {/* Ihre bestehenden Routen */}
+    <>
+      <Router />
       <Toaster position="top-center" />
-    </SessionProvider>
-  );
+    </>
+  )
 }
 
-export default App;
+export default App

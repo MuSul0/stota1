@@ -1,10 +1,13 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';  // Wichtig: Default Import
-import './globals.css';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App'
+import './globals.css'
+import { SessionProvider } from './context/SessionContext'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App />
+    <SessionProvider>
+      <App />
+    </SessionProvider>
   </React.StrictMode>
-);
+)
