@@ -17,6 +17,7 @@ const Header = () => {
     { name: 'Leistungen', path: '/leistungen' },
     { name: 'Über uns', path: '/ueber-uns' },
     { name: 'Galerie', path: '/galerie' },
+    { name: 'Empfehlungsprogramm', path: '/empfehlungsprogramm' },
     { name: 'Kontakt', path: '/kontakt' }
   ];
 
