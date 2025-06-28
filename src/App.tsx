@@ -4,7 +4,7 @@ import { Toaster } from '@/components/ui/sonner';
 function App() {
   return (
     <SessionProvider>
-      {/* Ihre bestehenden Routen und Komponenten */}
+      {/* Ihre bestehenden Routen */}
       <Toaster position="top-center" />
     </SessionProvider>
   );

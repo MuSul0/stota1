@@ -1,37 +1,52 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Session } from '@supabase/supabase-js';
+import { createContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { Session } from '@supabase/supabase-js';
 
-const SessionContext = createContext<any>(null);
+interface SessionContextType {
+  session: Session | null;
+  user: any | null;
+  isAdmin: boolean;
+  isLoading: boolean;
+}
 
-export const SessionProvider = ({ children }: { children: React.ReactNode }) => {
+export const SessionContext = createContext<SessionContextType | undefined>(undefined);
+
+export const SessionProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<any | null>(null);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      checkAdminStatus(session?.user?.id);
       setIsLoading(false);
+    });
 
-      if (session?.user) {
-        // Check if user is admin
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', session.user.id)
-          .single();
-        
-        setIsAdmin(profile?.role === 'admin');
-      } else {
-        setIsAdmin(false);
-      }
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      checkAdminStatus(session?.user?.id);
+      setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const checkAdminStatus = async (userId?: string) => {
+    if (!userId) {
+      setIsAdmin(false);
+      return;
+    }
+    const { data } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', userId)
+      .single();
+    setIsAdmin(data?.role === 'admin');
+  };
 
   return (
     <SessionContext.Provider value={{ session, user, isAdmin, isLoading }}>
@@ -39,5 +54,3 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
     </SessionContext.Provider>
   );
 };
-
-export default SessionProvider;
