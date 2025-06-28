@@ -1,13 +1,18 @@
+import { Routes, Route } from 'react-router-dom'
+import HomePage from './pages/Home'
+import AdminPage from './pages/Admin'
+import LoginPage from './pages/Login'
 import { Toaster } from '@/components/ui/sonner'
-import Router from '@/Router'
 
-function App() {
+export default function App() {
   return (
     <>
-      <Router />
-      <Toaster position="top-center" />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/login" element={<LoginPage />} />
+      </Routes>
+      <Toaster />
     </>
   )
 }
-
-export default App
