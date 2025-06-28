@@ -7,13 +7,15 @@ interface SessionContextType {
   user: any | null
   isAdmin: boolean
   isLoading: boolean
+  isDemo: boolean
 }
 
 export const SessionContext = createContext<SessionContextType>({
   session: null,
   user: null,
   isAdmin: false,
-  isLoading: true
+  isLoading: true,
+  isDemo: false
 })
 
 export const SessionProvider = ({ children }: { children: ReactNode }) => {
@@ -21,10 +23,31 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
     session: null,
     user: null,
     isAdmin: false,
-    isLoading: true
+    isLoading: true,
+    isDemo: false
   })
 
   useEffect(() => {
+    // Demo-Modus aktivieren wenn URL Parameter ?demo=true
+    const urlParams = new URLSearchParams(window.location.search)
+    const demoMode = urlParams.get('demo') === 'true'
+
+    if (demoMode) {
+      setState({
+        session: null,
+        user: {
+          id: 'demo-user-id',
+          email: 'demo@nikolai-transport.de',
+          user_metadata: { name: 'Demo Admin' }
+        },
+        isAdmin: true,
+        isLoading: false,
+        isDemo: true
+      })
+      return
+    }
+
+    // Normale Authentifizierung
     const fetchSession = async () => {
       const { data: { session }, error } = await supabase.auth.getSession()
       
@@ -50,7 +73,8 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
         session,
         user,
         isAdmin,
-        isLoading: false
+        isLoading: false,
+        isDemo: false
       })
     }
 
