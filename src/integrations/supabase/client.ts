@@ -1,23 +1,21 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Directly use the environment variables (configure these in your build system)
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 
-                    process.env.EXPO_PUBLIC_SUPABASE_URL || 
-                    'https://edcuorkphchuobrfqvyb.supabase.co';
-
-const supabaseKey = import.meta.env.VITE_SUPABASE_KEY || 
-                   process.env.EXPO_PUBLIC_SUPABASE_KEY || 
-                   'sb_publishable_jSTLHDbOrCqJ-jLzBqajQA_uzZfyZJb';
-
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Supabase URL and Key must be defined');
-}
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const serviceRoleKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
-    autoRefreshToken: true,
+    autoRefreshToken: false,
     persistSession: true,
-    detectSessionInUrl: false,
-    storage: typeof window !== 'undefined' ? window.localStorage : undefined
+    detectSessionInUrl: false
+  }
+});
+
+// Nur für serverseitige Verwendung
+export const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
   }
 });
