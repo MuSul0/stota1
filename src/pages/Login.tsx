@@ -119,9 +119,13 @@ export default function Login() {
                 }}
                 localization={{ variables: germanTranslations }}
                 onAuthStateChange={handleAuthStateChange}
+                // Deaktiviere Registrierung für Admins
+                view="sign_in"
+                showLinks={false}
               />
               <div className="mt-4 text-center text-sm text-gray-600">
                 <p>Administrationsbereich für Systemeinstellungen</p>
+                <p className="text-xs mt-2">Nur für autorisierte Administratoren</p>
               </div>
             </TabsContent>
           </Tabs>
