@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '@/integrations/supabase/client';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 import { toast } from 'sonner';
 
@@ -27,24 +25,12 @@ const germanTranslations = {
 };
 
 const Login = () => {
-  const [activeTab, setActiveTab] = useState('customer');
   const navigate = useNavigate();
 
-  const handleAuthStateChange = async (event: string, session: any) => {
+  const handleAuthStateChange = async (event: string) => {
     if (event === 'SIGNED_IN') {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (user?.email?.endsWith('@nikolai-transport.de')) {
-        if (user?.user_metadata?.role === 'employee') {
-          toast.success('Erfolgreich als Mitarbeiter angemeldet!');
-          navigate('/mitarbeiterportal');
-        } else {
-          navigate('/admin');
-        }
-      } else {
-        toast.success('Erfolgreich angemeldet!');
-        navigate('/kundenportal');
-      }
+      toast.success('Erfolgreich angemeldet!');
+      navigate('/');
     }
   };
 
@@ -58,72 +44,22 @@ const Login = () => {
           
           <h1 className="text-2xl font-bold text-center mb-6">Willkommen bei Nikolai Transport</h1>
           
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-3">
-              <TabsTrigger value="customer">Kunde</TabsTrigger>
-              <TabsTrigger value="employee">Mitarbeiter</TabsTrigger>
-              <TabsTrigger value="admin">Admin</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="customer" className="mt-6">
-              <Auth
-                supabaseClient={supabase}
-                providers={['google']}
-                appearance={{
-                  theme: ThemeSupa,
-                  variables: {
-                    default: {
-                      colors: {
-                        brand: '#3b82f6',
-                        brandAccent: '#2563eb'
-                      }
-                    }
+          <Auth
+            supabaseClient={supabase}
+            appearance={{
+              theme: ThemeSupa,
+              variables: {
+                default: {
+                  colors: {
+                    brand: '#3b82f6',
+                    brandAccent: '#2563eb'
                   }
-                }}
-                localization={{ variables: germanTranslations }}
-                onAuthStateChange={handleAuthStateChange}
-              />
-            </TabsContent>
-            
-            <TabsContent value="employee" className="mt-6">
-              <Auth
-                supabaseClient={supabase}
-                appearance={{
-                  theme: ThemeSupa,
-                  variables: {
-                    default: {
-                      colors: {
-                        brand: '#10b981',
-                        brandAccent: '#059669'
-                      }
-                    }
-                  }
-                }}
-                localization={{ variables: germanTranslations }}
-                onAuthStateChange={handleAuthStateChange}
-              />
-            </TabsContent>
-            
-            <TabsContent value="admin" className="mt-6">
-              <Auth
-                supabaseClient={supabase}
-                appearance={{
-                  theme: ThemeSupa,
-                  variables: {
-                    default: {
-                      colors: {
-                        brand: '#8b5cf6',
-                        brandAccent: '#7c3aed'
-                      }
-                    }
-                  }
-                }}
-                localization={{ variables: germanTranslations }}
-                onAuthStateChange={handleAuthStateChange}
-                providers={[]}
-              />
-            </TabsContent>
-          </Tabs>
+                }
+              }
+            }}
+            localization={{ variables: germanTranslations }}
+            onAuthStateChange={handleAuthStateChange}
+          />
         </div>
       </Card>
     </div>

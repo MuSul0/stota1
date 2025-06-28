@@ -3,12 +3,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from 'sonner';
-import AdminLayout from '@/pages/Admin';
-import AdminDashboard from '@/pages/Admin/Dashboard';
-import AdminServices from '@/pages/Admin/Services';
-import MediaManager from '@/pages/Admin/MediaManager';
-import AdminUsers from '@/pages/Admin/Users';
-import AdminSettings from '@/pages/Admin/Settings';
 import ScrollToTop from '@/components/ScrollToTop';
 import SessionProvider from '@/components/SessionProvider';
 import NotFound from '@/pages/NotFound';
@@ -43,13 +37,6 @@ const App = () => (
             <Route path="/impressum" element={<Impressum />} />
             <Route path="/datenschutz" element={<Datenschutz />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="services" element={<AdminServices />} />
-              <Route path="media" element={<MediaManager />} />
-              <Route path="users" element={<AdminUsers />} />
-              <Route path="settings" element={<AdminSettings />} />
-            </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </SessionProvider>
