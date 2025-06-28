@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Upload, Clock, ThumbsUp, Image, CheckCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import { logWorkHours, trackImageUpload, saveRecommendation } from '@/integrations/supabase/db';
 
 export default function Mitarbeiterportal() {
   const navigate = useNavigate();
@@ -26,16 +27,26 @@ export default function Mitarbeiterportal() {
   const handleFileUpload = async () => {
     if (!selectedFile) return;
 
-    const fileExt = selectedFile.name.split('.').pop();
-    const fileName = `${Math.random()}.${fileExt}`;
-    const filePath = `job-images/${fileName}`;
-
     try {
-      const { error: uploadError } = await supabase.storage
+      // 1. Hochladen zu Supabase Storage
+      const fileExt = selectedFile.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `job-images/${fileName}`;
+
+      const { data, error } = await supabase.storage
         .from('media')
         .upload(filePath, selectedFile);
 
-      if (uploadError) throw uploadError;
+      if (error) throw error;
+
+      // 2. URL abrufen
+      const { data: { publicUrl } } = supabase.storage
+        .from('media')
+        .getPublicUrl(filePath);
+
+      // 3. In Datenbank speichern
+      const { data: { user } } = await supabase.auth.getUser();
+      await trackImageUpload(user?.id, publicUrl);
 
       toast.success('Bild erfolgreich hochgeladen!');
       setSelectedFile(null);
@@ -50,19 +61,8 @@ export default function Mitarbeiterportal() {
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
+      await logWorkHours(user?.id, parseFloat(hours), new Date());
       
-      const { error } = await supabase
-        .from('work_hours')
-        .insert([
-          { 
-            employee_id: user?.id,
-            hours: parseFloat(hours),
-            date: new Date().toISOString()
-          }
-        ]);
-
-      if (error) throw error;
-
       toast.success('Stunden erfolgreich eingetragen!');
       setHours('');
     } catch (error) {
@@ -76,19 +76,8 @@ export default function Mitarbeiterportal() {
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
+      await saveRecommendation(user?.id, recommendation);
       
-      const { error } = await supabase
-        .from('recommendations')
-        .insert([
-          { 
-            employee_id: user?.id,
-            text: recommendation,
-            date: new Date().toISOString()
-          }
-        ]);
-
-      if (error) throw error;
-
       toast.success('Empfehlung erfolgreich abgegeben!');
       setRecommendation('');
     } catch (error) {
@@ -103,7 +92,7 @@ export default function Mitarbeiterportal() {
         <h1 className="text-3xl font-bold mb-8">Mitarbeiterportal</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Bild Upload */}
+          {/* Bild Upload Card */}
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -128,7 +117,7 @@ export default function Mitarbeiterportal() {
             </CardContent>
           </Card>
 
-          {/* Zeiterfassung */}
+          {/* Zeiterfassung Card */}
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -154,7 +143,7 @@ export default function Mitarbeiterportal() {
             </CardContent>
           </Card>
 
-          {/* Empfehlungen */}
+          {/* Empfehlungen Card */}
           <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
