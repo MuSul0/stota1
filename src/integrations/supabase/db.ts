@@ -1,42 +1,18 @@
-import { Pool } from 'pg';
+import { createClient } from '@supabase/supabase-js';
 
-const pool = new Pool({
-  host: 'aws-0-eu-central-1.pooler.supabase.com',
-  port: 6543,
-  database: 'postgres',
-  user: 'postgres.edcuorkphchuobrfqvyb',
-  password: process.env.SUPABASE_DB_PASSWORD,
-  ssl: {
-    rejectUnauthorized: false
-  },
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+const supabaseUrl = process.env.SUPABASE_URL || 'https://edcuorkphchuobrfqvyb.supabase.co';
+const supabaseKey = process.env.SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVkY3VvcmtwaGNodW9icmZxdnliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEwNTk2MDQsImV4cCI6MjA2NjYzNTYwNH0.9CG7Nx32Eis0vZDk_wniAPAOZ7nLdnYLjuFDu2WActw';
+
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true
+  }
 });
 
-// Testfunktion
-export async function testConnection() {
-  const client = await pool.connect();
-  try {
-    const res = await client.query('SELECT NOW()');
-    return res.rows[0].now;
-  } finally {
-    client.release();
-  }
+// Einfache Abfrage-Funktion
+export async function queryDatabase(query: string) {
+  const { data, error } = await supabase.rpc('execute_query', { query });
+  if (error) throw error;
+  return data;
 }
-
-// Erweiterte Funktionen mit Fehlerbehandlung
-export async function queryWithErrorHandling<T>(text: string, params?: any[]) {
-  const client = await pool.connect();
-  try {
-    const res = await client.query<T>(text, params);
-    return res;
-  } catch (err) {
-    console.error('Database query error:', err);
-    throw err;
-  } finally {
-    client.release();
-  }
-}
-
-export default pool;

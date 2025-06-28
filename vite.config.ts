@@ -9,4 +9,10 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  optimizeDeps: {
+    exclude: ['pg'], // pg wird im Browser nicht benötigt
+  },
+  define: {
+    global: {}, // Für pg Kompatibilität
+  },
 });
