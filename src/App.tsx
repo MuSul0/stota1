@@ -21,10 +21,10 @@ import Kontakt from '@/pages/Kontakt';
 import Empfehlungsprogramm from '@/pages/Empfehlungsprogramm';
 import Impressum from '@/pages/Impressum';
 import Datenschutz from '@/pages/Datenschutz';
+import Login from '@/pages/Login';
 
 const queryClient = new QueryClient();
 
-// Wichtig: Die Komponente muss als default exportiert werden
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -42,6 +42,7 @@ const App = () => (
             <Route path="/empfehlungsprogramm" element={<Empfehlungsprogramm />} />
             <Route path="/impressum" element={<Impressum />} />
             <Route path="/datenschutz" element={<Datenschutz />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="services" element={<AdminServices />} />
@@ -57,5 +58,4 @@ const App = () => (
   </QueryClientProvider>
 );
 
-// Wichtig: Default Export hinzufügen
 export default App;
