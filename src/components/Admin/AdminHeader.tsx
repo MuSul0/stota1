@@ -18,7 +18,12 @@ export default function AdminHeader() {
             <p className="text-xs text-gray-500">Administrator</p>
           </div>
           
-          <Button variant="ghost" size="sm" className="text-gray-500 hover:text-red-500">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="text-gray-500 hover:text-red-500"
+            onClick={() => supabase.auth.signOut()}
+          >
             <LogOut className="h-4 w-4" />
           </Button>
         </div>
