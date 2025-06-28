@@ -8,6 +8,28 @@ import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import Logo from '@/components/Logo';
 
+// Deutsche Übersetzung für Auth UI
+const germanTranslations = {
+  sign_in: {
+    email_label: 'E-Mail-Adresse',
+    password_label: 'Passwort',
+    email_input_placeholder: 'Ihre E-Mail-Adresse',
+    password_input_placeholder: 'Ihr Passwort',
+    button_label: 'Anmelden',
+    loading_button_label: 'Anmeldung läuft...',
+    link_text: 'Bereits ein Konto? Anmelden',
+  },
+  sign_up: {
+    link_text: 'Noch kein Konto? Registrieren',
+  },
+  forgotten_password: {
+    link_text: 'Passwort vergessen?',
+  },
+  magic_link: {
+    link_text: 'Magischen Link per E-Mail senden',
+  },
+};
+
 export default function Login() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -18,7 +40,7 @@ export default function Login() {
         const { data: { session } } = await supabase.auth.getSession();
         if (session) navigate('/admin');
       } catch (error) {
-        console.error('Login error:', error);
+        console.error('Login-Fehler:', error);
         toast.error('Anmeldefehler aufgetreten');
       } finally {
         setLoading(false);
@@ -53,7 +75,7 @@ export default function Login() {
           <div className="flex justify-center mb-8">
             <Logo />
           </div>
-          <h2 className="text-2xl font-bold text-center mb-6">Admin Login</h2>
+          <h2 className="text-2xl font-bold text-center mb-6">Administrator-Anmeldung</h2>
           <Auth
             supabaseClient={supabase}
             providers={[]}
@@ -68,9 +90,12 @@ export default function Login() {
                 }
               }
             }}
+            localization={{
+              variables: germanTranslations
+            }}
           />
           <div className="mt-6 text-center text-sm text-gray-600">
-            <p>Für den Zugang benötigen Sie Admin-Berechtigungen.</p>
+            <p>Zugang nur für autorisierte Administratoren</p>
           </div>
         </div>
       </div>
