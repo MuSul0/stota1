@@ -21,7 +21,7 @@ const Login = () => {
     if (event === 'SIGNED_IN' && selectedRole) {
       await supabase.auth.updateUser({ data: { role: selectedRole } });
       navigate(`/${selectedRole}portal`);
-      toast.success('Erfolgreich angemeldet!');
+      toast.success('Anmeldung erfolgreich!');
     }
   };
 
@@ -58,7 +58,7 @@ const Login = () => {
                   {getRoleIcon('kunde')}
                 </div>
                 <div>
-                  <h2 className="font-semibold text-lg">Kunden Login</h2>
+                  <h2 className="font-semibold text-lg">Kunden-Login</h2>
                   <p className="text-sm text-gray-600">Zugang für unsere Kunden</p>
                 </div>
               </div>
@@ -71,7 +71,7 @@ const Login = () => {
                   {getRoleIcon('mitarbeiter')}
                 </div>
                 <div>
-                  <h2 className="font-semibold text-lg">Mitarbeiter Login</h2>
+                  <h2 className="font-semibold text-lg">Mitarbeiter-Login</h2>
                   <p className="text-sm text-gray-600">Zugang für unser Team</p>
                 </div>
               </div>
@@ -84,7 +84,7 @@ const Login = () => {
                   {getRoleIcon('admin')}
                 </div>
                 <div>
-                  <h2 className="font-semibold text-lg">Admin Login</h2>
+                  <h2 className="font-semibold text-lg">Admin-Login</h2>
                   <p className="text-sm text-gray-600">Administrativer Zugang</p>
                 </div>
               </div>
@@ -107,8 +107,8 @@ const Login = () => {
                   {getRoleIcon(selectedRole)}
                 </div>
                 <h2 className="font-semibold text-xl">
-                  {selectedRole === 'kunde' ? 'Kunden Login' : 
-                   selectedRole === 'mitarbeiter' ? 'Mitarbeiter Login' : 'Admin Login'}
+                  {selectedRole === 'kunde' ? 'Kunden-Login' : 
+                   selectedRole === 'mitarbeiter' ? 'Mitarbeiter-Login' : 'Admin-Login'}
                 </h2>
               </div>
 
@@ -125,6 +125,29 @@ const Login = () => {
                         brandAccent: selectedRole === 'admin' ? '#dc2626' : 
                                      selectedRole === 'mitarbeiter' ? '#166534' : 
                                      '#1d4ed8'
+                      },
+                      fonts: {
+                        bodyFontFamily: 'Inter, sans-serif',
+                        buttonFontFamily: 'Inter, sans-serif',
+                        inputFontFamily: 'Inter, sans-serif',
+                        labelFontFamily: 'Inter, sans-serif'
+                      }
+                    }
+                  },
+                  localization: {
+                    variables: {
+                      sign_in: {
+                        email_label: 'E-Mail-Adresse',
+                        password_label: 'Passwort',
+                        email_input_placeholder: 'Ihre E-Mail-Adresse',
+                        password_input_placeholder: 'Ihr Passwort',
+                        button_label: 'Anmelden',
+                        loading_button_label: 'Anmeldung läuft...',
+                        link_text: 'Bereits registriert? Hier anmelden'
+                      },
+                      forgotten_password: {
+                        link_text: 'Passwort vergessen?',
+                        button_label: 'Passwort zurücksetzen'
                       }
                     }
                   }
