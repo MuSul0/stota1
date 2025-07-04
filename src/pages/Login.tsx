@@ -12,6 +12,7 @@ import { Truck, UserCog, User, ChevronLeft } from 'lucide-react';
 const Login = () => {
   const navigate = useNavigate();
   const [selectedRole, setSelectedRole] = useState<'kunde' | 'mitarbeiter' | 'admin' | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (role: 'kunde' | 'mitarbeiter' | 'admin') => {
     setSelectedRole(role);
@@ -19,10 +20,19 @@ const Login = () => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && selectedRole) {
-        await supabase.auth.updateUser({ data: { role: selectedRole } });
-        navigate(`/${selectedRole}portal`);
+      if (event === 'SIGNED_IN' && selectedRole && session) {
+        setLoading(true);
+        // Setze die Rolle im user_metadata
+        const { error } = await supabase.auth.updateUser({
+          data: { role: selectedRole }
+        });
+        setLoading(false);
+        if (error) {
+          toast.error('Fehler beim Setzen der Rolle');
+          return;
+        }
         toast.success('Anmeldung erfolgreich!');
+        navigate(`/${selectedRole}portal`);
       }
     });
     return () => subscription.unsubscribe();
@@ -52,8 +62,13 @@ const Login = () => {
             <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Willkommen bei Nikolai Transport</h1>
             <p className="text-gray-600 text-center mb-8">Bitte wählen Sie Ihren Zugang</p>
             
-            <Card className={`p-6 cursor-pointer transition-all hover:shadow-md ${getRoleColor('kunde')}`} 
-                  onClick={() => handleLogin('kunde')}>
+            <Card 
+              className={`p-6 cursor-pointer transition-all hover:shadow-md ${getRoleColor('kunde')}`} 
+              onClick={() => handleLogin('kunde')}
+              tabIndex={0}
+              role="button"
+              onKeyDown={(e) => { if (e.key === 'Enter') handleLogin('kunde'); }}
+            >
               <div className="flex items-center space-x-4">
                 <div className="p-3 rounded-full bg-blue-100 text-blue-600">
                   {getRoleIcon('kunde')}
@@ -65,8 +80,13 @@ const Login = () => {
               </div>
             </Card>
 
-            <Card className={`p-6 cursor-pointer transition-all hover:shadow-md ${getRoleColor('mitarbeiter')}`} 
-                  onClick={() => handleLogin('mitarbeiter')}>
+            <Card 
+              className={`p-6 cursor-pointer transition-all hover:shadow-md ${getRoleColor('mitarbeiter')}`} 
+              onClick={() => handleLogin('mitarbeiter')}
+              tabIndex={0}
+              role="button"
+              onKeyDown={(e) => { if (e.key === 'Enter') handleLogin('mitarbeiter'); }}
+            >
               <div className="flex items-center space-x-4">
                 <div className="p-3 rounded-full bg-green-100 text-green-600">
                   {getRoleIcon('mitarbeiter')}
@@ -78,8 +98,13 @@ const Login = () => {
               </div>
             </Card>
 
-            <Card className={`p-6 cursor-pointer transition-all hover:shadow-md ${getRoleColor('admin')}`} 
-                  onClick={() => handleLogin('admin')}>
+            <Card 
+              className={`p-6 cursor-pointer transition-all hover:shadow-md ${getRoleColor('admin')}`} 
+              onClick={() => handleLogin('admin')}
+              tabIndex={0}
+              role="button"
+              onKeyDown={(e) => { if (e.key === 'Enter') handleLogin('admin'); }}
+            >
               <div className="flex items-center space-x-4">
                 <div className="p-3 rounded-full bg-red-100 text-red-600">
                   {getRoleIcon('admin')}
@@ -97,6 +122,7 @@ const Login = () => {
               variant="ghost" 
               onClick={() => setSelectedRole(null)}
               className="flex items-center gap-2 text-gray-600"
+              disabled={loading}
             >
               <ChevronLeft className="w-4 h-4" />
               Zurück zur Auswahl
@@ -107,7 +133,7 @@ const Login = () => {
                 <div className={`p-2 rounded-full ${getRoleColor(selectedRole)}`}>
                   {getRoleIcon(selectedRole)}
                 </div>
-                <h2 className="font-semibold text-xl">
+                <h2 className="font-semibold text-xl capitalize">
                   {selectedRole === 'kunde' ? 'Kunden-Login' : 
                    selectedRole === 'mitarbeiter' ? 'Mitarbeiter-Login' : 'Admin-Login'}
                 </h2>
