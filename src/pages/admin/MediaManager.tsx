@@ -27,15 +27,18 @@ const MediaManager = () => {
 
   const fetchMedia = async () => {
     try {
-      const { data: images } = await supabase
+      const { data: images, error: imagesError } = await supabase
         .from('media')
         .select('*')
         .eq('type', 'image');
 
-      const { data: videos } = await supabase
+      const { data: videos, error: videosError } = await supabase
         .from('media')
         .select('*')
         .eq('type', 'video');
+
+      if (imagesError) throw imagesError;
+      if (videosError) throw videosError;
 
       setMedia({
         images: images || [],
@@ -53,7 +56,7 @@ const MediaManager = () => {
     setUploading(true);
     try {
       const fileExt = newMedia.file.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
+      const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
       const filePath = `${newMedia.type}s/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
