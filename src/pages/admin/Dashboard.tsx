@@ -15,30 +15,21 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       // Statistikdaten abrufen
-      const { data: revenue, error: revenueError } = await supabase.rpc('calculate_total_revenue');
-      if (revenueError) {
-        console.error('Error fetching revenue:', revenueError);
-      }
+      const { data: revenue } = await supabase.rpc('calculate_total_revenue');
       
-      const { count: users, error: usersError } = await supabase
+      const { count: users } = await supabase
         .from('profiles')
         .select('*', { count: 'exact' });
-      if (usersError) {
-        console.error('Error fetching users:', usersError);
-      }
 
-      const { count: services, error: servicesError } = await supabase
+      const { count: services } = await supabase
         .from('services')
         .select('*', { count: 'exact' });
-      if (servicesError) {
-        console.error('Error fetching services:', servicesError);
-      }
 
       setStats({
         totalRevenue: revenue || 0,
         activeUsers: users || 0,
         completedServices: services || 0,
-        pendingRequests: 8 // Beispielwert, kann dynamisch ersetzt werden
+        pendingRequests: 8 // Beispielwert
       });
     };
 

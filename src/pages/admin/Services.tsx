@@ -109,14 +109,7 @@ export default function AdminServices() {
         // Update existing service
         const { error } = await supabase
           .from('services')
-          .update({
-            title: editingService.title,
-            description: editingService.description,
-            price: editingService.price,
-            duration: editingService.duration,
-            category: editingService.category,
-            is_active: editingService.is_active
-          })
+          .update(editingService)
           .eq('id', editingService.id);
 
         if (error) throw error;
@@ -125,14 +118,7 @@ export default function AdminServices() {
         // Create new service
         const { error } = await supabase
           .from('services')
-          .insert({
-            title: editingService.title,
-            description: editingService.description,
-            price: editingService.price,
-            duration: editingService.duration,
-            category: editingService.category,
-            is_active: editingService.is_active
-          });
+          .insert(editingService);
 
         if (error) throw error;
         toast.success('Service erfolgreich erstellt');
