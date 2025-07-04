@@ -1,25 +1,83 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Menu, X } from 'lucide-react';
+import Logo from '@/components/Logo';
 import { Button } from '@/components/ui/button';
-import { LogIn } from 'lucide-react';
-import Logo from './Logo';
+import LoginButton from '@/components/LoginButton';
 
 const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const navLinks = [
+    { name: 'Startseite', path: '/' },
+    { name: 'Leistungen', path: '/leistungen' },
+    { name: 'Über uns', path: '/ueber-uns' },
+    { name: 'Galerie', path: '/galerie' },
+    { name: 'Empfehlungsprogramm', path: '/empfehlungsprogramm' },
+    { name: 'Kontakt', path: '/kontakt' }
+  ];
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
-        <div className="mr-4 hidden md:flex">
-          <Link to="/">
-            <Logo />
-          </Link>
+    <header className="bg-white shadow-sm sticky top-0 z-50">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex justify-between items-center">
+          <Logo />
+          
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            {navLinks.map((link) => (
+              <Link 
+                key={link.path} 
+                to={link.path}
+                className="text-gray-800 hover:text-blue-600 transition-colors font-medium"
+              >
+                {link.name}
+              </Link>
+            ))}
+            <div className="flex items-center gap-2">
+              <LoginButton />
+              <Button asChild>
+                <Link to="/kontakt">Jetzt anfragen</Link>
+              </Button>
+            </div>
+          </nav>
+
+          {/* Mobile Menu Button */}
+          <button 
+            className="md:hidden p-2 text-gray-800"
+            onClick={toggleMenu}
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
-        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <Button asChild variant="outline" className="gap-2">
-            <Link to="/login">
-              <LogIn className="h-4 w-4" />
-              Anmelden
-            </Link>
-          </Button>
-        </div>
+
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <nav className="md:hidden mt-4 pb-4 space-y-4">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className="block py-2 text-gray-800 hover:text-blue-600 transition-colors font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {link.name}
+              </Link>
+            ))}
+            <div className="flex flex-col gap-2">
+              <LoginButton onClick={() => setIsMenuOpen(false)} />
+              <Button asChild className="w-fit">
+                <Link to="/kontakt" onClick={() => setIsMenuOpen(false)}>
+                  Jetzt anfragen
+                </Link>
+              </Button>
+            </div>
+          </nav>
+        )}
       </div>
     </header>
   );
