@@ -36,7 +36,7 @@ serve(async (req) => {
     const { error } = await supabase
       .from('email_queue')
       .insert([{ 
-        to: email,
+        to_email: email,
         subject: subject,
         text: text,
         status: 'pending'
