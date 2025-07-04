@@ -1,8 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useEffect, useState } from 'react';
 import { Activity, Users, CheckCircle, Clock, DollarSign, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -15,8 +15,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       // Statistikdaten abrufen
-      const { data: revenue } = await supabase
-        .rpc('calculate_total_revenue');
+      const { data: revenue } = await supabase.rpc('calculate_total_revenue');
       
       const { count: users } = await supabase
         .from('profiles')
