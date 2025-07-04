@@ -16,7 +16,11 @@ import Empfehlungsprogramm from '@/pages/Empfehlungsprogramm';
 import Impressum from '@/pages/Impressum';
 import Datenschutz from '@/pages/Datenschutz';
 import Login from '@/pages/Login';
-import KundenDashboard from '@/pages/kundenportal';
+import KundenDashboard from '@/pages/kundenportal/index';
+import KundenTermine from '@/pages/kundenportal/termine';
+import KundenAuftraege from '@/pages/kundenportal/auftraege';
+import KundenNachrichten from '@/pages/kundenportal/nachrichten';
+import KundenEinstellungen from '@/pages/kundenportal/einstellungen';
 import MitarbeiterDashboard from '@/pages/mitarbeiterportal';
 import AdminDashboard from '@/pages/adminportal';
 
@@ -41,9 +45,20 @@ function App() {
               <Route path="/impressum" element={<Impressum />} />
               <Route path="/datenschutz" element={<Datenschutz />} />
               <Route path="/login" element={<Login />} />
+
+              {/* Kundenportal */}
               <Route path="/kundenportal" element={<KundenDashboard />} />
+              <Route path="/kundenportal/termine" element={<KundenTermine />} />
+              <Route path="/kundenportal/auftraege" element={<KundenAuftraege />} />
+              <Route path="/kundenportal/nachrichten" element={<KundenNachrichten />} />
+              <Route path="/kundenportal/einstellungen" element={<KundenEinstellungen />} />
+
+              {/* Mitarbeiterportal */}
               <Route path="/mitarbeiterportal" element={<MitarbeiterDashboard />} />
+
+              {/* Adminportal */}
               <Route path="/adminportal" element={<AdminDashboard />} />
+
               <Route path="*" element={<NotFound />} />
             </Routes>
           </SessionProvider>
