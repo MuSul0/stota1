@@ -14,7 +14,7 @@ const Login = () => {
   const [selectedRole, setSelectedRole] = useState<'kunde' | 'mitarbeiter' | 'admin' | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (role: 'kunde' | 'mitarbeiter' | 'admin') => {
+  const handleLogin = (role: 'kunde' | 'mitarbeiter' | 'admin') => {
     setSelectedRole(role);
   };
 
@@ -22,7 +22,6 @@ const Login = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && selectedRole && session) {
         setLoading(true);
-        // Setze die Rolle im user_metadata
         const { error } = await supabase.auth.updateUser({
           data: { role: selectedRole }
         });
