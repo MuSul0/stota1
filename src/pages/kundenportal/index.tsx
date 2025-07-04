@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSession } from '@/components/SessionProvider';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar, ListChecks, MessageSquare, Settings } from 'lucide-react';
+import { Calendar, ListChecks, MessageSquare, Settings, UserCircle2 } from 'lucide-react';
 
 export default function Kundenportal() {
   const { session, user, loading } = useSession();
@@ -35,20 +35,38 @@ export default function Kundenportal() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      <div className="container mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold mb-8 text-gray-800">Willkommen im Kundenportal</h1>
-        <p className="mb-8 text-gray-700">Hallo <span className="font-semibold">{user.email}</span>, hier können Sie Ihre Daten und Buchungen verwalten.</p>
+      <div className="container mx-auto px-6 py-12">
+        {/* Welcome Section */}
+        <div className="flex flex-col md:flex-row items-center md:items-start md:justify-between mb-12 gap-6">
+          <div className="flex items-center space-x-4">
+            <UserCircle2 className="w-20 h-20 text-blue-600" />
+            <div>
+              <h1 className="text-4xl font-extrabold text-gray-900">Willkommen zurück,</h1>
+              <p className="text-xl text-gray-700">{user.email}</p>
+            </div>
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/kundenportal/einstellungen')}
+            className="px-6 py-3 text-blue-600 border-blue-600 hover:bg-blue-600 hover:text-white transition"
+          >
+            Kontoeinstellungen
+          </Button>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <Card className="hover:shadow-lg transition-shadow rounded-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-blue-600">
-                <Calendar className="h-6 w-6" />
-                Termine
-              </CardTitle>
+        {/* Dashboard Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <Card className="shadow-lg rounded-xl hover:shadow-2xl transition-shadow duration-300 bg-white">
+            <CardHeader className="flex items-center space-x-3 pb-4 border-b border-gray-200">
+              <div className="p-3 bg-blue-100 rounded-lg">
+                <Calendar className="w-8 h-8 text-blue-600" />
+              </div>
+              <CardTitle className="text-lg font-semibold text-gray-900">Termine</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 mb-4">Verwalten Sie Ihre gebuchten Dienstleistungen und Termine.</p>
+              <p className="text-gray-600 mb-6">
+                Verwalten Sie Ihre gebuchten Dienstleistungen und Termine bequem an einem Ort.
+              </p>
               <Button 
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
                 onClick={() => navigate('/kundenportal/termine')}
@@ -58,15 +76,17 @@ export default function Kundenportal() {
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow rounded-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-green-600">
-                <ListChecks className="h-6 w-6" />
-                Aufträge
-              </CardTitle>
+          <Card className="shadow-lg rounded-xl hover:shadow-2xl transition-shadow duration-300 bg-white">
+            <CardHeader className="flex items-center space-x-3 pb-4 border-b border-gray-200">
+              <div className="p-3 bg-green-100 rounded-lg">
+                <ListChecks className="w-8 h-8 text-green-600" />
+              </div>
+              <CardTitle className="text-lg font-semibold text-gray-900">Aufträge</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 mb-4">Behalten Sie den Status Ihrer Aufträge im Blick.</p>
+              <p className="text-gray-600 mb-6">
+                Behalten Sie den Status Ihrer Aufträge im Blick und bleiben Sie informiert.
+              </p>
               <Button 
                 className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white"
                 onClick={() => navigate('/kundenportal/auftraege')}
@@ -76,15 +96,17 @@ export default function Kundenportal() {
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow rounded-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-purple-600">
-                <MessageSquare className="h-6 w-6" />
-                Nachrichten
-              </CardTitle>
+          <Card className="shadow-lg rounded-xl hover:shadow-2xl transition-shadow duration-300 bg-white">
+            <CardHeader className="flex items-center space-x-3 pb-4 border-b border-gray-200">
+              <div className="p-3 bg-purple-100 rounded-lg">
+                <MessageSquare className="w-8 h-8 text-purple-600" />
+              </div>
+              <CardTitle className="text-lg font-semibold text-gray-900">Nachrichten</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 mb-4">Kommunizieren Sie direkt mit unserem Team.</p>
+              <p className="text-gray-600 mb-6">
+                Kommunizieren Sie direkt mit unserem Team für schnelle Antworten.
+              </p>
               <Button 
                 className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white"
                 onClick={() => navigate('/kundenportal/nachrichten')}
@@ -94,15 +116,17 @@ export default function Kundenportal() {
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow rounded-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-orange-600">
-                <Settings className="h-6 w-6" />
-                Einstellungen
-              </CardTitle>
+          <Card className="shadow-lg rounded-xl hover:shadow-2xl transition-shadow duration-300 bg-white">
+            <CardHeader className="flex items-center space-x-3 pb-4 border-b border-gray-200">
+              <div className="p-3 bg-orange-100 rounded-lg">
+                <Settings className="w-8 h-8 text-orange-600" />
+              </div>
+              <CardTitle className="text-lg font-semibold text-gray-900">Einstellungen</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 mb-4">Verwalten Sie Ihre Kontoeinstellungen und Präferenzen.</p>
+              <p className="text-gray-600 mb-6">
+                Verwalten Sie Ihre Kontoeinstellungen und Präferenzen einfach und sicher.
+              </p>
               <Button 
                 className="w-full bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-700 hover:to-yellow-700 text-white"
                 onClick={() => navigate('/kundenportal/einstellungen')}
