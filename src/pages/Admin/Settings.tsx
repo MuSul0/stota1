@@ -1,15 +1,15 @@
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
-import { useState, useEffect } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Trash2, Image, Video, Upload, Edit } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { Trash2, Edit, Upload, Video } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function AdminSettings() {
   const [settings, setSettings] = useState({
@@ -198,7 +198,7 @@ export default function AdminSettings() {
           <TabsTrigger value="media">Medien</TabsTrigger>
         </TabsList>
         
-        {/* Vorherige Tabs bleiben gleich ... */}
+        {/* Andere Tabs können hier ergänzt werden */}
 
         <TabsContent value="media">
           <Card>
