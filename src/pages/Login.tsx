@@ -1,16 +1,13 @@
-<Auth
-  supabaseClient={supabase}
-  appearance={{ 
-    theme: ThemeSupa,
-    variables: {
-      default: {
-        colors: {
-          brand: '#3b82f6',
-          brandAccent: '#2563eb'
-        }
-      }
-    }
-  }}
-  providers={[]}
-  theme="light"
-/>
+import { Auth } from '@supabase/auth-ui-react';
+import { ThemeSupa } from '@supabase/auth-ui-shared';
+import { supabase } from '@/integrations/supabase/client';
+
+const Login = () => (
+  <Auth 
+    supabaseClient={supabase}
+    appearance={{ theme: ThemeSupa }}
+    providers={[]}
+  />
+);
+
+export default Login;
