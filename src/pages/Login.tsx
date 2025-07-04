@@ -144,7 +144,7 @@ const Login = () => {
                         password_input_placeholder: 'Ihr Passwort',
                         button_label: 'Anmelden',
                         loading_button_label: 'Anmeldung läuft...',
-                        link_text: 'Bereits registriert? Hier anmelden',
+                        link_text: 'Noch kein Konto? Registrieren',
                         social_provider_text: 'Oder mit einem sozialen Konto anmelden'
                       },
                       sign_up: {
@@ -161,7 +161,7 @@ const Login = () => {
                         email_input_placeholder: 'Ihre E-Mail-Adresse',
                         button_label: 'Passwort zurücksetzen',
                         loading_button_label: 'Sende E-Mail...',
-                        link_text: 'Passwort vergessen?'
+                        link_text: 'Zurück zum Login'
                       },
                       update_password: {
                         password_label: 'Neues Passwort',
