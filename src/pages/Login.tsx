@@ -2,7 +2,7 @@ import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -17,15 +17,16 @@ const Login = () => {
     setSelectedRole(role);
   };
 
-  const handleAuthStateChange = async (event: string, session: any) => {
-    if (event === 'SIGNED_IN' && selectedRole) {
-      await supabase.auth.updateUser({ data: { role: selectedRole } });
-      navigate(`/${selectedRole}portal`);
-      toast.success('Anmeldung erfolgreich!');
-    }
-  };
-
-  supabase.auth.onAuthStateChange(handleAuthStateChange);
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && selectedRole) {
+        await supabase.auth.updateUser({ data: { role: selectedRole } });
+        navigate(`/${selectedRole}portal`);
+        toast.success('Anmeldung erfolgreich!');
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [navigate, selectedRole]);
 
   const getRoleColor = (role: string) => {
     return role === 'admin' ? 'bg-red-500/10 border-red-500' :
@@ -143,11 +144,77 @@ const Login = () => {
                         password_input_placeholder: 'Ihr Passwort',
                         button_label: 'Anmelden',
                         loading_button_label: 'Anmeldung läuft...',
+                        link_text: 'Bereits registriert? Hier anmelden',
+                        social_provider_text: 'Oder mit einem sozialen Konto anmelden'
+                      },
+                      sign_up: {
+                        email_label: 'E-Mail-Adresse',
+                        password_label: 'Passwort',
+                        email_input_placeholder: 'Ihre E-Mail-Adresse',
+                        password_input_placeholder: 'Ihr Passwort',
+                        button_label: 'Registrieren',
+                        loading_button_label: 'Registrierung läuft...',
                         link_text: 'Bereits registriert? Hier anmelden'
                       },
                       forgotten_password: {
-                        link_text: 'Passwort vergessen?',
-                        button_label: 'Passwort zurücksetzen'
+                        email_label: 'E-Mail-Adresse',
+                        email_input_placeholder: 'Ihre E-Mail-Adresse',
+                        button_label: 'Passwort zurücksetzen',
+                        loading_button_label: 'Sende E-Mail...',
+                        link_text: 'Passwort vergessen?'
+                      },
+                      update_password: {
+                        password_label: 'Neues Passwort',
+                        password_input_placeholder: 'Neues Passwort eingeben',
+                        button_label: 'Passwort aktualisieren',
+                        loading_button_label: 'Aktualisiere Passwort...'
+                      },
+                      magic_link: {
+                        email_input_label: 'E-Mail-Adresse',
+                        email_input_placeholder: 'Ihre E-Mail-Adresse',
+                        button_label: 'Link senden',
+                        loading_button_label: 'Sende Link...',
+                        link_text: 'Oder mit Passwort anmelden'
+                      },
+                      email_otp: {
+                        email_input_label: 'E-Mail-Adresse',
+                        email_input_placeholder: 'Ihre E-Mail-Adresse',
+                        button_label: 'Code senden',
+                        loading_button_label: 'Sende Code...',
+                        link_text: 'Oder mit Passwort anmelden',
+                        user_input_label: 'Code eingeben',
+                        user_input_placeholder: 'Geben Sie den Code ein',
+                        error_invalid_code: 'Ungültiger Code',
+                        error_invalid_email_address: 'Ungültige E-Mail-Adresse'
+                      },
+                      phone_otp: {
+                        phone_input_label: 'Telefonnummer',
+                        phone_input_placeholder: 'Ihre Telefonnummer',
+                        button_label: 'Code senden',
+                        loading_button_label: 'Sende Code...',
+                        link_text: 'Oder mit Passwort anmelden',
+                        user_input_label: 'Code eingeben',
+                        user_input_placeholder: 'Geben Sie den Code ein',
+                        error_invalid_code: 'Ungültiger Code',
+                        error_invalid_phone_number: 'Ungültige Telefonnummer'
+                      },
+                      user_update: {
+                        button_label: 'Aktualisieren',
+                        loading_button_label: 'Aktualisiere...'
+                      },
+                      errors: {
+                        email_required: 'E-Mail ist erforderlich',
+                        password_required: 'Passwort ist erforderlich',
+                        invalid_email_address: 'Ungültige E-Mail-Adresse',
+                        invalid_password: 'Ungültiges Passwort',
+                        user_not_found: 'Benutzer nicht gefunden',
+                        invalid_login_credentials: 'Ungültige Anmeldedaten',
+                        invalid_otp: 'Ungültiger Code',
+                        invalid_verification_link: 'Ungültiger Verifizierungslink',
+                        expired_verification_link: 'Verifizierungslink abgelaufen',
+                        verification_failed: 'Verifizierung fehlgeschlagen',
+                        password_mismatch: 'Passwörter stimmen nicht überein',
+                        password_strength: 'Passwort ist zu schwach'
                       }
                     }
                   }
