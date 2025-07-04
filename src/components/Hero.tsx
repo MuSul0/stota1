@@ -1,13 +1,13 @@
 import { motion } from 'framer-motion';
-import type { Variants } from 'framer-motion';
 
-const floatingVariants: Variants = {
-  float: {
-    y: [0, -15, 0],
-    transition: {
-      duration: 4,
-      repeat: Infinity,
-      ease: "easeInOut"
-    }
-  }
-};
+export default function Hero() {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="hero-section"
+    >
+      {/* Hero content goes here */}
+    </motion.div>
+  );
+}
