@@ -50,6 +50,32 @@ const Login = () => {
            <User className="w-6 h-6" />;
   };
 
+  const getRoleTitle = (role: string) => {
+    switch (role) {
+      case 'kunde':
+        return 'Kunden-Login';
+      case 'mitarbeiter':
+        return 'Mitarbeiter-Login';
+      case 'admin':
+        return 'Admin-Login';
+      default:
+        return '';
+    }
+  };
+
+  const getRoleDescription = (role: string) => {
+    switch (role) {
+      case 'kunde':
+        return 'Zugang für unsere Kunden';
+      case 'mitarbeiter':
+        return 'Zugang für unser Team';
+      case 'admin':
+        return 'Administrativer Zugang';
+      default:
+        return '';
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
       <div className="w-full max-w-lg">
@@ -74,8 +100,8 @@ const Login = () => {
                   {getRoleIcon('kunde')}
                 </div>
                 <div>
-                  <h2 className="font-semibold text-lg">Kunden-Login</h2>
-                  <p className="text-sm text-gray-600">Zugang für unsere Kunden</p>
+                  <h2 className="font-semibold text-lg">{getRoleTitle('kunde')}</h2>
+                  <p className="text-sm text-gray-600">{getRoleDescription('kunde')}</p>
                 </div>
               </div>
             </Card>
@@ -92,8 +118,8 @@ const Login = () => {
                   {getRoleIcon('mitarbeiter')}
                 </div>
                 <div>
-                  <h2 className="font-semibold text-lg">Mitarbeiter-Login</h2>
-                  <p className="text-sm text-gray-600">Zugang für unser Team</p>
+                  <h2 className="font-semibold text-lg">{getRoleTitle('mitarbeiter')}</h2>
+                  <p className="text-sm text-gray-600">{getRoleDescription('mitarbeiter')}</p>
                 </div>
               </div>
             </Card>
@@ -110,8 +136,8 @@ const Login = () => {
                   {getRoleIcon('admin')}
                 </div>
                 <div>
-                  <h2 className="font-semibold text-lg">Admin-Login</h2>
-                  <p className="text-sm text-gray-600">Administrativer Zugang</p>
+                  <h2 className="font-semibold text-lg">{getRoleTitle('admin')}</h2>
+                  <p className="text-sm text-gray-600">{getRoleDescription('admin')}</p>
                 </div>
               </div>
             </Card>
@@ -131,11 +157,10 @@ const Login = () => {
             <Card className="p-6">
               <div className="flex items-center space-x-3 mb-6">
                 <div className={`p-2 rounded-full ${getRoleColor(selectedRole)}`}>
-                  {getRoleIcon(selectedRole)}
+                  {getRoleIcon(selectedRole!)}
                 </div>
                 <h2 className="font-semibold text-xl capitalize">
-                  {selectedRole === 'kunde' ? 'Kunden-Login' : 
-                   selectedRole === 'mitarbeiter' ? 'Mitarbeiter-Login' : 'Admin-Login'}
+                  {getRoleTitle(selectedRole!)}
                 </h2>
               </div>
 
