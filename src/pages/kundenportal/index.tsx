@@ -36,7 +36,7 @@ export default function Kundenportal() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       <div className="container mx-auto px-6 py-12">
-        {/* Welcome Section */}
+        {/* Begrüßung */}
         <div className="flex flex-col md:flex-row items-center md:items-start md:justify-between mb-12 gap-6">
           <div className="flex items-center space-x-4">
             <UserCircle2 className="w-20 h-20 text-blue-600" />
@@ -54,7 +54,7 @@ export default function Kundenportal() {
           </Button>
         </div>
 
-        {/* Dashboard Cards */}
+        {/* Dashboard Karten */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <Card className="shadow-lg rounded-xl hover:shadow-2xl transition-shadow duration-300 bg-white">
             <CardHeader className="flex items-center space-x-3 pb-4 border-b border-gray-200">
