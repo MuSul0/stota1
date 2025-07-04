@@ -18,7 +18,7 @@ export default function Einstellungen() {
 
   useEffect(() => {
     if (!loading) {
-      if (!session || user?.role !== 'kunde') {
+      if (!session || user?.user_metadata?.role !== 'kunde') {
         navigate('/login');
       } else {
         // Beispiel: Initialwerte setzen, hier statisch
@@ -36,7 +36,7 @@ export default function Einstellungen() {
     );
   }
 
-  if (!session || user?.role !== 'kunde') {
+  if (!session || user?.user_metadata?.role !== 'kunde') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <p className="text-red-600 text-lg">Zugriff verweigert. Bitte als Kunde anmelden.</p>
