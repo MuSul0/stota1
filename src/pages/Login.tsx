@@ -21,18 +21,56 @@ const Login = () => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && selectedRole && session) {
+      if (event === 'SIGNED_IN' && session) {
         setLoading(true);
-        const { error } = await supabase.auth.updateUser({
-          data: { role: selectedRole }
-        });
-        setLoading(false);
-        if (error) {
-          toast.error('Fehler beim Setzen der Rolle');
+
+        // If role is selected during login, update user metadata
+        if (selectedRole) {
+          const { error } = await supabase.auth.updateUser({
+            data: { role: selectedRole }
+          });
+          if (error) {
+            toast.error('Fehler beim Setzen der Rolle');
+            setLoading(false);
+            return;
+          }
+        }
+
+        // Fetch fresh user data to get role from metadata
+        const { data: userData, error: userError } = await supabase.auth.getUser();
+        if (userError || !userData.user) {
+          toast.error('Fehler beim Abrufen der Benutzerdaten');
+          setLoading(false);
           return;
         }
+
+        const role = userData.user.user_metadata?.role;
+
+        if (!role) {
+          toast.error('Keine Rolle gefunden. Bitte erneut anmelden.');
+          setLoading(false);
+          return;
+        }
+
         toast.success('Anmeldung erfolgreich!');
-        navigate(`/${selectedRole}portal`);
+
+        // Redirect based on role
+        switch (role) {
+          case 'kunde':
+            navigate('/kundenportal');
+            break;
+          case 'mitarbeiter':
+            navigate('/mitarbeiterportal');
+            break;
+          case 'admin':
+            navigate('/adminportal');
+            break;
+          default:
+            navigate('/');
+            break;
+        }
+
+        setLoading(false);
       }
     });
     return () => subscription.unsubscribe();
