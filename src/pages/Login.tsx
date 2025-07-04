@@ -13,6 +13,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [selectedRole, setSelectedRole] = useState<'kunde' | 'mitarbeiter' | 'admin' | null>(null);
   const [loading, setLoading] = useState(false);
+  const [authView, setAuthView] = useState<'sign_in' | 'sign_up'>('sign_in');
 
   const handleLogin = (role: 'kunde' | 'mitarbeiter' | 'admin') => {
     setSelectedRole(role);
@@ -140,6 +141,8 @@ const Login = () => {
 
               <Auth
                 supabaseClient={supabase}
+                view={authView}
+                onViewChange={(view) => setAuthView(view)}
                 appearance={{ 
                   theme: ThemeSupa,
                   variables: {
