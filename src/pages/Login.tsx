@@ -26,6 +26,7 @@ const Login = () => {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [loadingRegister, setLoadingRegister] = useState(false);
+  const [registerDisabled, setRegisterDisabled] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -84,6 +85,12 @@ const Login = () => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (registerDisabled) {
+      toast.error('Bitte warten Sie einen Moment, bevor Sie es erneut versuchen.');
+      return;
+    }
+
     if (!firstName.trim() || !lastName.trim() || !emailReg.trim() || !passwordReg) {
       toast.error('Bitte alle Felder ausfüllen');
       return;
@@ -96,7 +103,10 @@ const Login = () => {
       toast.error('Bitte stimme den Nutzungsbedingungen und der Datenschutzerklärung zu');
       return;
     }
+
     setLoadingRegister(true);
+    setRegisterDisabled(true);
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email: emailReg,
@@ -109,11 +119,18 @@ const Login = () => {
           }
         }
       });
+
       if (error) {
-        toast.error('Fehler bei der Registrierung: ' + error.message);
+        if (error.message.includes('For security purposes')) {
+          toast.error('Zu viele Anfragen. Bitte warten Sie eine Minute und versuchen Sie es erneut.');
+        } else {
+          toast.error('Fehler bei der Registrierung: ' + error.message);
+        }
         setLoadingRegister(false);
+        setRegisterDisabled(false);
         return;
       }
+
       if (data.user) {
         const { error: profileError } = await supabase
           .from('profiles')
@@ -128,6 +145,7 @@ const Login = () => {
         if (profileError) {
           toast.error('Fehler beim Anlegen des Profils');
           setLoadingRegister(false);
+          setRegisterDisabled(false);
           return;
         }
         await sendWelcomeEmail(emailReg, 'kunde');
@@ -146,6 +164,8 @@ const Login = () => {
       console.error(error);
     } finally {
       setLoadingRegister(false);
+      // Nach 60 Sekunden wieder aktivieren
+      setTimeout(() => setRegisterDisabled(false), 60000);
     }
   };
 
@@ -300,7 +320,7 @@ const Login = () => {
                     zu.
                   </label>
                 </div>
-                <Button type="submit" className="w-full" disabled={loadingRegister}>
+                <Button type="submit" className="w-full" disabled={loadingRegister || registerDisabled}>
                   {loadingRegister ? (
                     <div className="flex items-center justify-center gap-2">
                       <Loader2 className="animate-spin h-5 w-5" />
@@ -310,6 +330,11 @@ const Login = () => {
                     'Registrieren'
                   )}
                 </Button>
+                {registerDisabled && (
+                  <p className="text-sm text-red-600 mt-2 text-center">
+                    Bitte warten Sie eine Minute, bevor Sie es erneut versuchen.
+                  </p>
+                )}
               </form>
               <div className="mt-6 text-center text-sm text-gray-600">
                 Bereits ein Konto?{' '}
