@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -39,6 +41,7 @@ import Reports from '@/pages/adminportal/reports';
 import UserActivity from '@/pages/adminportal/user-activity';
 import Appointments from '@/pages/adminportal/appointments';
 import EmployeeRegistration from '@/pages/adminportal/employee-registration';
+import Visitors from '@/pages/adminportal/visitors';
 
 const queryClient = new QueryClient();
 
@@ -91,6 +94,7 @@ function App() {
                 <Route path="media-manager" element={<MediaManager />} />
                 <Route path="notifications" element={<Notifications />} />
                 <Route path="reports" element={<Reports />} />
+                <Route path="visitors" element={<Visitors />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />
