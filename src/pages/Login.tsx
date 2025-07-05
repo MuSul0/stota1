@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
+import PasswordReset from '@/components/PasswordReset';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -27,6 +28,9 @@ const Login = () => {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [loadingRegister, setLoadingRegister] = useState(false);
   const [registerDisabled, setRegisterDisabled] = useState(false);
+
+  // Passwort zurücksetzen Zustand
+  const [showPasswordReset, setShowPasswordReset] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -173,6 +177,14 @@ const Login = () => {
     }
   };
 
+  if (showPasswordReset) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-100 p-6">
+        <PasswordReset onClose={() => setShowPasswordReset(false)} />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-100 p-6">
       <div className="w-full max-w-md">
@@ -222,6 +234,14 @@ const Login = () => {
                   )}
                 </Button>
               </form>
+              <div className="mt-4 text-center">
+                <button
+                  className="text-sm text-blue-600 hover:underline"
+                  onClick={() => setShowPasswordReset(true)}
+                >
+                  Passwort vergessen?
+                </button>
+              </div>
               <div className="mt-6 text-center text-sm text-gray-600">
                 Noch kein Konto?{' '}
                 <button
