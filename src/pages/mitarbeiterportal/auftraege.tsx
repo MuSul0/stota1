@@ -1,5 +1,5 @@
 import { useSession } from '@/components/SessionProvider';
-import { redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,6 +20,7 @@ interface Auftrag {
 
 export default function Auftraege() {
   const { session, user, loading } = useSession();
+  const navigate = useNavigate();
   const [auftraege, setAuftraege] = useState<Auftrag[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const subscriptionRef = useRef<any>(null);
@@ -27,7 +28,7 @@ export default function Auftraege() {
   useEffect(() => {
     if (!loading) {
       if (!session || user?.user_metadata?.role !== 'mitarbeiter') {
-        redirect('/login');
+        navigate('/login');
       } else {
         fetchAuftraege();
         setupRealtimeSubscription();
@@ -39,7 +40,7 @@ export default function Auftraege() {
         subscriptionRef.current = null;
       }
     };
-  }, [session, user, loading]);
+  }, [session, user, loading, navigate]);
 
   const fetchAuftraege = async () => {
     if (!user) return;
@@ -87,11 +88,7 @@ export default function Auftraege() {
   }
 
   if (!session || user?.user_metadata?.role !== 'mitarbeiter') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <p className="text-red-600 text-lg">Zugriff verweigert. Bitte als Mitarbeiter anmelden.</p>
-      </div>
-    );
+    return null;
   }
 
   return (

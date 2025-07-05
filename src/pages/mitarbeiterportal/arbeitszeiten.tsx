@@ -1,5 +1,5 @@
 import { useSession } from '@/components/SessionProvider';
-import { redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -22,6 +22,7 @@ interface WorkTime {
 
 export default function Arbeitszeiten() {
   const { session, user, loading } = useSession();
+  const navigate = useNavigate();
   const [workTimes, setWorkTimes] = useState<WorkTime[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [startTime, setStartTime] = useState('');
@@ -31,7 +32,7 @@ export default function Arbeitszeiten() {
   useEffect(() => {
     if (!loading) {
       if (!session || user?.user_metadata?.role !== 'mitarbeiter') {
-        redirect('/login');
+        navigate('/login');
       } else {
         fetchWorkTimes();
         setupRealtimeSubscription();
@@ -43,7 +44,7 @@ export default function Arbeitszeiten() {
         subscriptionRef.current = null;
       }
     };
-  }, [session, user, loading]);
+  }, [session, user, loading, navigate]);
 
   const fetchWorkTimes = async () => {
     if (!user) return;
@@ -116,11 +117,8 @@ export default function Arbeitszeiten() {
   }
 
   if (!session || user?.user_metadata?.role !== 'mitarbeiter') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <p className="text-red-600 text-lg">Zugriff verweigert. Bitte als Mitarbeiter anmelden.</p>
-      </div>
-    );
+    // Während Navigation läuft, nichts rendern
+    return null;
   }
 
   return (

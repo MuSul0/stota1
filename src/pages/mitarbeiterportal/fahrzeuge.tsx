@@ -1,5 +1,5 @@
 import { useSession } from '@/components/SessionProvider';
-import { redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,6 +21,7 @@ interface Fahrzeug {
 
 export default function Fahrzeuge() {
   const { session, user, loading } = useSession();
+  const navigate = useNavigate();
   const [fahrzeuge, setFahrzeuge] = useState<Fahrzeug[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const subscriptionRef = useRef<any>(null);
@@ -28,7 +29,7 @@ export default function Fahrzeuge() {
   useEffect(() => {
     if (!loading) {
       if (!session || user?.user_metadata?.role !== 'mitarbeiter') {
-        redirect('/login');
+        navigate('/login');
       } else {
         fetchFahrzeuge();
         setupRealtimeSubscription();
@@ -40,7 +41,7 @@ export default function Fahrzeuge() {
         subscriptionRef.current = null;
       }
     };
-  }, [session, user, loading]);
+  }, [session, user, loading, navigate]);
 
   const fetchFahrzeuge = async () => {
     setLoadingData(true);
@@ -113,11 +114,7 @@ export default function Fahrzeuge() {
   }
 
   if (!session || user?.user_metadata?.role !== 'mitarbeiter') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <p className="text-red-600 text-lg">Zugriff verweigert. Bitte als Mitarbeiter anmelden.</p>
-      </div>
-    );
+    return null;
   }
 
   return (
