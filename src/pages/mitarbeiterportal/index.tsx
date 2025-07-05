@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Clock, CalendarCheck, Truck, Users } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function Mitarbeiterportal() {
   const { session, user, loading } = useSession();
@@ -22,66 +23,81 @@ export default function Mitarbeiterportal() {
     redirect('/login');
   }
 
+  const cards = [
+    {
+      title: 'Arbeitszeiten',
+      description: 'Erfassen Sie Ihre Arbeitszeiten',
+      icon: Clock,
+      buttonText: 'Erfassen',
+      buttonAction: () => navigate('/mitarbeiterportal/arbeitszeiten'),
+      gradientFrom: 'from-blue-600',
+      gradientTo: 'to-purple-600',
+    },
+    {
+      title: 'Aufträge',
+      description: 'Ihre zugewiesenen Aufträge',
+      icon: CalendarCheck,
+      buttonText: 'Anzeigen',
+      buttonAction: () => navigate('/mitarbeiterportal/auftraege'),
+      gradientFrom: 'from-green-600',
+      gradientTo: 'to-emerald-600',
+    },
+    {
+      title: 'Fahrzeuge',
+      description: 'Verfügbare Fahrzeuge',
+      icon: Truck,
+      buttonText: 'Reservieren',
+      buttonAction: () => navigate('/mitarbeiterportal/fahrzeuge'),
+      gradientFrom: 'from-purple-600',
+      gradientTo: 'to-indigo-600',
+    },
+    {
+      title: 'Team',
+      description: 'Teamübersicht',
+      icon: Users,
+      buttonText: 'Anzeigen',
+      buttonAction: () => navigate('/mitarbeiterportal/team'),
+      gradientFrom: 'from-orange-500',
+      gradientTo: 'to-yellow-500',
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
-      <main className="flex-grow container mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold mb-8">Mitarbeiterportal</h1>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Clock className="h-6 w-6 text-blue-500" />
-                Arbeitszeiten
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 mb-4">Erfassen Sie Ihre Arbeitszeiten</p>
-              <Button onClick={() => navigate('/mitarbeiterportal/arbeitszeiten')}>Erfassen</Button>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CalendarCheck className="h-6 w-6 text-green-500" />
-                Aufträge
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 mb-4">Ihre zugewiesenen Aufträge</p>
-              <Button onClick={() => navigate('/mitarbeiterportal/auftraege')}>Anzeigen</Button>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Truck className="h-6 w-6 text-purple-500" />
-                Fahrzeuge
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 mb-4">Verfügbare Fahrzeuge</p>
-              <Button onClick={() => navigate('/mitarbeiterportal/fahrzeuge')}>Reservieren</Button>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="h-6 w-6 text-orange-500" />
-                Team
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600 mb-4">Teamübersicht</p>
-              <Button onClick={() => navigate('/mitarbeiterportal/team')}>Anzeigen</Button>
-            </CardContent>
-          </Card>
+      <motion.main 
+        className="flex-grow container mx-auto px-4 py-12"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <h1 className="text-4xl font-extrabold mb-10 text-gray-900 text-center">Mitarbeiterportal</h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {cards.map(({ title, description, icon: Icon, buttonText, buttonAction, gradientFrom, gradientTo }) => (
+            <motion.div 
+              key={title}
+              whileHover={{ scale: 1.05, boxShadow: '0 10px 20px rgba(0,0,0,0.12)' }}
+              className="rounded-xl bg-white shadow-md hover:shadow-xl transition-shadow duration-300"
+            >
+              <Card className="h-full flex flex-col justify-between border-0 shadow-none">
+                <CardContent className="flex flex-col items-center text-center p-8">
+                  <div className={`w-16 h-16 mb-6 rounded-full bg-gradient-to-br ${gradientFrom} ${gradientTo} flex items-center justify-center text-white shadow-lg`}>
+                    <Icon className="w-8 h-8" />
+                  </div>
+                  <CardTitle className="text-2xl font-semibold mb-2 text-gray-900">{title}</CardTitle>
+                  <p className="text-gray-600 mb-6">{description}</p>
+                  <Button 
+                    className={`w-full bg-gradient-to-r ${gradientFrom} ${gradientTo} hover:from-opacity-90 hover:to-opacity-90 text-white`}
+                    onClick={buttonAction}
+                  >
+                    {buttonText}
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
         </div>
-      </main>
+      </motion.main>
       <Footer />
     </div>
   );
