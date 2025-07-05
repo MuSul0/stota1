@@ -4,7 +4,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { BarChart2, Users, Settings, FileText, Layers, Bell, FileDownload } from 'lucide-react';
+import { BarChart2, Users, Settings, FileText, Layers, Bell, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function AdminDashboard() {
@@ -98,7 +98,7 @@ export default function AdminDashboard() {
     {
       title: 'Berichte',
       description: 'Daten exportieren und auswerten',
-      icon: FileDownload,
+      icon: Download,
       buttonText: 'Berichte exportieren',
       buttonAction: () => navigate('/adminportal/reports'),
       gradientFrom: 'from-teal-600',
