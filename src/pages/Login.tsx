@@ -1,43 +1,42 @@
-import { Auth } from '@supabase/auth-ui-react';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Loader2 } from 'lucide-react';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [authView, setAuthView] = useState<'sign_in' | 'sign_up'>('sign_in');
 
-  // Registrierungsfelder für Kunden
+  // Login-Formularzustand
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loadingLogin, setLoadingLogin] = useState(false);
+
+  // Registrierung-Formularzustand
+  const [isRegistering, setIsRegistering] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [emailReg, setEmailReg] = useState('');
   const [passwordReg, setPasswordReg] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [loadingRegister, setLoadingRegister] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        setLoading(true);
-
-        // Rolle aus user_metadata auslesen
         const role = session.user.user_metadata?.role;
-
         if (!role) {
           toast.error('Keine Rolle gefunden. Bitte wende dich an den Administrator.');
-          setLoading(false);
           await supabase.auth.signOut();
           return;
         }
-
         toast.success('Anmeldung erfolgreich!');
-
         switch (role) {
           case 'kunde':
             navigate('/kundenportal');
@@ -52,14 +51,21 @@ const Login = () => {
             navigate('/');
             break;
         }
-
-        setLoading(false);
       }
     });
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  // Registrierung nur für Kunden
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoadingLogin(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      toast.error('Fehler bei der Anmeldung: ' + error.message);
+    }
+    setLoadingLogin(false);
+  };
+
   const sendWelcomeEmail = async (email: string, role: string) => {
     try {
       const res = await fetch('/.netlify/functions/send-welcome-email', {
@@ -76,7 +82,8 @@ const Login = () => {
     }
   };
 
-  const handleRegister = async () => {
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!firstName.trim() || !lastName.trim() || !emailReg.trim() || !passwordReg) {
       toast.error('Bitte alle Felder ausfüllen');
       return;
@@ -89,8 +96,7 @@ const Login = () => {
       toast.error('Bitte stimme den Nutzungsbedingungen und der Datenschutzerklärung zu');
       return;
     }
-
-    setLoading(true);
+    setLoadingRegister(true);
     try {
       const { data, error } = await supabase.auth.signUp({
         email: emailReg,
@@ -103,13 +109,11 @@ const Login = () => {
           }
         }
       });
-
       if (error) {
         toast.error('Fehler bei der Registrierung: ' + error.message);
-        setLoading(false);
+        setLoadingRegister(false);
         return;
       }
-
       if (data.user) {
         const { error: profileError } = await supabase
           .from('profiles')
@@ -121,18 +125,14 @@ const Login = () => {
             last_name: lastName.trim(),
             created_at: new Date().toISOString()
           }, { onConflict: 'id' });
-
         if (profileError) {
           toast.error('Fehler beim Anlegen des Profils');
-          setLoading(false);
+          setLoadingRegister(false);
           return;
         }
-
         await sendWelcomeEmail(emailReg, 'kunde');
-
         toast.success('Registrierung erfolgreich! Bitte bestätige deine E-Mail.');
-        setAuthView('sign_in');
-
+        setIsRegistering(false);
         // Felder zurücksetzen
         setFirstName('');
         setLastName('');
@@ -145,195 +145,183 @@ const Login = () => {
       toast.error('Unbekannter Fehler bei der Registrierung');
       console.error(error);
     } finally {
-      setLoading(false);
+      setLoadingRegister(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
-      <div className="w-full max-w-lg">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-100 p-6">
+      <div className="w-full max-w-md">
         <div className="flex justify-center mb-8">
-          <Logo className="w-40 h-40" />
+          <Logo className="w-32 h-32" />
         </div>
 
-        {authView === 'sign_in' ? (
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-6 text-center">Anmelden</h2>
-            <Auth
-              supabaseClient={supabase}
-              view="sign_in"
-              onViewChange={(view) => setAuthView(view)}
-              appearance={{
-                theme: ThemeSupa,
-                variables: {
-                  default: {
-                    colors: {
-                      brand: '#3b82f6',
-                      brandAccent: '#1d4ed8'
-                    },
-                    fonts: {
-                      bodyFontFamily: 'Inter, sans-serif',
-                      buttonFontFamily: 'Inter, sans-serif',
-                      inputFontFamily: 'Inter, sans-serif',
-                      labelFontFamily: 'Inter, sans-serif'
-                    }
-                  }
-                },
-                localization: {
-                  variables: {
-                    sign_in: {
-                      email_label: 'E-Mail-Adresse',
-                      password_label: 'Passwort',
-                      email_input_placeholder: 'Ihre E-Mail-Adresse',
-                      password_input_placeholder: 'Ihr Passwort',
-                      button_label: 'Anmelden',
-                      loading_button_label: 'Anmeldung läuft...',
-                      link_text: '' // Link entfernen
-                    },
-                    forgotten_password: {
-                      email_label: 'E-Mail-Adresse',
-                      email_input_placeholder: 'Ihre E-Mail-Adresse',
-                      button_label: 'Passwort zurücksetzen',
-                      loading_button_label: 'Sende E-Mail...',
-                      link_text: 'Zurück zum Login'
-                    }
-                  }
-                }
-              }}
-              providers={[]}
-              theme="light"
-              redirectTo="/"
-            />
-            <div className="mt-4 text-center">
-              <button
-                className="text-blue-600 hover:underline text-sm"
-                onClick={() => setAuthView('sign_up')}
-                disabled={loading}
-              >
-                Noch kein Konto? Jetzt registrieren
-              </button>
-            </div>
-          </Card>
-        ) : (
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4 text-center">Registrierung</h2>
-            <form
-              onSubmit={e => {
-                e.preventDefault();
-                handleRegister();
-              }}
-              className="space-y-4"
-            >
-              <div className="grid grid-cols-2 gap-4">
+        {!isRegistering ? (
+          <Card className="p-6 shadow-lg rounded-lg bg-white">
+            <CardHeader>
+              <CardTitle className="text-2xl text-center mb-4">Anmelden</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleLogin} className="space-y-6">
                 <div>
-                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
-                    Vorname *
-                  </label>
-                  <input
-                    id="firstName"
-                    type="text"
-                    value={firstName}
-                    onChange={e => setFirstName(e.target.value)}
+                  <Label htmlFor="email">E-Mail-Adresse</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
                     required
-                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                    placeholder="name@beispiel.de"
+                    autoComplete="email"
                   />
                 </div>
                 <div>
-                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
-                    Nachname *
-                  </label>
-                  <input
-                    id="lastName"
-                    type="text"
-                    value={lastName}
-                    onChange={e => setLastName(e.target.value)}
+                  <Label htmlFor="password">Passwort</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
                     required
-                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                    placeholder="••••••••"
+                    autoComplete="current-password"
                   />
                 </div>
-              </div>
-
-              <div>
-                <label htmlFor="emailReg" className="block text-sm font-medium text-gray-700">
-                  E-Mail *
-                </label>
-                <input
-                  id="emailReg"
-                  type="email"
-                  value={emailReg}
-                  onChange={e => setEmailReg(e.target.value)}
-                  required
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="passwordReg" className="block text-sm font-medium text-gray-700">
-                  Passwort *
-                </label>
-                <input
-                  id="passwordReg"
-                  type="password"
-                  value={passwordReg}
-                  onChange={e => setPasswordReg(e.target.value)}
-                  required
-                  minLength={6}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="passwordConfirm" className="block text-sm font-medium text-gray-700">
-                  Passwort bestätigen *
-                </label>
-                <input
-                  id="passwordConfirm"
-                  type="password"
-                  value={passwordConfirm}
-                  onChange={e => setPasswordConfirm(e.target.value)}
-                  required
-                  minLength={6}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                />
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  id="termsAccepted"
-                  type="checkbox"
-                  checked={termsAccepted}
-                  onChange={e => setTermsAccepted(e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  required
-                />
-                <label htmlFor="termsAccepted" className="ml-2 block text-sm text-gray-700">
-                  Ich stimme den{' '}
-                  <a href="/nutzungsbedingungen" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-                    Nutzungsbedingungen
-                  </a>{' '}
-                  und der{' '}
-                  <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-                    Datenschutzerklärung
-                  </a>{' '}
-                  zu.
-                </label>
-              </div>
-
-              <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
-                {loading ? 'Registriere...' : 'Registrieren'}
-              </Button>
-
-              <div className="mt-4 text-center">
+                <Button type="submit" className="w-full" disabled={loadingLogin}>
+                  {loadingLogin ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <Loader2 className="animate-spin h-5 w-5" />
+                      Anmelden...
+                    </div>
+                  ) : (
+                    'Anmelden'
+                  )}
+                </Button>
+              </form>
+              <div className="mt-6 text-center text-sm text-gray-600">
+                Noch kein Konto?{' '}
                 <button
-                  type="button"
-                  className="text-gray-600 hover:underline text-sm"
-                  onClick={() => setAuthView('sign_in')}
-                  disabled={loading}
+                  className="text-blue-600 hover:underline font-semibold"
+                  onClick={() => setIsRegistering(true)}
+                  disabled={loadingLogin}
                 >
-                  Bereits ein Konto? Jetzt anmelden
+                  Jetzt registrieren
                 </button>
               </div>
-            </form>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="p-6 shadow-lg rounded-lg bg-white">
+            <CardHeader>
+              <CardTitle className="text-2xl text-center mb-4">Registrierung</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleRegister} className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="firstName">Vorname</Label>
+                    <Input
+                      id="firstName"
+                      type="text"
+                      value={firstName}
+                      onChange={e => setFirstName(e.target.value)}
+                      required
+                      placeholder="Max"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="lastName">Nachname</Label>
+                    <Input
+                      id="lastName"
+                      type="text"
+                      value={lastName}
+                      onChange={e => setLastName(e.target.value)}
+                      required
+                      placeholder="Mustermann"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="emailReg">E-Mail-Adresse</Label>
+                  <Input
+                    id="emailReg"
+                    type="email"
+                    value={emailReg}
+                    onChange={e => setEmailReg(e.target.value)}
+                    required
+                    placeholder="max@beispiel.de"
+                    autoComplete="email"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="passwordReg">Passwort</Label>
+                  <Input
+                    id="passwordReg"
+                    type="password"
+                    value={passwordReg}
+                    onChange={e => setPasswordReg(e.target.value)}
+                    required
+                    minLength={6}
+                    placeholder="Mindestens 6 Zeichen"
+                    autoComplete="new-password"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="passwordConfirm">Passwort bestätigen</Label>
+                  <Input
+                    id="passwordConfirm"
+                    type="password"
+                    value={passwordConfirm}
+                    onChange={e => setPasswordConfirm(e.target.value)}
+                    required
+                    minLength={6}
+                    placeholder="Passwort wiederholen"
+                    autoComplete="new-password"
+                  />
+                </div>
+                <div className="flex items-center">
+                  <input
+                    id="termsAccepted"
+                    type="checkbox"
+                    checked={termsAccepted}
+                    onChange={e => setTermsAccepted(e.target.checked)}
+                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    required
+                  />
+                  <label htmlFor="termsAccepted" className="ml-2 text-sm text-gray-700">
+                    Ich stimme den{' '}
+                    <a href="/nutzungsbedingungen" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                      Nutzungsbedingungen
+                    </a>{' '}
+                    und der{' '}
+                    <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                      Datenschutzerklärung
+                    </a>{' '}
+                    zu.
+                  </label>
+                </div>
+                <Button type="submit" className="w-full" disabled={loadingRegister}>
+                  {loadingRegister ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <Loader2 className="animate-spin h-5 w-5" />
+                      Registrieren...
+                    </div>
+                  ) : (
+                    'Registrieren'
+                  )}
+                </Button>
+              </form>
+              <div className="mt-6 text-center text-sm text-gray-600">
+                Bereits ein Konto?{' '}
+                <button
+                  className="text-blue-600 hover:underline font-semibold"
+                  onClick={() => setIsRegistering(false)}
+                  disabled={loadingRegister}
+                >
+                  Zurück zum Login
+                </button>
+              </div>
+            </CardContent>
           </Card>
         )}
       </div>
