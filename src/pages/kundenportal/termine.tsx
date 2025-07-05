@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSession } from '@/components/SessionProvider';
 import Header from '@/components/Header';
@@ -41,6 +41,9 @@ export default function Termine() {
   const [newTime, setNewTime] = useState('');
   const [newService, setNewService] = useState('');
 
+  // Ref für Supabase Subscription speichern
+  const subscriptionRef = useRef<any>(null);
+
   useEffect(() => {
     if (!loading) {
       if (!session || user?.user_metadata?.role !== 'kunde') {
@@ -52,7 +55,10 @@ export default function Termine() {
     }
     // Cleanup on unmount
     return () => {
-      supabase.removeAllSubscriptions();
+      if (subscriptionRef.current) {
+        supabase.removeChannel(subscriptionRef.current);
+        subscriptionRef.current = null;
+      }
     };
   }, [session, user, loading]);
 
@@ -77,17 +83,24 @@ export default function Termine() {
 
   const setupRealtimeSubscription = () => {
     if (!user) return;
-    supabase
+    // Falls schon eine Subscription besteht, entfernen
+    if (subscriptionRef.current) {
+      supabase.removeChannel(subscriptionRef.current);
+      subscriptionRef.current = null;
+    }
+
+    const channel = supabase
       .channel('public:appointments')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'appointments', filter: `user_id=eq.${user.id}` },
         (payload) => {
-          // Bei Insert, Update oder Delete neu laden
           fetchTermine();
         }
-      )
-      .subscribe();
+      );
+
+    channel.subscribe();
+    subscriptionRef.current = channel;
   };
 
   const handleAddTermin = async () => {
