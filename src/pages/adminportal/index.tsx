@@ -4,14 +4,13 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { BarChart2, Users, Settings, FileText } from 'lucide-react';
+import { BarChart2, Users, Settings, FileText, Layers, Bell, FileDownload } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function AdminDashboard() {
   const { session, user, loading } = useSession();
   const navigate = useNavigate();
 
-  // Redirect to login if not admin
   React.useEffect(() => {
     if (!loading) {
       if (!session || user?.user_metadata?.role !== 'admin') {
@@ -29,7 +28,7 @@ export default function AdminDashboard() {
   }
 
   if (!session || user?.user_metadata?.role !== 'admin') {
-    return null; // Während Navigation nichts rendern
+    return null;
   }
 
   const cards = [
@@ -68,6 +67,42 @@ export default function AdminDashboard() {
       buttonAction: () => navigate('/adminportal/settings'),
       gradientFrom: 'from-orange-500',
       gradientTo: 'to-yellow-500',
+    },
+    {
+      title: 'Services',
+      description: 'Leistungen verwalten',
+      icon: Layers,
+      buttonText: 'Services verwalten',
+      buttonAction: () => navigate('/adminportal/services'),
+      gradientFrom: 'from-pink-600',
+      gradientTo: 'to-red-600',
+    },
+    {
+      title: 'Medien',
+      description: 'Bilder und Videos verwalten',
+      icon: Bell,
+      buttonText: 'Medien verwalten',
+      buttonAction: () => navigate('/adminportal/media-manager'),
+      gradientFrom: 'from-yellow-600',
+      gradientTo: 'to-orange-600',
+    },
+    {
+      title: 'Benachrichtigungen',
+      description: 'Kundenanfragen und Nachrichten',
+      icon: Bell,
+      buttonText: 'Benachrichtigungen ansehen',
+      buttonAction: () => navigate('/adminportal/notifications'),
+      gradientFrom: 'from-cyan-600',
+      gradientTo: 'to-blue-600',
+    },
+    {
+      title: 'Berichte',
+      description: 'Daten exportieren und auswerten',
+      icon: FileDownload,
+      buttonText: 'Berichte exportieren',
+      buttonAction: () => navigate('/adminportal/reports'),
+      gradientFrom: 'from-teal-600',
+      gradientTo: 'to-green-600',
     },
   ];
 
