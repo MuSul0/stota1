@@ -204,7 +204,7 @@ const Login = () => {
 
               <Auth
                 supabaseClient={supabase}
-                view={authView}
+                view="sign_in"
                 onViewChange={(view) => setAuthView(view)}
                 appearance={{ 
                   theme: ThemeSupa,
@@ -235,18 +235,10 @@ const Login = () => {
                         password_input_placeholder: 'Ihr Passwort',
                         button_label: 'Anmelden',
                         loading_button_label: 'Anmeldung läuft...',
-                        link_text: 'Noch kein Konto? Registrieren',
+                        // Link zum Registrieren entfernt
                         social_provider_text: 'Oder mit einem sozialen Konto anmelden'
                       },
-                      sign_up: {
-                        email_label: 'E-Mail-Adresse',
-                        password_label: 'Passwort',
-                        email_input_placeholder: 'Ihre E-Mail-Adresse',
-                        password_input_placeholder: 'Ihr Passwort',
-                        button_label: 'Registrieren',
-                        loading_button_label: 'Registrierung läuft...',
-                        link_text: 'Bereits registriert? Hier anmelden'
-                      },
+                      // sign_up block entfernt, da Registrierung nicht erlaubt
                       forgotten_password: {
                         email_label: 'E-Mail-Adresse',
                         email_input_placeholder: 'Ihre E-Mail-Adresse',
