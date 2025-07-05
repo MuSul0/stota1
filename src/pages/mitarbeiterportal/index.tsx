@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 
 interface Mitarbeiter {
@@ -43,7 +44,6 @@ export default function Mitarbeiterportal() {
   const fetchMitarbeiter = async () => {
     setLoadingMitarbeiter(true);
     try {
-      // Supabase Admin API: Liste aller Benutzer abrufen
       const { data, error } = await supabase.auth.admin.listUsers();
 
       if (error) {
@@ -53,7 +53,6 @@ export default function Mitarbeiterportal() {
         return;
       }
 
-      // Profile mit Rollen aus der profiles-Tabelle abrufen
       const { data: profiles, error: profileError } = await supabase
         .from('profiles')
         .select('id, role');
@@ -65,7 +64,6 @@ export default function Mitarbeiterportal() {
         return;
       }
 
-      // Filtere nur Mitarbeiter
       const mitarbeiterList = data.users
         .map((u) => {
           const profile = profiles?.find(p => p.id === u.id);
@@ -95,7 +93,6 @@ export default function Mitarbeiterportal() {
     setCreating(true);
 
     try {
-      // Mitarbeiter-User anlegen mit Rolle "mitarbeiter"
       const { data, error } = await supabase.auth.admin.createUser({
         email,
         password,
@@ -110,7 +107,6 @@ export default function Mitarbeiterportal() {
         return;
       }
 
-      // Profil in profiles-Tabelle anlegen
       const { error: profileError } = await supabase
         .from('profiles')
         .insert({ id: data.user.id, role: 'mitarbeiter' });
@@ -134,6 +130,77 @@ export default function Mitarbeiterportal() {
     }
   };
 
+  const handleDeleteMitarbeiter = async (id: string) => {
+    if (!window.confirm('Möchten Sie diesen Mitarbeiter wirklich löschen?')) return;
+
+    try {
+      const { error } = await supabase.auth.admin.deleteUser(id);
+      if (error) {
+        toast.error('Fehler beim Löschen des Mitarbeiters');
+        console.error(error);
+        return;
+      }
+
+      // Profil löschen
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', id);
+
+      if (profileError) {
+        toast.error('Fehler beim Löschen des Profils');
+        console.error(profileError);
+        return;
+      }
+
+      toast.success('Mitarbeiter erfolgreich gelöscht');
+      fetchMitarbeiter();
+    } catch (error) {
+      toast.error('Fehler beim Löschen des Mitarbeiters');
+      console.error(error);
+    }
+  };
+
+  const handleRoleChange = async (id: string, newRole: string) => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ role: newRole })
+        .eq('id', id);
+
+      if (error) {
+        toast.error('Fehler beim Aktualisieren der Rolle');
+        console.error(error);
+        return;
+      }
+
+      toast.success('Rolle erfolgreich aktualisiert');
+      fetchMitarbeiter();
+    } catch (error) {
+      toast.error('Fehler beim Aktualisieren der Rolle');
+      console.error(error);
+    }
+  };
+
+  const handleResetPassword = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + '/login'
+      });
+
+      if (error) {
+        toast.error('Fehler beim Senden des Passwort-Reset-Links');
+        console.error(error);
+        return;
+      }
+
+      toast.success('Passwort-Reset-Link wurde gesendet');
+    } catch (error) {
+      toast.error('Fehler beim Senden des Passwort-Reset-Links');
+      console.error(error);
+    }
+  };
+
   if (loading || loadingMitarbeiter) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -153,7 +220,7 @@ export default function Mitarbeiterportal() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
-      <main className="flex-grow container mx-auto px-6 py-12 max-w-5xl space-y-8">
+      <main className="flex-grow container mx-auto px-6 py-12 max-w-6xl space-y-8">
         <h1 className="text-3xl font-bold">Mitarbeiterverwaltung</h1>
 
         {/* Neues Mitarbeiter-Konto anlegen */}
@@ -216,6 +283,7 @@ export default function Mitarbeiterportal() {
                     <TableHead>E-Mail</TableHead>
                     <TableHead>Erstellt am</TableHead>
                     <TableHead>Rolle</TableHead>
+                    <TableHead className="text-right">Aktionen</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -223,7 +291,37 @@ export default function Mitarbeiterportal() {
                     <TableRow key={m.id}>
                       <TableCell>{m.email}</TableCell>
                       <TableCell>{new Date(m.created_at).toLocaleDateString()}</TableCell>
-                      <TableCell>{m.role}</TableCell>
+                      <TableCell>
+                        <Select
+                          value={m.role}
+                          onValueChange={(value) => handleRoleChange(m.id, value)}
+                        >
+                          <SelectTrigger className="w-[140px]">
+                            <SelectValue placeholder="Rolle" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="mitarbeiter">Mitarbeiter</SelectItem>
+                            <SelectItem value="user">Benutzer</SelectItem>
+                            <SelectItem value="admin">Admin</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
+                      <TableCell className="text-right space-x-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleResetPassword(m.email)}
+                        >
+                          Passwort zurücksetzen
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => handleDeleteMitarbeiter(m.id)}
+                        >
+                          Löschen
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
