@@ -22,7 +22,11 @@ import KundenAuftraege from '@/pages/kundenportal/auftraege';
 import KundenNachrichten from '@/pages/kundenportal/nachrichten';
 import KundenEinstellungen from '@/pages/kundenportal/einstellungen';
 import KundenSupport from '@/pages/kundenportal/support';
-import MitarbeiterDashboard from '@/pages/mitarbeiterportal';
+import Mitarbeiterportal from '@/pages/mitarbeiterportal/index';
+import Arbeitszeiten from '@/pages/mitarbeiterportal/arbeitszeiten';
+import Auftraege from '@/pages/mitarbeiterportal/auftraege';
+import Fahrzeuge from '@/pages/mitarbeiterportal/fahrzeuge';
+import Team from '@/pages/mitarbeiterportal/team';
 import AdminDashboard from '@/pages/adminportal';
 
 const queryClient = new QueryClient();
@@ -56,7 +60,11 @@ function App() {
               <Route path="/kundenportal/support" element={<KundenSupport />} />
 
               {/* Mitarbeiterportal */}
-              <Route path="/mitarbeiterportal" element={<MitarbeiterDashboard />} />
+              <Route path="/mitarbeiterportal" element={<Mitarbeiterportal />} />
+              <Route path="/mitarbeiterportal/arbeitszeiten" element={<Arbeitszeiten />} />
+              <Route path="/mitarbeiterportal/auftraege" element={<Auftraege />} />
+              <Route path="/mitarbeiterportal/fahrzeuge" element={<Fahrzeuge />} />
+              <Route path="/mitarbeiterportal/team" element={<Team />} />
 
               {/* Adminportal */}
               <Route path="/adminportal" element={<AdminDashboard />} />
