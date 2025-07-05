@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function Einstellungen() {
   const { session, user, loading } = useSession();
@@ -15,18 +16,72 @@ export default function Einstellungen() {
 
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!loading) {
       if (!session || user?.user_metadata?.role !== 'kunde') {
         navigate('/login');
       } else {
-        // Beispiel: Initialwerte setzen, hier statisch
         setEmail(user.email || '');
-        setPhone('');
+        fetchPhone();
       }
     }
   }, [session, user, loading, navigate]);
+
+  const fetchPhone = async () => {
+    if (!user) return;
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('phone')
+      .eq('id', user.id)
+      .single();
+
+    if (error) {
+      toast.error('Fehler beim Laden der Telefonnummer');
+      console.error(error);
+    } else {
+      setPhone(data?.phone || '');
+    }
+  };
+
+  const handleSave = async () => {
+    if (!user) {
+      toast.error('Benutzer nicht gefunden');
+      return;
+    }
+    setSaving(true);
+
+    try {
+      // E-Mail im Auth-User aktualisieren
+      if (email !== user.email) {
+        const { error: emailError } = await supabase.auth.updateUser({ email });
+        if (emailError) {
+          toast.error('Fehler beim Aktualisieren der E-Mail');
+          setSaving(false);
+          return;
+        }
+      }
+
+      // Telefonnummer in profiles speichern
+      const { error: phoneError } = await supabase
+        .from('profiles')
+        .upsert({ id: user.id, phone }, { onConflict: 'id' });
+
+      if (phoneError) {
+        toast.error('Fehler beim Speichern der Telefonnummer');
+        setSaving(false);
+        return;
+      }
+
+      toast.success('Einstellungen erfolgreich gespeichert');
+    } catch (error) {
+      toast.error('Fehler beim Speichern der Einstellungen');
+      console.error(error);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -43,10 +98,6 @@ export default function Einstellungen() {
       </div>
     );
   }
-
-  const handleSave = () => {
-    toast.success('Einstellungen wurden gespeichert (Beispiel)');
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -85,11 +136,12 @@ export default function Einstellungen() {
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
+                  placeholder="z.B. +49 123 456 789"
                 />
               </div>
 
-              <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
-                Einstellungen speichern
+              <Button type="submit" disabled={saving} className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                {saving ? 'Speichern...' : 'Einstellungen speichern'}
               </Button>
             </form>
           </CardContent>
