@@ -154,7 +154,7 @@ export default function AdminUsers() {
                         value={user.role}
                         onValueChange={(value) => updateUserRole(user.id, value)}
                       >
-                        <SelectTrigger className="w-[120px]">
+                        <SelectTrigger className="w-[140px]">
                           <SelectValue placeholder="Rolle" />
                         </SelectTrigger>
                         <SelectContent>
