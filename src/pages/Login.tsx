@@ -7,9 +7,9 @@ import { toast } from 'sonner';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
-import { Truck, UserCog, User, ChevronLeft } from 'lucide-react';
+import { Truck, User, ChevronLeft } from 'lucide-react';
 
-type Role = 'kunde' | 'mitarbeiter' | 'admin';
+type Role = 'kunde' | 'mitarbeiter';
 
 interface RoleSelectionProps {
   onSelect: (role: Role) => void;
@@ -17,22 +17,17 @@ interface RoleSelectionProps {
 
 const RoleSelection = ({ onSelect }: RoleSelectionProps) => {
   const getRoleColor = (role: Role) => {
-    return role === 'admin' ? 'bg-red-500/10 border-red-500' :
-           role === 'mitarbeiter' ? 'bg-green-500/10 border-green-500' :
-           'bg-blue-500/10 border-blue-500';
+    return role === 'mitarbeiter' ? 'bg-green-500/10 border-green-500' : 'bg-blue-500/10 border-blue-500';
   };
 
   const getRoleIcon = (role: Role) => {
-    return role === 'admin' ? <UserCog className="w-6 h-6" /> :
-           role === 'mitarbeiter' ? <Truck className="w-6 h-6" /> :
-           <User className="w-6 h-6" />;
+    return role === 'mitarbeiter' ? <Truck className="w-6 h-6" /> : <User className="w-6 h-6" />;
   };
 
   const getRoleTitle = (role: Role) => {
     switch (role) {
       case 'kunde': return 'Kunden-Login';
       case 'mitarbeiter': return 'Mitarbeiter-Login';
-      case 'admin': return 'Admin-Login';
     }
   };
 
@@ -40,7 +35,6 @@ const RoleSelection = ({ onSelect }: RoleSelectionProps) => {
     switch (role) {
       case 'kunde': return 'Zugang für unsere Kunden';
       case 'mitarbeiter': return 'Zugang für unser Team';
-      case 'admin': return 'Administrativer Zugang';
     }
   };
 
@@ -49,7 +43,7 @@ const RoleSelection = ({ onSelect }: RoleSelectionProps) => {
       <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Willkommen bei Nikolai Transport</h1>
       <p className="text-gray-600 text-center mb-8">Bitte wählen Sie Ihren Zugang</p>
 
-      {(['kunde', 'mitarbeiter', 'admin'] as Role[]).map(role => (
+      {(['kunde', 'mitarbeiter'] as Role[]).map(role => (
         <Card 
           key={role}
           className={`p-6 cursor-pointer transition-all hover:shadow-md ${getRoleColor(role)}`} 
@@ -81,22 +75,17 @@ interface LoginFormProps {
 
 const LoginForm = ({ role, onSwitchToRegister, loading }: LoginFormProps) => {
   const getRoleColor = (role: Role) => {
-    return role === 'admin' ? 'bg-red-500/10 border-red-500' :
-           role === 'mitarbeiter' ? 'bg-green-500/10 border-green-500' :
-           'bg-blue-500/10 border-blue-500';
+    return role === 'mitarbeiter' ? 'bg-green-500/10 border-green-500' : 'bg-blue-500/10 border-blue-500';
   };
 
   const getRoleIcon = (role: Role) => {
-    return role === 'admin' ? <UserCog className="w-6 h-6" /> :
-           role === 'mitarbeiter' ? <Truck className="w-6 h-6" /> :
-           <User className="w-6 h-6" />;
+    return role === 'mitarbeiter' ? <Truck className="w-6 h-6" /> : <User className="w-6 h-6" />;
   };
 
   const getRoleTitle = (role: Role) => {
     switch (role) {
       case 'kunde': return 'Kunden-Login';
       case 'mitarbeiter': return 'Mitarbeiter-Login';
-      case 'admin': return 'Admin-Login';
     }
   };
 
@@ -120,12 +109,8 @@ const LoginForm = ({ role, onSwitchToRegister, loading }: LoginFormProps) => {
           variables: {
             default: {
               colors: {
-                brand: role === 'admin' ? '#ef4444' : 
-                       role === 'mitarbeiter' ? '#16a34a' : 
-                       '#3b82f6',
-                brandAccent: role === 'admin' ? '#dc2626' : 
-                             role === 'mitarbeiter' ? '#166534' : 
-                             '#1d4ed8'
+                brand: role === 'mitarbeiter' ? '#16a34a' : '#3b82f6',
+                brandAccent: role === 'mitarbeiter' ? '#166534' : '#1d4ed8'
               },
               fonts: {
                 bodyFontFamily: 'Inter, sans-serif',
@@ -443,9 +428,6 @@ const Login = () => {
             break;
           case 'mitarbeiter':
             navigate('/mitarbeiterportal');
-            break;
-          case 'admin':
-            navigate('/adminportal');
             break;
           default:
             navigate('/');
