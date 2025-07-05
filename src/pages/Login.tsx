@@ -336,8 +336,7 @@ const Login = () => {
                           password_input_placeholder: 'Ihr Passwort',
                           button_label: 'Anmelden',
                           loading_button_label: 'Anmeldung läuft...',
-                          link_text: 'Registrieren',
-                          social_provider_text: 'Oder mit einem sozialen Konto anmelden'
+                          link_text: '' // Link entfernen
                         },
                         forgotten_password: {
                           email_label: 'E-Mail-Adresse',
@@ -353,125 +352,146 @@ const Login = () => {
                   theme="light"
                   redirectTo="/"
                 />
-                <div className="mt-4 text-center">
-                  <button
-                    className="text-blue-600 hover:underline text-sm"
-                    onClick={() => setAuthView('sign_up')}
-                    disabled={loading}
-                  >
-                    Noch kein Konto? Jetzt registrieren
-                  </button>
-                </div>
+                {/* Nur bei Kundenlogin Registrierungslink anzeigen */}
+                {selectedRole === 'kunde' && (
+                  <div className="mt-4 text-center">
+                    <button
+                      className="text-blue-600 hover:underline text-sm"
+                      onClick={() => setAuthView('sign_up')}
+                      disabled={loading}
+                    >
+                      Noch kein Konto? Jetzt registrieren
+                    </button>
+                  </div>
+                )}
               </Card>
             ) : (
-              <Card className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Registrierung</h2>
-                <form
-                  onSubmit={e => {
-                    e.preventDefault();
-                    handleRegister();
-                  }}
-                  className="space-y-4"
-                >
-                  <div className="grid grid-cols-2 gap-4">
+              selectedRole === 'kunde' ? (
+                <Card className="p-6">
+                  <h2 className="text-xl font-semibold mb-4">Registrierung</h2>
+                  <form
+                    onSubmit={e => {
+                      e.preventDefault();
+                      handleRegister();
+                    }}
+                    className="space-y-4"
+                  >
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+                          Vorname *
+                        </label>
+                        <input
+                          id="firstName"
+                          type="text"
+                          value={firstName}
+                          onChange={e => setFirstName(e.target.value)}
+                          required
+                          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+                          Nachname *
+                        </label>
+                        <input
+                          id="lastName"
+                          type="text"
+                          value={lastName}
+                          onChange={e => setLastName(e.target.value)}
+                          required
+                          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                        />
+                      </div>
+                    </div>
+
                     <div>
-                      <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
-                        Vorname *
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                        E-Mail *
                       </label>
                       <input
-                        id="firstName"
-                        type="text"
-                        value={firstName}
-                        onChange={e => setFirstName(e.target.value)}
+                        id="email"
+                        type="email"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
                         required
                         className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                       />
                     </div>
+
                     <div>
-                      <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
-                        Nachname *
+                      <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                        Passwort *
                       </label>
                       <input
-                        id="lastName"
-                        type="text"
-                        value={lastName}
-                        onChange={e => setLastName(e.target.value)}
+                        id="password"
+                        type="password"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
                         required
+                        minLength={6}
                         className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                       />
                     </div>
-                  </div>
 
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                      E-Mail *
-                    </label>
-                    <input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
-                      required
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                    />
-                  </div>
+                    <div>
+                      <label htmlFor="passwordConfirm" className="block text-sm font-medium text-gray-700">
+                        Passwort bestätigen *
+                      </label>
+                      <input
+                        id="passwordConfirm"
+                        type="password"
+                        value={passwordConfirm}
+                        onChange={e => setPasswordConfirm(e.target.value)}
+                        required
+                        minLength={6}
+                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                      />
+                    </div>
 
-                  <div>
-                    <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                      Passwort *
-                    </label>
-                    <input
-                      id="password"
-                      type="password"
-                      value={password}
-                      onChange={e => setPassword(e.target.value)}
-                      required
-                      minLength={6}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                    />
-                  </div>
+                    <div className="flex items-center">
+                      <input
+                        id="termsAccepted"
+                        type="checkbox"
+                        checked={termsAccepted}
+                        onChange={e => setTermsAccepted(e.target.checked)}
+                        className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        required
+                      />
+                      <label htmlFor="termsAccepted" className="ml-2 block text-sm text-gray-700">
+                        Ich stimme den{' '}
+                        <a href="/nutzungsbedingungen" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                          Nutzungsbedingungen
+                        </a>{' '}
+                        und der{' '}
+                        <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                          Datenschutzerklärung
+                        </a>{' '}
+                        zu.
+                      </label>
+                    </div>
 
-                  <div>
-                    <label htmlFor="passwordConfirm" className="block text-sm font-medium text-gray-700">
-                      Passwort bestätigen *
-                    </label>
-                    <input
-                      id="passwordConfirm"
-                      type="password"
-                      value={passwordConfirm}
-                      onChange={e => setPasswordConfirm(e.target.value)}
-                      required
-                      minLength={6}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                    />
-                  </div>
+                    <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                      {loading ? 'Registriere...' : 'Registrieren'}
+                    </Button>
 
-                  <div className="flex items-center">
-                    <input
-                      id="termsAccepted"
-                      type="checkbox"
-                      checked={termsAccepted}
-                      onChange={e => setTermsAccepted(e.target.checked)}
-                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      required
-                    />
-                    <label htmlFor="termsAccepted" className="ml-2 block text-sm text-gray-700">
-                      Ich stimme den{' '}
-                      <a href="/nutzungsbedingungen" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-                        Nutzungsbedingungen
-                      </a>{' '}
-                      und der{' '}
-                      <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-                        Datenschutzerklärung
-                      </a>{' '}
-                      zu.
-                    </label>
-                  </div>
-
-                  <Button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
-                    {loading ? 'Registriere...' : 'Registrieren'}
-                  </Button>
-
+                    <div className="mt-4 text-center">
+                      <button
+                        type="button"
+                        className="text-gray-600 hover:underline text-sm"
+                        onClick={() => setAuthView('sign_in')}
+                        disabled={loading}
+                      >
+                        Bereits ein Konto? Jetzt anmelden
+                      </button>
+                    </div>
+                  </form>
+                </Card>
+              ) : (
+                // Für mitarbeiter und admin keine Registrierung anzeigen, nur Login
+                <Card className="p-6">
+                  <h2 className="text-xl font-semibold mb-4">Registrierung nicht verfügbar</h2>
+                  <p className="text-gray-600">Bitte wenden Sie sich an Ihren Administrator, um ein Konto zu erhalten.</p>
                   <div className="mt-4 text-center">
                     <button
                       type="button"
@@ -479,11 +499,11 @@ const Login = () => {
                       onClick={() => setAuthView('sign_in')}
                       disabled={loading}
                     >
-                      Bereits ein Konto? Jetzt anmelden
+                      Zurück zum Login
                     </button>
                   </div>
-                </form>
-              </Card>
+                </Card>
+              )
             )}
           </div>
         )}
