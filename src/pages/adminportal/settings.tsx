@@ -396,6 +396,12 @@ export default function AdminSettings() {
             </Card>
           </TabsContent>
         </Tabs>
+
+        <div className="flex justify-end">
+          <Button onClick={handleSave} disabled={loading}>
+            {loading ? 'Speichern...' : 'Einstellungen speichern'}
+          </Button>
+        </div>
       </main>
       <Footer />
     </div>
