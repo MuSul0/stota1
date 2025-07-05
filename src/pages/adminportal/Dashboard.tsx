@@ -3,17 +3,18 @@ import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { DollarSign, Users, CheckCircle, Clock, TrendingUp } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { motion } from 'framer-motion';
+import { DollarSign, Users, CheckCircle, Clock, TrendingUp, Eye, UserPlus } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
     totalRevenue: 0,
     activeUsers: 0,
     completedServices: 0,
-    pendingRequests: 0
+    pendingRequests: 0,
+    visitorsToday: 0,
+    newRegistrationsToday: 0
   });
   const [loading, setLoading] = useState(true);
 
@@ -54,11 +55,29 @@ export default function AdminDashboard() {
         .eq('status', 'pending');
       if (pendingError) throw pendingError;
 
+      // Besucher heute zählen (angenommen Tabelle 'visitors' mit Spalte 'visited_at')
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const { count: visitorsCount, error: visitorsError } = await supabase
+        .from('visitors')
+        .select('*', { count: 'exact', head: true })
+        .gte('visited_at', today.toISOString());
+      if (visitorsError) throw visitorsError;
+
+      // Neue Registrierungen heute (in profiles Tabelle, Spalte created_at)
+      const { count: registrationsCount, error: registrationsError } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .gte('created_at', today.toISOString());
+      if (registrationsError) throw registrationsError;
+
       setStats({
         totalRevenue: revenue || 0,
         activeUsers: usersCount || 0,
         completedServices: servicesCount || 0,
-        pendingRequests: pendingCount || 0
+        pendingRequests: pendingCount || 0,
+        visitorsToday: visitorsCount || 0,
+        newRegistrationsToday: registrationsCount || 0
       });
     } catch (error) {
       toast.error('Fehler beim Laden der Statistiken');
@@ -87,7 +106,7 @@ export default function AdminDashboard() {
       >
         <h1 className="text-3xl font-bold">Dashboard</h1>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">Umsatz</CardTitle>
@@ -131,36 +150,31 @@ export default function AdminDashboard() {
               <p className="text-xs text-gray-500">2 hoch priorisiert</p>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Besucher heute</CardTitle>
+              <Eye className="h-4 w-4 text-gray-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.visitorsToday}</div>
+              <p className="text-xs text-gray-500">Aktuelle Besucheranzahl</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Registrierungen heute</CardTitle>
+              <UserPlus className="h-4 w-4 text-gray-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.newRegistrationsToday}</div>
+              <p className="text-xs text-gray-500">Neue Benutzeranmeldungen</p>
+            </CardContent>
+          </Card>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Aktivitäten</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center">
-                <TrendingUp className="h-4 w-4 mr-2 text-green-500" />
-                <span>Neuer Service gebucht (Umzugshilfe)</span>
-              </div>
-              <div className="flex items-center">
-                <Users className="h-4 w-4 mr-2 text-blue-500" />
-                <span>Neuer Benutzer registriert</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Schnellaktionen</CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-2">
-            <Button variant="outline">Neuen Service erstellen</Button>
-            <Button variant="outline">Benutzer einladen</Button>
-            <Button variant="outline">Bericht generieren</Button>
-          </CardContent>
-        </Card>
+        {/* Weitere Dashboard-Elemente können hier ergänzt werden */}
       </motion.main>
       <Footer />
     </div>
