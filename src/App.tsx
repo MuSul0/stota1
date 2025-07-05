@@ -27,7 +27,15 @@ import Arbeitszeiten from '@/pages/mitarbeiterportal/arbeitszeiten';
 import Auftraege from '@/pages/mitarbeiterportal/auftraege';
 import Fahrzeuge from '@/pages/mitarbeiterportal/fahrzeuge';
 import Team from '@/pages/mitarbeiterportal/team';
-import AdminDashboard from '@/pages/adminportal';
+import AdminLayout from '@/components/AdminLayout';
+import AdminDashboard from '@/pages/adminportal/dashboard';
+import AdminUsers from '@/pages/adminportal/users';
+import AdminInvoices from '@/pages/adminportal/invoices';
+import AdminSettings from '@/pages/adminportal/settings';
+import AdminServices from '@/pages/adminportal/services';
+import MediaManager from '@/pages/adminportal/media-manager';
+import Notifications from '@/pages/adminportal/notifications';
+import Reports from '@/pages/adminportal/reports';
 
 const queryClient = new QueryClient();
 
@@ -66,8 +74,18 @@ function App() {
               <Route path="/mitarbeiterportal/fahrzeuge" element={<Fahrzeuge />} />
               <Route path="/mitarbeiterportal/team" element={<Team />} />
 
-              {/* Adminportal */}
-              <Route path="/adminportal" element={<AdminDashboard />} />
+              {/* Adminportal mit Nested Routes */}
+              <Route path="/adminportal" element={<AdminLayout />}>
+                <Route index element={<AdminDashboard />} />
+                <Route path="dashboard" element={<AdminDashboard />} />
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="invoices" element={<AdminInvoices />} />
+                <Route path="settings" element={<AdminSettings />} />
+                <Route path="services" element={<AdminServices />} />
+                <Route path="media-manager" element={<MediaManager />} />
+                <Route path="notifications" element={<Notifications />} />
+                <Route path="reports" element={<Reports />} />
+              </Route>
 
               <Route path="*" element={<NotFound />} />
             </Routes>
