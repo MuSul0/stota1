@@ -36,6 +36,9 @@ import AdminServices from '@/pages/adminportal/services';
 import MediaManager from '@/pages/adminportal/media-manager';
 import Notifications from '@/pages/adminportal/notifications';
 import Reports from '@/pages/adminportal/reports';
+import UserActivity from '@/pages/adminportal/user-activity';
+import Appointments from '@/pages/adminportal/appointments';
+import EmployeeRegistration from '@/pages/adminportal/employee-registration';
 
 const queryClient = new QueryClient();
 
@@ -79,6 +82,9 @@ function App() {
                 <Route index element={<AdminDashboard />} />
                 <Route path="dashboard" element={<AdminDashboard />} />
                 <Route path="users" element={<AdminUsers />} />
+                <Route path="user-activity" element={<UserActivity />} />
+                <Route path="appointments" element={<Appointments />} />
+                <Route path="employee-registration" element={<EmployeeRegistration />} />
                 <Route path="invoices" element={<AdminInvoices />} />
                 <Route path="settings" element={<AdminSettings />} />
                 <Route path="services" element={<AdminServices />} />

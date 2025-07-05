@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { LogOut, Users, BarChart2, FileText, Settings, Layers, Bell, Download, Clock } from 'lucide-react';
+import { LogOut, Users, BarChart2, FileText, Settings, Layers, Bell, Download, Clock, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -12,6 +12,7 @@ const AdminLayout = () => {
     { to: 'users', label: 'Benutzerverwaltung', icon: Users },
     { to: 'user-activity', label: 'Benutzeraktivität', icon: Clock },
     { to: 'appointments', label: 'Terminübersicht', icon: Clock },
+    { to: 'employee-registration', label: 'Mitarbeiter anmelden', icon: UserPlus },
     { to: 'invoices', label: 'Rechnungen', icon: FileText },
     { to: 'settings', label: 'Einstellungen', icon: Settings },
     { to: 'services', label: 'Services', icon: Layers },
