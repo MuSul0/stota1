@@ -24,7 +24,6 @@ const Login = () => {
       if (event === 'SIGNED_IN' && session) {
         setLoading(true);
 
-        // If role is selected during login, update user metadata
         if (selectedRole) {
           const { error } = await supabase.auth.updateUser({
             data: { role: selectedRole }
@@ -36,7 +35,6 @@ const Login = () => {
           }
         }
 
-        // Fetch fresh user data to get role from metadata
         const { data: userData, error: userError } = await supabase.auth.getUser();
         if (userError || !userData.user) {
           toast.error('Fehler beim Abrufen der Benutzerdaten');
@@ -54,7 +52,6 @@ const Login = () => {
 
         toast.success('Anmeldung erfolgreich!');
 
-        // Redirect based on role
         switch (role) {
           case 'kunde':
             navigate('/kundenportal');
@@ -235,10 +232,10 @@ const Login = () => {
                         password_input_placeholder: 'Ihr Passwort',
                         button_label: 'Anmelden',
                         loading_button_label: 'Anmeldung läuft...',
-                        // Link zum Registrieren entfernt
+                        link_text: '', // Linktext leer, damit kein Sign up Link angezeigt wird
                         social_provider_text: 'Oder mit einem sozialen Konto anmelden'
                       },
-                      // sign_up block entfernt, da Registrierung nicht erlaubt
+                      // sign_up block komplett entfernt
                       forgotten_password: {
                         email_label: 'E-Mail-Adresse',
                         email_input_placeholder: 'Ihre E-Mail-Adresse',
