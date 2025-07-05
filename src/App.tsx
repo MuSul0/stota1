@@ -21,6 +21,7 @@ import KundenTermine from '@/pages/kundenportal/termine';
 import KundenAuftraege from '@/pages/kundenportal/auftraege';
 import KundenNachrichten from '@/pages/kundenportal/nachrichten';
 import KundenEinstellungen from '@/pages/kundenportal/einstellungen';
+import KundenSupport from '@/pages/kundenportal/support';
 import MitarbeiterDashboard from '@/pages/mitarbeiterportal';
 import AdminDashboard from '@/pages/adminportal';
 
@@ -52,6 +53,7 @@ function App() {
               <Route path="/kundenportal/auftraege" element={<KundenAuftraege />} />
               <Route path="/kundenportal/nachrichten" element={<KundenNachrichten />} />
               <Route path="/kundenportal/einstellungen" element={<KundenEinstellungen />} />
+              <Route path="/kundenportal/support" element={<KundenSupport />} />
 
               {/* Mitarbeiterportal */}
               <Route path="/mitarbeiterportal" element={<MitarbeiterDashboard />} />

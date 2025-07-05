@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSession } from '@/components/SessionProvider';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar, ListChecks, MessageSquare, Settings, UserCircle2 } from 'lucide-react';
+import { Calendar, ListChecks, MessageSquare, Settings, UserCircle2, LifeBuoy } from 'lucide-react';
 
 export default function Kundenportal() {
   const { session, user, loading } = useSession();
@@ -34,8 +36,9 @@ export default function Kundenportal() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      <div className="container mx-auto px-6 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex flex-col">
+      <Header />
+      <main className="flex-grow container mx-auto px-6 py-12">
         {/* Begrüßung */}
         <div className="flex flex-col md:flex-row items-center md:items-start md:justify-between mb-12 gap-6">
           <div className="flex items-center space-x-4">
@@ -55,7 +58,7 @@ export default function Kundenportal() {
         </div>
 
         {/* Dashboard Karten */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
           <Card className="shadow-lg rounded-xl hover:shadow-2xl transition-shadow duration-300 bg-white">
             <CardHeader className="flex items-center space-x-3 pb-4 border-b border-gray-200">
               <div className="p-3 bg-blue-100 rounded-lg">
@@ -135,8 +138,29 @@ export default function Kundenportal() {
               </Button>
             </CardContent>
           </Card>
+
+          <Card className="shadow-lg rounded-xl hover:shadow-2xl transition-shadow duration-300 bg-white">
+            <CardHeader className="flex items-center space-x-3 pb-4 border-b border-gray-200">
+              <div className="p-3 bg-teal-100 rounded-lg">
+                <LifeBuoy className="w-8 h-8 text-teal-600" />
+              </div>
+              <CardTitle className="text-lg font-semibold text-gray-900">Support</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-6">
+                Hilfe und Unterstützung bei Fragen und Problemen.
+              </p>
+              <Button 
+                className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white"
+                onClick={() => navigate('/kundenportal/support')}
+              >
+                Support aufrufen
+              </Button>
+            </CardContent>
+          </Card>
         </div>
-      </div>
+      </main>
+      <Footer />
     </div>
   );
 }
