@@ -35,10 +35,8 @@ const Login = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        // Rolle sicher aus user_metadata lesen
-        let role = session.user.user_metadata ? session.user.user_metadata.role : undefined;
+        let role = session.user.user_metadata?.role;
 
-        // Falls Rolle nicht vorhanden, lade aus profiles Tabelle
         if (!role) {
           const { data: profile, error } = await supabase
             .from('profiles')
@@ -64,16 +62,16 @@ const Login = () => {
         toast.success('Anmeldung erfolgreich!');
         switch (role) {
           case 'kunde':
-            navigate('/kundenportal');
+            navigate('/kundenportal', { replace: true });
             break;
           case 'mitarbeiter':
-            navigate('/mitarbeiterportal');
+            navigate('/mitarbeiterportal', { replace: true });
             break;
           case 'admin':
-            navigate('/adminportal');
+            navigate('/adminportal', { replace: true });
             break;
           default:
-            navigate('/');
+            navigate('/', { replace: true });
             break;
         }
       }
@@ -97,15 +95,55 @@ const Login = () => {
       return;
     }
 
-    // Prüfe, ob Session und User vorhanden sind
     if (!data.session || !data.user) {
       toast.error('Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.');
       setLoadingLogin(false);
       return;
     }
 
-    // Nur Erfolgsmeldung hier, Navigation erfolgt im onAuthStateChange
+    // Rolle aus user_metadata prüfen
+    let role = data.user.user_metadata?.role;
+
+    if (!role) {
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .single();
+
+      if (profileError) {
+        toast.error('Fehler beim Laden der Benutzerrolle');
+        setLoadingLogin(false);
+        return;
+      }
+
+      role = profile?.role;
+    }
+
+    if (!role) {
+      toast.error('Keine Rolle gefunden. Bitte wende dich an den Administrator.');
+      setLoadingLogin(false);
+      return;
+    }
+
     toast.success('Anmeldung erfolgreich!');
+
+    // Fallback Navigation, falls onAuthStateChange nicht schnell genug ist
+    switch (role) {
+      case 'kunde':
+        navigate('/kundenportal', { replace: true });
+        break;
+      case 'mitarbeiter':
+        navigate('/mitarbeiterportal', { replace: true });
+        break;
+      case 'admin':
+        navigate('/adminportal', { replace: true });
+        break;
+      default:
+        navigate('/', { replace: true });
+        break;
+    }
+
     setLoadingLogin(false);
   };
 
