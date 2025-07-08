@@ -93,7 +93,6 @@ export default function AdminUsers() {
       if (error) throw error;
       
       toast.success('Benutzerrolle aktualisiert');
-      // fetchUsers(); // Nicht nötig, da Realtime Subscription aktualisiert
     } catch (error) {
       toast.error('Fehler beim Aktualisieren der Rolle');
       console.error(error);
@@ -109,7 +108,6 @@ export default function AdminUsers() {
       if (error) throw error;
       
       toast.success(`Benutzer ${currentStatus ? 'deaktiviert' : 'aktiviert'}`);
-      // fetchUsers(); // Nicht nötig, da Realtime Subscription aktualisiert
     } catch (error) {
       toast.error('Fehler beim Ändern des Status');
       console.error(error);
