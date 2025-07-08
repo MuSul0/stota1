@@ -40,7 +40,6 @@ export default function EmployeeRegistration() {
 
   const fetchEmployees = async () => {
     try {
-      // Hole alle Profile mit Rolle 'mitarbeiter'
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -67,6 +66,7 @@ export default function EmployeeRegistration() {
         fetchEmployees();
       })
       .subscribe();
+
     subscriptionRef.current = channel;
   };
 
@@ -79,7 +79,6 @@ export default function EmployeeRegistration() {
     setLoading(true);
 
     try {
-      // Mitarbeiter in Supabase Auth anlegen (Admin API)
       const { data, error } = await supabase.auth.admin.createUser({
         email,
         password,
@@ -93,7 +92,6 @@ export default function EmployeeRegistration() {
         return;
       }
 
-      // Profil in Tabelle anlegen
       const { error: profileError } = await supabase
         .from('profiles')
         .insert({

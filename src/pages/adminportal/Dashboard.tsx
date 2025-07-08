@@ -21,7 +21,6 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchData();
 
-    // Optional: Polling alle 30 Sekunden für Echtzeit
     const interval = setInterval(() => {
       fetchData();
     }, 30000);
@@ -32,30 +31,25 @@ export default function AdminDashboard() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Umsatz via RPC
       const { data: revenue, error: revenueError } = await supabase.rpc('calculate_total_revenue');
       if (revenueError) throw revenueError;
 
-      // Aktive Benutzer zählen
       const { count: usersCount, error: usersError } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true });
       if (usersError) throw usersError;
 
-      // Abgeschlossene Services zählen
       const { count: servicesCount, error: servicesError } = await supabase
         .from('services')
         .select('*', { count: 'exact', head: true });
       if (servicesError) throw servicesError;
 
-      // Ausstehende Anfragen (Beispiel)
       const { count: pendingCount, error: pendingError } = await supabase
         .from('requests')
         .select('*', { count: 'exact', head: true })
         .eq('status', 'pending');
       if (pendingError) throw pendingError;
 
-      // Besucher heute zählen (angenommen Tabelle 'visitors' mit Spalte 'visited_at')
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const { count: visitorsCount, error: visitorsError } = await supabase
@@ -64,7 +58,6 @@ export default function AdminDashboard() {
         .gte('visited_at', today.toISOString());
       if (visitorsError) throw visitorsError;
 
-      // Neue Registrierungen heute (in profiles Tabelle, Spalte created_at)
       const { count: registrationsCount, error: registrationsError } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true })
@@ -173,8 +166,6 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
         </div>
-
-        {/* Weitere Dashboard-Elemente können hier ergänzt werden */}
       </motion.main>
       <Footer />
     </div>
