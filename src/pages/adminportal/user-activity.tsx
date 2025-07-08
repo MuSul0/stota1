@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { useSession } from '@/components/SessionProvider';
+import { useNavigate } from 'react-router-dom';
 
 interface UserActivity {
   id: string;
@@ -16,15 +18,24 @@ interface UserActivity {
 }
 
 export default function UserActivity() {
+  const { session, user, loading } = useSession();
+  const navigate = useNavigate();
+
   const [users, setUsers] = useState<UserActivity[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingData, setLoadingData] = useState(true);
 
   useEffect(() => {
-    fetchUserActivity();
-  }, []);
+    if (!loading) {
+      if (!session || user?.role !== 'admin') {
+        navigate('/login');
+      } else {
+        fetchUserActivity();
+      }
+    }
+  }, [session, user, loading, navigate]);
 
   const fetchUserActivity = async () => {
-    setLoading(true);
+    setLoadingData(true);
     try {
       const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
       const { data: profileData, error: profileError } = await supabase
@@ -49,16 +60,20 @@ export default function UserActivity() {
       toast.error('Fehler beim Laden der Benutzeraktivität');
       console.error(error);
     } finally {
-      setLoading(false);
+      setLoadingData(false);
     }
   };
 
-  if (loading) {
+  if (loading || loadingData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
+  }
+
+  if (!session || user?.role !== 'admin') {
+    return null;
   }
 
   return (
