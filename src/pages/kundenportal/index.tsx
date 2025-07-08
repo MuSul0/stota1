@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSession } from '@/components/SessionProvider';
+// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar, ListChecks, MessageSquare, Settings } from 'lucide-react';
@@ -27,6 +28,7 @@ export default function Kundenportal() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Header entfernt */}
       <div className="container mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold mb-8">Willkommen im Kundenbereich</h1>
         <p className="mb-8 text-gray-700">Hallo {user?.email}, hier können Sie Ihre Daten und Buchungen verwalten.</p>
@@ -85,6 +87,7 @@ export default function Kundenportal() {
           </Card>
         </div>
       </div>
+      {/* Footer entfernt */}
     </div>
   );
 }

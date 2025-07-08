@@ -1,7 +1,6 @@
 import { useSession } from '@/components/SessionProvider';
 import { redirect, useNavigate } from 'react-router-dom';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Clock, CalendarCheck, Truck, Users } from 'lucide-react';
@@ -64,7 +63,7 @@ export default function Mitarbeiterportal() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
+      {/* Header entfernt */}
       <motion.main 
         className="flex-grow container mx-auto px-4 py-12"
         initial={{ opacity: 0, y: 20 }}
@@ -98,7 +97,7 @@ export default function Mitarbeiterportal() {
           ))}
         </div>
       </motion.main>
-      <Footer />
+      {/* Footer entfernt */}
     </div>
   );
 }

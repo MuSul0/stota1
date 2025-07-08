@@ -1,8 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSession } from '@/components/SessionProvider';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
@@ -155,7 +154,7 @@ export default function Termine() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
+      {/* Header entfernt */}
       <main className="flex-grow container mx-auto px-6 py-12 max-w-5xl space-y-8">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold">Ihre Termine</h1>
@@ -271,7 +270,7 @@ export default function Termine() {
           </Card>
         )}
       </main>
-      <Footer />
+      {/* Footer entfernt */}
     </div>
   );
 }

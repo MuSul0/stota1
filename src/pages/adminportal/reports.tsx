@@ -1,9 +1,8 @@
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { useState } from 'react';
+// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
-import { useState } from 'react';
 import { toast } from 'sonner';
 
 export default function Reports() {
@@ -20,7 +19,7 @@ export default function Reports() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
+      {/* Header entfernt */}
       <main className="flex-grow container mx-auto px-6 py-12 max-w-4xl">
         <h1 className="text-3xl font-bold mb-8">Berichte & Export</h1>
 
@@ -41,7 +40,7 @@ export default function Reports() {
           </CardContent>
         </Card>
       </main>
-      <Footer />
+      {/* Footer entfernt */}
     </div>
   );
 }

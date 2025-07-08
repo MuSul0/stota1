@@ -97,6 +97,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Header entfernt */}
       <motion.main 
         className="flex-grow container mx-auto px-6 py-12 space-y-6"
         initial={{ opacity: 0, y: 20 }}
@@ -173,6 +174,7 @@ export default function AdminDashboard() {
           </Card>
         </div>
       </motion.main>
+      {/* Footer entfernt */}
     </div>
   );
 }

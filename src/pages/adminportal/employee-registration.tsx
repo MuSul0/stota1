@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -145,7 +144,7 @@ export default function EmployeeRegistration() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
+      {/* Header entfernt */}
       <main className="flex-grow container mx-auto px-6 py-12 max-w-4xl space-y-8">
         <h1 className="text-3xl font-bold flex items-center gap-2">
           <UserPlus className="w-6 h-6 text-blue-600" />
@@ -236,7 +235,7 @@ export default function EmployeeRegistration() {
           </CardContent>
         </Card>
       </main>
-      <Footer />
+      {/* Footer entfernt */}
     </div>
   );
 }

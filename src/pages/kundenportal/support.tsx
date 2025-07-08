@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSession } from '@/components/SessionProvider';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -36,7 +35,7 @@ export default function Support() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
+      {/* Header entfernt */}
       <main className="flex-grow container mx-auto px-6 py-12 max-w-3xl">
         <h1 className="text-3xl font-bold mb-6">Kunden-Support</h1>
         <p className="mb-8 text-gray-700">
@@ -63,7 +62,7 @@ export default function Support() {
           </Button>
         </div>
       </main>
-      <Footer />
+      {/* Footer entfernt */}
     </div>
   );
 }

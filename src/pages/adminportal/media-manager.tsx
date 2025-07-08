@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -7,8 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Trash2, Video, Upload, Edit } from 'lucide-react';
 import { toast } from 'sonner';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 
 const MediaManager = () => {
   const [media, setMedia] = useState<{
@@ -109,7 +109,7 @@ const MediaManager = () => {
 
   return (
     <div className="space-y-6 min-h-screen">
-      <Header />
+      {/* Header entfernt */}
       <div className="container mx-auto px-6 py-12">
         <h1 className="text-3xl font-bold mb-6">Medienverwaltung</h1>
         
@@ -201,7 +201,7 @@ const MediaManager = () => {
           </div>
 
           <div>
-            <h3 className="font-medium mb-4">Videos</h3>
+            <h3 className="font-medium">Videos</h3>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -242,7 +242,7 @@ const MediaManager = () => {
           </div>
         </div>
       </div>
-      <Footer />
+      {/* Footer entfernt */}
     </div>
   );
 };
