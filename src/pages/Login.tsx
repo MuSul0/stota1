@@ -74,12 +74,16 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-100 p-6">
       <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="text-center">
-          <Logo className="mx-auto w-32 h-32" />
-          <CardTitle className="text-2xl">Anmelden</CardTitle>
-          <CardDescription className="text-gray-600">
-            Melden Sie sich mit Ihrer E-Mail und Ihrem Passwort an.
-          </CardDescription>
+        <CardHeader className="text-center flex flex-col items-center space-y-6">
+          <div className="w-32 h-32">
+            <Logo className="w-full h-full" />
+          </div>
+          <div>
+            <CardTitle className="text-2xl">Anmelden</CardTitle>
+            <CardDescription className="text-gray-600">
+              Melden Sie sich mit Ihrer E-Mail und Ihrem Passwort an.
+            </CardDescription>
+          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-6">
