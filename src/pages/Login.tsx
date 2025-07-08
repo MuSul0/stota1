@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import Logo from '@/components/Logo';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import PasswordReset from '@/components/PasswordReset';
-import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -124,6 +124,9 @@ const Login = () => {
                   <PasswordReset onClose={() => setIsResetOpen(false)} />
                 </DialogContent>
               </Dialog>
+              <Link to="/register" className="text-sm text-blue-600 hover:underline">
+                Neu hier? Registrieren
+              </Link>
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? <Loader2 className="animate-spin mx-auto" /> : 'Anmelden'}
