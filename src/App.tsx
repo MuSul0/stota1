@@ -18,6 +18,7 @@ import Empfehlungsprogramm from '@/pages/Empfehlungsprogramm';
 import Impressum from '@/pages/Impressum';
 import Datenschutz from '@/pages/Datenschutz';
 import Login from '@/pages/Login';
+import Register from '@/pages/Register'; // Import hinzugefügt
 import KundenDashboard from '@/pages/kundenportal/index';
 import KundenTermine from '@/pages/kundenportal/termine';
 import KundenAuftraege from '@/pages/kundenportal/auftraege';
@@ -64,6 +65,7 @@ function App() {
               <Route path="/impressum" element={<Impressum />} />
               <Route path="/datenschutz" element={<Datenschutz />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} /> {/* Route hinzugefügt */}
 
               {/* Kundenportal */}
               <Route path="/kundenportal" element={<KundenDashboard />} />
