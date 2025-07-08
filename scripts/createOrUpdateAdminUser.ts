@@ -79,5 +79,5 @@ async function createOrUpdateAdminUser(email: string, password: string, firstNam
   }
 }
 
-// Beispielaufruf
-createOrUpdateAdminUser('mo_sul@hotmail.com', 'MOsulcan1.', 'Mo', 'Sulcan');
+// Benutzer anlegen oder aktualisieren
+createOrUpdateAdminUser('muhamadsuleiman2@gmail.com', 'MOMOcan1.', 'Suleiman', 'Muhamad');
