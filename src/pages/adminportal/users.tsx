@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -17,7 +16,7 @@ interface User {
   role: string;
   created_at: string;
   last_sign_in_at: string | null;
-  is_active: boolean;
+  // is_active wurde entfernt, da die direkte Manipulation über user_metadata nicht zuverlässig ist
 }
 
 export default function AdminUsers() {
@@ -66,7 +65,7 @@ export default function AdminUsers() {
           role: profile.role || 'user',
           created_at: authUser.created_at,
           last_sign_in_at: authUser.last_sign_in_at,
-          is_active: authUser.last_sign_in_at !== null
+          // is_active: authUser.last_sign_in_at !== null // Entfernt
         };
       });
 
@@ -110,20 +109,8 @@ export default function AdminUsers() {
     }
   };
 
-  const toggleUserStatus = async (userId: string, currentStatus: boolean) => {
-    try {
-      const { error } = await supabase.auth.admin.updateUserById(userId, {
-        user_metadata: { is_active: !currentStatus }
-      });
-
-      if (error) throw error;
-      
-      toast.success(`Benutzer ${currentStatus ? 'deaktiviert' : 'aktiviert'}`);
-    } catch (error) {
-      toast.error('Fehler beim Ändern des Status');
-      console.error(error);
-    }
-  };
+  // toggleUserStatus Funktion entfernt, da sie nicht zuverlässig ist
+  // const toggleUserStatus = async (userId: string, currentStatus: boolean) => { ... };
 
   if (loading || loadingData) {
     return (
@@ -139,7 +126,6 @@ export default function AdminUsers() {
 
   return (
     <div className="space-y-6 min-h-screen bg-gray-50 flex flex-col">
-      {/* Header entfernt */}
       <main className="flex-grow container mx-auto px-6 py-12 max-w-7xl">
         <h1 className="text-3xl font-bold mb-8">Benutzerverwaltung</h1>
 
@@ -155,7 +141,7 @@ export default function AdminUsers() {
                   <TableHead>Rolle</TableHead>
                   <TableHead>Registriert am</TableHead>
                   <TableHead>Letzte Anmeldung</TableHead>
-                  <TableHead>Status</TableHead>
+                  {/* <TableHead>Status</TableHead> */} {/* Status-Spalte entfernt */}
                   <TableHead className="text-right">Aktionen</TableHead>
                 </TableRow>
               </TableHeader>
@@ -181,19 +167,20 @@ export default function AdminUsers() {
                     </TableCell>
                     <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
                     <TableCell>{user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : 'Nie'}</TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       <Badge variant={user.is_active ? 'default' : 'secondary'}>
                         {user.is_active ? 'Aktiv' : 'Inaktiv'}
                       </Badge>
-                    </TableCell>
+                    </TableCell> */} {/* Status-Zelle entfernt */}
                     <TableCell className="text-right space-x-2">
-                      <Button
+                      {/* Button zum Umschalten des Status entfernt */}
+                      {/* <Button
                         size="sm"
                         variant="outline"
                         onClick={() => toggleUserStatus(user.id, user.is_active)}
                       >
                         {user.is_active ? 'Deaktivieren' : 'Aktivieren'}
-                      </Button>
+                      </Button> */}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -202,7 +189,6 @@ export default function AdminUsers() {
           </CardContent>
         </Card>
       </main>
-      {/* Footer entfernt */}
     </div>
   );
 }
