@@ -9,6 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { useSession } from '@/components/SessionProvider';
+import { useNavigate } from 'react-router-dom';
 
 interface User {
   id: string;
@@ -20,14 +22,25 @@ interface User {
 }
 
 export default function AdminUsers() {
+  const { session, user, loading } = useSession();
+  const navigate = useNavigate();
+
   const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingData, setLoadingData] = useState(true);
   const subscriptionRef = useRef<any>(null);
 
   useEffect(() => {
-    fetchUsers();
-    setupRealtimeSubscription();
+    if (!loading) {
+      if (!session || user?.role !== 'admin') {
+        navigate('/login');
+      } else {
+        fetchUsers();
+        setupRealtimeSubscription();
+      }
+    }
+  }, [session, user, loading, navigate]);
 
+  useEffect(() => {
     return () => {
       if (subscriptionRef.current) {
         supabase.removeChannel(subscriptionRef.current);
@@ -37,7 +50,7 @@ export default function AdminUsers() {
   }, []);
 
   const fetchUsers = async () => {
-    setLoading(true);
+    setLoadingData(true);
     try {
       const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
       const { data: profileData, error: profileError } = await supabase
@@ -46,7 +59,6 @@ export default function AdminUsers() {
 
       if (authError || profileError) throw authError || profileError;
 
-      // Kombiniere Auth- und Profildaten
       const combinedUsers = authData.users.map(authUser => {
         const profile = profileData.find(p => p.id === authUser.id) || {};
         return {
@@ -64,7 +76,7 @@ export default function AdminUsers() {
       toast.error('Fehler beim Laden der Benutzer');
       console.error(error);
     } finally {
-      setLoading(false);
+      setLoadingData(false);
     }
   };
 
@@ -114,12 +126,16 @@ export default function AdminUsers() {
     }
   };
 
-  if (loading) {
+  if (loading || loadingData) {
     return (
       <div className="flex justify-center p-8">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
+  }
+
+  if (!session || user?.role !== 'admin') {
+    return null;
   }
 
   return (

@@ -4,8 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DollarSign, Users, CheckCircle, Clock, Eye, UserPlus } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import { useSession } from '@/components/SessionProvider';
+import { useNavigate } from 'react-router-dom';
 
 export default function AdminDashboard() {
+  const { session, user, loading } = useSession();
+  const navigate = useNavigate();
+
   const [stats, setStats] = useState({
     totalRevenue: 0,
     activeUsers: 0,
@@ -14,46 +19,40 @@ export default function AdminDashboard() {
     visitorsToday: 0,
     newRegistrationsToday: 0
   });
-  const [loading, setLoading] = useState(true);
+  const [loadingStats, setLoadingStats] = useState(true);
 
   useEffect(() => {
-    fetchData();
-
-    // Optional: alle 30 Sekunden aktualisieren
-    const interval = setInterval(() => {
-      fetchData();
-    }, 30000);
-
-    return () => clearInterval(interval);
-  }, []);
+    if (!loading) {
+      if (!session || user?.role !== 'admin') {
+        navigate('/login');
+      } else {
+        fetchData();
+      }
+    }
+  }, [session, user, loading, navigate]);
 
   const fetchData = async () => {
-    setLoading(true);
+    setLoadingStats(true);
     try {
-      // Umsatz aus Supabase RPC Funktion
       const { data: revenue, error: revenueError } = await supabase.rpc('calculate_total_revenue');
       if (revenueError) throw revenueError;
 
-      // Anzahl aktive Benutzer
       const { count: usersCount, error: usersError } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true });
       if (usersError) throw usersError;
 
-      // Anzahl abgeschlossene Services (angenommen services Tabelle)
       const { count: servicesCount, error: servicesError } = await supabase
         .from('services')
         .select('*', { count: 'exact', head: true });
       if (servicesError) throw servicesError;
 
-      // Anzahl ausstehende Anfragen (requests Tabelle mit status 'pending')
       const { count: pendingCount, error: pendingError } = await supabase
         .from('requests')
         .select('*', { count: 'exact', head: true })
         .eq('status', 'pending');
       if (pendingError) throw pendingError;
 
-      // Besucher heute (visitors Tabelle, visited_at >= heute 00:00)
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const { count: visitorsCount, error: visitorsError } = await supabase
@@ -62,7 +61,6 @@ export default function AdminDashboard() {
         .gte('visited_at', today.toISOString());
       if (visitorsError) throw visitorsError;
 
-      // Neue Registrierungen heute (profiles.created_at >= heute 00:00)
       const { count: registrationsCount, error: registrationsError } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true })
@@ -81,16 +79,20 @@ export default function AdminDashboard() {
       toast.error('Fehler beim Laden der Statistiken');
       console.error(error);
     } finally {
-      setLoading(false);
+      setLoadingStats(false);
     }
   };
 
-  if (loading) {
+  if (loading || loadingStats) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <p className="text-gray-600 text-lg">Lade Statistiken...</p>
       </div>
     );
+  }
+
+  if (!session || user?.role !== 'admin') {
+    return null;
   }
 
   return (

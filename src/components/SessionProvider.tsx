@@ -1,11 +1,11 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { Session } from '@supabase/supabase-js';
+import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 
 interface SessionContextType {
   session: Session | null;
-  user: any | null;
+  user: (User & { role?: string }) | null;
   loading: boolean;
 }
 
@@ -13,22 +13,47 @@ const SessionContext = createContext<SessionContextType | undefined>(undefined);
 
 export const SessionProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<(User & { role?: string }) | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const getUserRole = async (userId: string) => {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', userId)
+        .single();
+
+      if (error) {
+        console.error('Fehler beim Laden der Rolle:', error);
+        return null;
+      }
+      return profile?.role || null;
+    };
+
+    const handleAuthChange = async (event: string, session: Session | null) => {
       if (event === 'SIGNED_OUT') {
         setSession(null);
         setUser(null);
         navigate('/login');
       } else if (session) {
         setSession(session);
-        setUser(session.user);
+        const role = await getUserRole(session.user.id);
+        setUser({ ...session.user, role: role || undefined });
       }
       setLoading(false);
+    };
+
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        handleAuthChange('SIGNED_IN', data.session);
+      } else {
+        setLoading(false);
+      }
     });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(handleAuthChange);
 
     return () => subscription.unsubscribe();
   }, [navigate]);
