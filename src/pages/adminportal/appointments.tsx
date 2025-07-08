@@ -7,6 +7,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { useSession } from '@/components/SessionProvider';
+import { useNavigate } from 'react-router-dom';
 
 interface Appointment {
   id: string;
@@ -18,25 +20,33 @@ interface Appointment {
 }
 
 export default function Appointments() {
+  const { session, user, loading } = useSession();
+  const navigate = useNavigate();
+
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingData, setLoadingData] = useState(true);
   const [filterStatus, setFilterStatus] = useState<string>('alle');
   const subscriptionRef = useRef<any>(null);
 
   useEffect(() => {
-    fetchAppointments();
-    setupRealtimeSubscription();
-
+    if (!loading) {
+      if (!session || user?.role !== 'admin') {
+        navigate('/login');
+      } else {
+        fetchAppointments();
+        setupRealtimeSubscription();
+      }
+    }
     return () => {
       if (subscriptionRef.current) {
         supabase.removeChannel(subscriptionRef.current);
         subscriptionRef.current = null;
       }
     };
-  }, []);
+  }, [session, user, loading, navigate]);
 
   const fetchAppointments = async () => {
-    setLoading(true);
+    setLoadingData(true);
     try {
       const { data, error } = await supabase
         .from('appointments')
@@ -60,7 +70,7 @@ export default function Appointments() {
       toast.error('Fehler beim Laden der Termine');
       console.error(error);
     } finally {
-      setLoading(false);
+      setLoadingData(false);
     }
   };
 
@@ -83,12 +93,16 @@ export default function Appointments() {
     ? appointments
     : appointments.filter(a => a.status.toLowerCase() === filterStatus.toLowerCase());
 
-  if (loading) {
+  if (loading || loadingData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
+  }
+
+  if (!session || user?.role !== 'admin') {
+    return null;
   }
 
   return (
