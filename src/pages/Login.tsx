@@ -35,12 +35,32 @@ const Login = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        const role = session.user.user_metadata?.role;
+        // Versuche Rolle aus user_metadata zu lesen
+        let role = session.user.user_metadata?.role;
+
+        // Falls Rolle nicht vorhanden, lade aus profiles Tabelle
+        if (!role) {
+          const { data: profile, error } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', session.user.id)
+            .single();
+
+          if (error) {
+            toast.error('Fehler beim Laden der Benutzerrolle');
+            await supabase.auth.signOut();
+            return;
+          }
+
+          role = profile?.role;
+        }
+
         if (!role) {
           toast.error('Keine Rolle gefunden. Bitte wende dich an den Administrator.');
           await supabase.auth.signOut();
           return;
         }
+
         toast.success('Anmeldung erfolgreich!');
         switch (role) {
           case 'kunde':
@@ -64,13 +84,66 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoadingLogin(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       if (error.message === 'Invalid login credentials') {
         toast.error('E-Mail oder Passwort ist falsch.');
+      } else if (error.message.includes('Email not confirmed')) {
+        toast.error('Bitte bestätigen Sie Ihre E-Mail-Adresse, bevor Sie sich anmelden.');
       } else {
         toast.error('Fehler bei der Anmeldung: ' + error.message);
       }
+      setLoadingLogin(false);
+      return;
+    }
+
+    // Prüfe, ob Session und User vorhanden sind
+    if (!data.session || !data.user) {
+      toast.error('Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.');
+      setLoadingLogin(false);
+      return;
+    }
+
+    // Rolle aus user_metadata prüfen
+    let role = data.user.user_metadata?.role;
+
+    // Falls Rolle nicht vorhanden, lade aus profiles Tabelle
+    if (!role) {
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .single();
+
+      if (profileError) {
+        toast.error('Fehler beim Laden der Benutzerrolle');
+        setLoadingLogin(false);
+        return;
+      }
+
+      role = profile?.role;
+    }
+
+    if (!role) {
+      toast.error('Keine Rolle gefunden. Bitte wende dich an den Administrator.');
+      setLoadingLogin(false);
+      return;
+    }
+
+    toast.success('Anmeldung erfolgreich!');
+    switch (role) {
+      case 'kunde':
+        navigate('/kundenportal');
+        break;
+      case 'mitarbeiter':
+        navigate('/mitarbeiterportal');
+        break;
+      case 'admin':
+        navigate('/adminportal');
+        break;
+      default:
+        navigate('/');
+        break;
     }
     setLoadingLogin(false);
   };
