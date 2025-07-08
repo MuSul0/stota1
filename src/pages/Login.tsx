@@ -61,7 +61,7 @@ const Login = () => {
           return;
         }
 
-        // Nur eine Erfolgsmeldung hier, nicht doppelt
+        toast.success('Anmeldung erfolgreich!');
         switch (role) {
           case 'kunde':
             navigate('/kundenportal');
@@ -104,49 +104,8 @@ const Login = () => {
       return;
     }
 
-    // Rolle aus user_metadata prüfen
-    let role = data.user.user_metadata ? data.user.user_metadata.role : undefined;
-
-    // Falls Rolle nicht vorhanden, lade aus profiles Tabelle
-    if (!role) {
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', data.user.id)
-        .single();
-
-      if (profileError) {
-        toast.error('Fehler beim Laden der Benutzerrolle');
-        setLoadingLogin(false);
-        return;
-      }
-
-      role = profile?.role;
-    }
-
-    if (!role) {
-      toast.error('Keine Rolle gefunden. Bitte wende dich an den Administrator.');
-      setLoadingLogin(false);
-      return;
-    }
-
-    // Erfolgsmeldung nur hier
+    // Nur Erfolgsmeldung hier, Navigation erfolgt im onAuthStateChange
     toast.success('Anmeldung erfolgreich!');
-
-    switch (role) {
-      case 'kunde':
-        navigate('/kundenportal');
-        break;
-      case 'mitarbeiter':
-        navigate('/mitarbeiterportal');
-        break;
-      case 'admin':
-        navigate('/adminportal');
-        break;
-      default:
-        navigate('/');
-        break;
-    }
     setLoadingLogin(false);
   };
 
