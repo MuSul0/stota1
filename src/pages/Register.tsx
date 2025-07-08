@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import Logo from '@/components/Logo';
 import { Button } from '@/components/ui/button';
@@ -8,21 +8,27 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 const Register = () => {
   const navigate = useNavigate();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password || !name) {
+
+    if (!name.trim() || !email.trim() || !password.trim()) {
       toast.error('Bitte alle Felder ausfüllen');
       return;
     }
+
+    if (password.length < 6) {
+      toast.error('Das Passwort muss mindestens 6 Zeichen lang sein');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -31,7 +37,7 @@ const Register = () => {
         email,
         password,
         options: {
-          data: { role: 'kunde', name }
+          data: { role: 'kunde', first_name: name.trim() }
         }
       });
 
@@ -48,7 +54,7 @@ const Register = () => {
           .insert({
             id: data.user.id,
             email,
-            first_name: name,
+            first_name: name.trim(),
             role: 'kunde',
             created_at: new Date().toISOString()
           });
@@ -71,7 +77,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-100 p-6">
+    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-50 to-purple-100 p-6">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
           <Logo className="mx-auto w-32 h-32" />
@@ -91,6 +97,7 @@ const Register = () => {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Ihr vollständiger Name"
                 required
+                autoComplete="name"
               />
             </div>
             <div>
