@@ -38,7 +38,7 @@ serve(async (req) => {
     const existingUser = users.find(u => u.email === email);
 
     if (existingUser) {
-      // Benutzer aktualisieren
+      // Benutzer aktualisieren: Passwort zurücksetzen und Metadaten setzen
       const { error: updateError } = await supabase.auth.admin.updateUserById(existingUser.id, {
         password,
         user_metadata: {
@@ -46,6 +46,7 @@ serve(async (req) => {
           first_name: first_name || "",
           last_name: last_name || "",
         },
+        email_confirm: true, // E-Mail als bestätigt markieren
       });
 
       if (updateError) {
@@ -79,7 +80,7 @@ serve(async (req) => {
         { status: 200, headers: corsHeaders }
       );
     } else {
-      // Benutzer anlegen
+      // Benutzer anlegen mit bestätigter E-Mail
       const { data, error: createError } = await supabase.auth.admin.createUser({
         email,
         password,
@@ -88,7 +89,7 @@ serve(async (req) => {
           first_name: first_name || "",
           last_name: last_name || "",
         },
-        email_confirm: true,
+        email_confirm: true, // E-Mail als bestätigt markieren
       });
 
       if (createError) {
