@@ -19,6 +19,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchData();
 
+    // Optional: alle 30 Sekunden aktualisieren
     const interval = setInterval(() => {
       fetchData();
     }, 30000);
@@ -29,25 +30,30 @@ export default function AdminDashboard() {
   const fetchData = async () => {
     setLoading(true);
     try {
+      // Umsatz aus Supabase RPC Funktion
       const { data: revenue, error: revenueError } = await supabase.rpc('calculate_total_revenue');
       if (revenueError) throw revenueError;
 
+      // Anzahl aktive Benutzer
       const { count: usersCount, error: usersError } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true });
       if (usersError) throw usersError;
 
+      // Anzahl abgeschlossene Services (angenommen services Tabelle)
       const { count: servicesCount, error: servicesError } = await supabase
         .from('services')
         .select('*', { count: 'exact', head: true });
       if (servicesError) throw servicesError;
 
+      // Anzahl ausstehende Anfragen (requests Tabelle mit status 'pending')
       const { count: pendingCount, error: pendingError } = await supabase
         .from('requests')
         .select('*', { count: 'exact', head: true })
         .eq('status', 'pending');
       if (pendingError) throw pendingError;
 
+      // Besucher heute (visitors Tabelle, visited_at >= heute 00:00)
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const { count: visitorsCount, error: visitorsError } = await supabase
@@ -56,6 +62,7 @@ export default function AdminDashboard() {
         .gte('visited_at', today.toISOString());
       if (visitorsError) throw visitorsError;
 
+      // Neue Registrierungen heute (profiles.created_at >= heute 00:00)
       const { count: registrationsCount, error: registrationsError } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true })
