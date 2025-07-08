@@ -77,19 +77,21 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-50 to-purple-100 p-6">
-      <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="text-center">
-          <Logo className="mx-auto w-32 h-32" />
-          <CardTitle className="text-2xl">Registrieren</CardTitle>
-          <CardDescription className="text-gray-600">
-            Erstellen Sie ein Konto, um auf das Kundenportal zuzugreifen.
-          </CardDescription>
+    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-tr from-blue-600 to-purple-700 px-4">
+      <Card className="max-w-md w-full p-8 rounded-2xl shadow-2xl bg-white/90 backdrop-blur-md border border-white/30">
+        <CardHeader className="flex flex-col items-center space-y-6">
+          <Logo />
+          <div className="text-center">
+            <CardTitle className="text-3xl font-extrabold text-gray-900">Neu hier? Registrieren</CardTitle>
+            <CardDescription className="text-gray-600">
+              Erstellen Sie ein Konto, um auf das Kundenportal zuzugreifen.
+            </CardDescription>
+          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleRegister} className="space-y-6">
             <div>
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name" className="text-gray-700 font-semibold">Name</Label>
               <Input
                 id="name"
                 type="text"
@@ -98,10 +100,11 @@ const Register = () => {
                 placeholder="Ihr vollständiger Name"
                 required
                 autoComplete="name"
+                className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="email">E-Mail</Label>
+              <Label htmlFor="email" className="text-gray-700 font-semibold">E-Mail</Label>
               <Input
                 id="email"
                 type="email"
@@ -110,10 +113,11 @@ const Register = () => {
                 placeholder="name@beispiel.de"
                 required
                 autoComplete="email"
+                className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="password">Passwort</Label>
+              <Label htmlFor="password" className="text-gray-700 font-semibold">Passwort</Label>
               <Input
                 id="password"
                 type="password"
@@ -122,15 +126,16 @@ const Register = () => {
                 placeholder="Mindestens 6 Zeichen"
                 required
                 autoComplete="new-password"
+                className="mt-1"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full py-3 text-lg font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg shadow-lg transition-all duration-300" disabled={loading}>
               {loading ? <Loader2 className="animate-spin mx-auto" /> : 'Registrieren'}
             </Button>
           </form>
-          <p className="mt-4 text-center text-sm text-gray-600">
+          <p className="mt-6 text-center text-gray-200 select-none text-sm">
             Bereits registriert?{' '}
-            <Link to="/login" className="text-blue-600 hover:underline">
+            <Link to="/login" className="text-blue-600 hover:underline font-medium">
               Hier anmelden
             </Link>
           </p>
