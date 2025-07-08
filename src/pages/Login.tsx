@@ -12,440 +12,97 @@ import PasswordReset from '@/components/PasswordReset';
 
 const Login = () => {
   const navigate = useNavigate();
-
-  // Login-Formularzustand
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loadingLogin, setLoadingLogin] = useState(false);
-
-  // Registrierung-Formularzustand
-  const [isRegistering, setIsRegistering] = useState(false);
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [emailReg, setEmailReg] = useState('');
-  const [passwordReg, setPasswordReg] = useState('');
-  const [passwordConfirm, setPasswordConfirm] = useState('');
-  const [termsAccepted, setTermsAccepted] = useState(false);
-  const [loadingRegister, setLoadingRegister] = useState(false);
-  const [registerDisabled, setRegisterDisabled] = useState(false);
-
-  // Passwort zurücksetzen Zustand
-  const [showPasswordReset, setShowPasswordReset] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        let role = session.user.user_metadata?.role;
-
-        if (!role) {
-          const { data: profile, error } = await supabase
-            .from('profiles')
-            .select('role')
-            .eq('id', session.user.id)
-            .single();
-
-          if (error) {
-            toast.error('Fehler beim Laden der Benutzerrolle');
-            await supabase.auth.signOut();
-            return;
-          }
-
-          role = profile?.role;
-        }
-
-        if (!role) {
-          toast.error('Keine Rolle gefunden. Bitte wende dich an den Administrator.');
-          await supabase.auth.signOut();
-          return;
-        }
-
-        toast.success('Anmeldung erfolgreich!');
-        switch (role) {
-          case 'kunde':
-            navigate('/kundenportal', { replace: true });
-            break;
-          case 'mitarbeiter':
-            navigate('/mitarbeiterportal', { replace: true });
-            break;
-          case 'admin':
-            navigate('/adminportal', { replace: true });
-            break;
-          default:
-            navigate('/', { replace: true });
-            break;
-        }
+        await handlePostLoginNavigation(session.user.id);
       }
     });
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, []);
+
+  const handlePostLoginNavigation = async (userId: string) => {
+    try {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', userId)
+        .single();
+
+      if (error) throw error;
+
+      switch (profile.role) {
+        case 'kunde':
+          navigate('/kundenportal', { replace: true });
+          break;
+        case 'mitarbeiter':
+          navigate('/mitarbeiterportal', { replace: true });
+          break;
+        case 'admin':
+          navigate('/adminportal', { replace: true });
+          break;
+        default:
+          navigate('/', { replace: true });
+      }
+    } catch (error) {
+      toast.error('Fehler beim Laden der Benutzerdaten');
+      await supabase.auth.signOut();
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoadingLogin(true);
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      if (error.message === 'Invalid login credentials') {
-        toast.error('E-Mail oder Passwort ist falsch.');
-      } else if (error.message.includes('Email not confirmed')) {
-        toast.error('Bitte bestätigen Sie Ihre E-Mail-Adresse, bevor Sie sich anmelden.');
-      } else {
-        toast.error('Fehler bei der Anmeldung: ' + error.message);
-      }
-      setLoadingLogin(false);
-      return;
-    }
-
-    if (!data.session || !data.user) {
-      toast.error('Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.');
-      setLoadingLogin(false);
-      return;
-    }
-
-    // Rolle aus user_metadata prüfen
-    let role = data.user.user_metadata?.role;
-
-    if (!role) {
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', data.user.id)
-        .single();
-
-      if (profileError) {
-        toast.error('Fehler beim Laden der Benutzerrolle');
-        setLoadingLogin(false);
-        return;
-      }
-
-      role = profile?.role;
-    }
-
-    if (!role) {
-      toast.error('Keine Rolle gefunden. Bitte wende dich an den Administrator.');
-      setLoadingLogin(false);
-      return;
-    }
-
-    toast.success('Anmeldung erfolgreich!');
-
-    // Fallback Navigation, falls onAuthStateChange nicht schnell genug ist
-    switch (role) {
-      case 'kunde':
-        navigate('/kundenportal', { replace: true });
-        break;
-      case 'mitarbeiter':
-        navigate('/mitarbeiterportal', { replace: true });
-        break;
-      case 'admin':
-        navigate('/adminportal', { replace: true });
-        break;
-      default:
-        navigate('/', { replace: true });
-        break;
-    }
-
-    setLoadingLogin(false);
-  };
-
-  const sendWelcomeEmail = async (email: string, role: string) => {
+    setLoading(true);
+    
     try {
-      const res = await fetch('/.netlify/functions/send-welcome-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, role }),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        console.error('Fehler beim Senden der Willkommensmail:', data.error);
-      }
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      
+      // Navigation wird durch onAuthStateChange gehandelt
     } catch (error) {
-      console.error('Fehler beim Senden der Willkommensmail:', error);
-    }
-  };
-
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (registerDisabled) {
-      toast.error('Bitte warten Sie einen Moment, bevor Sie es erneut versuchen.');
-      return;
-    }
-
-    if (!firstName.trim() || !lastName.trim() || !emailReg.trim() || !passwordReg) {
-      toast.error('Bitte alle Felder ausfüllen');
-      return;
-    }
-    if (passwordReg !== passwordConfirm) {
-      toast.error('Passwörter stimmen nicht überein');
-      return;
-    }
-    if (!termsAccepted) {
-      toast.error('Bitte stimme den Nutzungsbedingungen und der Datenschutzerklärung zu');
-      return;
-    }
-
-    setLoadingRegister(true);
-    setRegisterDisabled(true);
-
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email: emailReg,
-        password: passwordReg,
-        options: {
-          data: {
-            role: 'kunde',
-            first_name: firstName.trim(),
-            last_name: lastName.trim()
-          }
-        }
-      });
-
-      if (error) {
-        if (error.message.includes('For security purposes')) {
-          toast.error('Zu viele Anfragen. Bitte warten Sie eine Minute und versuchen Sie es erneut.');
-        } else {
-          toast.error('Fehler bei der Registrierung: ' + error.message);
-        }
-        setLoadingRegister(false);
-        setRegisterDisabled(false);
-        return;
-      }
-
-      if (data.user) {
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .upsert({
-            id: data.user.id,
-            email: emailReg,
-            role: 'kunde',
-            first_name: firstName.trim(),
-            last_name: lastName.trim(),
-            created_at: new Date().toISOString()
-          }, { onConflict: 'id' });
-        if (profileError) {
-          toast.error('Fehler beim Anlegen des Profils');
-          setLoadingRegister(false);
-          setRegisterDisabled(false);
-          return;
-        }
-        await sendWelcomeEmail(emailReg, 'kunde');
-        toast.success('Registrierung erfolgreich! Bitte bestätige deine E-Mail.');
-        setIsRegistering(false);
-        // Felder zurücksetzen
-        setFirstName('');
-        setLastName('');
-        setEmailReg('');
-        setPasswordReg('');
-        setPasswordConfirm('');
-        setTermsAccepted(false);
-      }
-    } catch (error) {
-      toast.error('Unbekannter Fehler bei der Registrierung');
-      console.error(error);
+      toast.error('Anmeldung fehlgeschlagen: ' + error.message);
     } finally {
-      setLoadingRegister(false);
-      // Nach 60 Sekunden wieder aktivieren
-      setTimeout(() => setRegisterDisabled(false), 60000);
+      setLoading(false);
     }
   };
-
-  if (showPasswordReset) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-100 p-6">
-        <PasswordReset onClose={() => setShowPasswordReset(false)} />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-100 p-6">
-      <div className="w-full max-w-md">
-        <div className="flex justify-center mb-8">
-          <Logo className="w-32 h-32" />
-        </div>
-
-        {!isRegistering ? (
-          <Card className="p-6 shadow-lg rounded-lg bg-white">
-            <CardHeader>
-              <CardTitle className="text-2xl text-center mb-4">Anmelden</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleLogin} className="space-y-6">
-                <div>
-                  <Label htmlFor="email">E-Mail-Adresse</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    required
-                    placeholder="name@beispiel.de"
-                    autoComplete="username"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="password">Passwort</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    required
-                    placeholder="••••••••"
-                    autoComplete="current-password"
-                  />
-                </div>
-                <Button type="submit" className="w-full" disabled={loadingLogin}>
-                  {loadingLogin ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <Loader2 className="animate-spin h-5 w-5" />
-                      Anmelden...
-                    </div>
-                  ) : (
-                    'Anmelden'
-                  )}
-                </Button>
-              </form>
-              <div className="mt-4 text-center">
-                <button
-                  className="text-sm text-blue-600 hover:underline"
-                  onClick={() => setShowPasswordReset(true)}
-                >
-                  Passwort vergessen?
-                </button>
-              </div>
-              <div className="mt-6 text-center text-sm text-gray-600">
-                Noch kein Konto?{' '}
-                <button
-                  className="text-blue-600 hover:underline font-semibold"
-                  onClick={() => setIsRegistering(true)}
-                  disabled={loadingLogin}
-                >
-                  Jetzt registrieren
-                </button>
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card className="p-6 shadow-lg rounded-lg bg-white">
-            <CardHeader>
-              <CardTitle className="text-2xl text-center mb-4">Registrierung</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleRegister} className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="firstName">Vorname</Label>
-                    <Input
-                      id="firstName"
-                      type="text"
-                      value={firstName}
-                      onChange={e => setFirstName(e.target.value)}
-                      required
-                      placeholder="Max"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="lastName">Nachname</Label>
-                    <Input
-                      id="lastName"
-                      type="text"
-                      value={lastName}
-                      onChange={e => setLastName(e.target.value)}
-                      required
-                      placeholder="Mustermann"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="emailReg">E-Mail-Adresse</Label>
-                  <Input
-                    id="emailReg"
-                    type="email"
-                    value={emailReg}
-                    onChange={e => setEmailReg(e.target.value)}
-                    required
-                    placeholder="max@beispiel.de"
-                    autoComplete="email"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="passwordReg">Passwort</Label>
-                  <Input
-                    id="passwordReg"
-                    type="password"
-                    value={passwordReg}
-                    onChange={e => setPasswordReg(e.target.value)}
-                    required
-                    minLength={6}
-                    placeholder="Mindestens 6 Zeichen"
-                    autoComplete="new-password"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="passwordConfirm">Passwort bestätigen</Label>
-                  <Input
-                    id="passwordConfirm"
-                    type="password"
-                    value={passwordConfirm}
-                    onChange={e => setPasswordConfirm(e.target.value)}
-                    required
-                    minLength={6}
-                    placeholder="Passwort wiederholen"
-                    autoComplete="new-password"
-                  />
-                </div>
-                <div className="flex items-center">
-                  <input
-                    id="termsAccepted"
-                    type="checkbox"
-                    checked={termsAccepted}
-                    onChange={e => setTermsAccepted(e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    required
-                  />
-                  <label htmlFor="termsAccepted" className="ml-2 text-sm text-gray-700">
-                    Ich stimme den{' '}
-                    <a href="/nutzungsbedingungen" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-                      Nutzungsbedingungen
-                    </a>{' '}
-                    und der{' '}
-                    <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-                      Datenschutzerklärung
-                    </a>{' '}
-                    zu.
-                  </label>
-                </div>
-                <Button type="submit" className="w-full" disabled={loadingRegister || registerDisabled}>
-                  {loadingRegister ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <Loader2 className="animate-spin h-5 w-5" />
-                      Registrieren...
-                    </div>
-                  ) : (
-                    'Registrieren'
-                  )}
-                </Button>
-                {registerDisabled && (
-                  <p className="text-sm text-red-600 mt-2 text-center">
-                    Bitte warten Sie eine Minute, bevor Sie es erneut versuchen.
-                  </p>
-                )}
-              </form>
-              <div className="mt-6 text-center text-sm text-gray-600">
-                Bereits ein Konto?{' '}
-                <button
-                  className="text-blue-600 hover:underline font-semibold"
-                  onClick={() => setIsRegistering(false)}
-                  disabled={loadingRegister}
-                >
-                  Zurück zum Login
-                </button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-      </div>
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <Logo className="mx-auto w-32 h-32" />
+          <CardTitle>Anmelden</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <Label>E-Mail</Label>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <Label>Passwort</Label>
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? <Loader2 className="animate-spin" /> : 'Anmelden'}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 };
