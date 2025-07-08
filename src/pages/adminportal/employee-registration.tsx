@@ -9,34 +9,44 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { toast } from 'sonner';
 import { Loader2, UserPlus } from 'lucide-react';
+import { useSession } from '@/components/SessionProvider';
+import { useNavigate } from 'react-router-dom';
 
 interface Employee {
   id: string;
   email: string;
-  name: string;
+  first_name: string;
   role: string;
   created_at: string;
 }
 
 export default function EmployeeRegistration() {
+  const { session, user, loading } = useSession();
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loadingState, setLoadingState] = useState(false);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const subscriptionRef = useRef<any>(null);
 
   useEffect(() => {
-    fetchEmployees();
-    setupRealtimeSubscription();
-
+    if (!loading) {
+      if (!session || user?.role !== 'admin') {
+        navigate('/login');
+      } else {
+        fetchEmployees();
+        setupRealtimeSubscription();
+      }
+    }
     return () => {
       if (subscriptionRef.current) {
         supabase.removeChannel(subscriptionRef.current);
         subscriptionRef.current = null;
       }
     };
-  }, []);
+  }, [session, user, loading, navigate]);
 
   const fetchEmployees = async () => {
     try {
@@ -76,7 +86,7 @@ export default function EmployeeRegistration() {
       return;
     }
 
-    setLoading(true);
+    setLoadingState(true);
 
     try {
       const { data, error } = await supabase.auth.admin.createUser({
@@ -88,7 +98,7 @@ export default function EmployeeRegistration() {
 
       if (error) {
         toast.error('Fehler bei der Registrierung: ' + error.message);
-        setLoading(false);
+        setLoadingState(false);
         return;
       }
 
@@ -104,7 +114,7 @@ export default function EmployeeRegistration() {
 
       if (profileError) {
         toast.error('Fehler beim Anlegen des Profils');
-        setLoading(false);
+        setLoadingState(false);
         return;
       }
 
@@ -117,9 +127,21 @@ export default function EmployeeRegistration() {
       toast.error('Unbekannter Fehler bei der Registrierung');
       console.error(error);
     } finally {
-      setLoading(false);
+      setLoadingState(false);
     }
   };
+
+  if (loading || loadingState) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!session || user?.role !== 'admin') {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -176,8 +198,8 @@ export default function EmployeeRegistration() {
                 />
               </div>
               <div className="md:col-span-3 flex justify-end">
-                <Button type="submit" disabled={loading} className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-                  {loading ? 'Registriere...' : 'Mitarbeiter registrieren'}
+                <Button type="submit" disabled={loadingState} className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                  {loadingState ? 'Registriere...' : 'Mitarbeiter registrieren'}
                 </Button>
               </div>
             </form>
@@ -203,7 +225,7 @@ export default function EmployeeRegistration() {
                 <TableBody>
                   {employees.map(emp => (
                     <TableRow key={emp.id}>
-                      <TableCell>{emp.first_name || emp.name || 'Unbekannt'}</TableCell>
+                      <TableCell>{emp.first_name || 'Unbekannt'}</TableCell>
                       <TableCell>{emp.email}</TableCell>
                       <TableCell>{new Date(emp.created_at).toLocaleDateString()}</TableCell>
                     </TableRow>
