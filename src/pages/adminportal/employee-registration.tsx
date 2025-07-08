@@ -97,7 +97,7 @@ export default function EmployeeRegistration() {
         .insert({
           id: data.user.id,
           email,
-          name,
+          first_name: name,
           role: 'mitarbeiter',
           created_at: new Date().toISOString()
         });
@@ -203,7 +203,7 @@ export default function EmployeeRegistration() {
                 <TableBody>
                   {employees.map(emp => (
                     <TableRow key={emp.id}>
-                      <TableCell>{emp.name}</TableCell>
+                      <TableCell>{emp.first_name || emp.name || 'Unbekannt'}</TableCell>
                       <TableCell>{emp.email}</TableCell>
                       <TableCell>{new Date(emp.created_at).toLocaleDateString()}</TableCell>
                     </TableRow>
