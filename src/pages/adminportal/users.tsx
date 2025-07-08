@@ -46,7 +46,7 @@ export default function AdminUsers() {
 
       if (authError || profileError) throw authError || profileError;
 
-      // Combine auth and profile data
+      // Kombiniere Auth- und Profildaten
       const combinedUsers = authData.users.map(authUser => {
         const profile = profileData.find(p => p.id === authUser.id) || {};
         return {
@@ -79,6 +79,7 @@ export default function AdminUsers() {
         fetchUsers();
       })
       .subscribe();
+
     subscriptionRef.current = channel;
   };
 
@@ -92,7 +93,7 @@ export default function AdminUsers() {
       if (error) throw error;
       
       toast.success('Benutzerrolle aktualisiert');
-      fetchUsers();
+      // fetchUsers(); // Nicht nötig, da Realtime Subscription aktualisiert
     } catch (error) {
       toast.error('Fehler beim Aktualisieren der Rolle');
       console.error(error);
@@ -108,7 +109,7 @@ export default function AdminUsers() {
       if (error) throw error;
       
       toast.success(`Benutzer ${currentStatus ? 'deaktiviert' : 'aktiviert'}`);
-      fetchUsers();
+      // fetchUsers(); // Nicht nötig, da Realtime Subscription aktualisiert
     } catch (error) {
       toast.error('Fehler beim Ändern des Status');
       console.error(error);
@@ -117,14 +118,14 @@ export default function AdminUsers() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="flex justify-center p-8">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="space-y-6 min-h-screen bg-gray-50 flex flex-col">
       <Header />
       <main className="flex-grow container mx-auto px-6 py-12 max-w-7xl">
         <h1 className="text-3xl font-bold mb-8">Benutzerverwaltung</h1>
