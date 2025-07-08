@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { DollarSign, Users, CheckCircle, Clock, TrendingUp, Eye, UserPlus } from 'lucide-react';
+import { DollarSign, Users, CheckCircle, Clock, Eye, UserPlus } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
@@ -90,7 +88,6 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
       <motion.main 
         className="flex-grow container mx-auto px-6 py-12 space-y-6"
         initial={{ opacity: 0, y: 20 }}
@@ -167,7 +164,6 @@ export default function AdminDashboard() {
           </Card>
         </div>
       </motion.main>
-      <Footer />
     </div>
   );
 }
