@@ -35,8 +35,8 @@ const Login = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        // Versuche Rolle aus user_metadata zu lesen
-        let role = session.user.user_metadata?.role;
+        // Rolle sicher aus user_metadata lesen
+        let role = session.user.user_metadata ? session.user.user_metadata.role : undefined;
 
         // Falls Rolle nicht vorhanden, lade aus profiles Tabelle
         if (!role) {
@@ -61,7 +61,7 @@ const Login = () => {
           return;
         }
 
-        toast.success('Anmeldung erfolgreich!');
+        // Nur eine Erfolgsmeldung hier, nicht doppelt
         switch (role) {
           case 'kunde':
             navigate('/kundenportal');
@@ -105,7 +105,7 @@ const Login = () => {
     }
 
     // Rolle aus user_metadata prüfen
-    let role = data.user.user_metadata?.role;
+    let role = data.user.user_metadata ? data.user.user_metadata.role : undefined;
 
     // Falls Rolle nicht vorhanden, lade aus profiles Tabelle
     if (!role) {
@@ -130,7 +130,9 @@ const Login = () => {
       return;
     }
 
+    // Erfolgsmeldung nur hier
     toast.success('Anmeldung erfolgreich!');
+
     switch (role) {
       case 'kunde':
         navigate('/kundenportal');
@@ -281,7 +283,7 @@ const Login = () => {
                     onChange={e => setEmail(e.target.value)}
                     required
                     placeholder="name@beispiel.de"
-                    autoComplete="email"
+                    autoComplete="username"
                   />
                 </div>
                 <div>
