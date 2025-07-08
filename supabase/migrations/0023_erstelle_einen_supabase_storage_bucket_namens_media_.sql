@@ -1,0 +1,3 @@
+-- Dies ist ein Platzhalter. Supabase Storage Buckets müssen manuell über die Supabase-Konsole erstellt werden.
+-- Gehe zu: Project -> Storage -> New bucket
+-- Benenne den Bucket 'media' und setze die Sicherheitsregeln nach Bedarf (z.B. 'Public' für einfache Nutzung).
