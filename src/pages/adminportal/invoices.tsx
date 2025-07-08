@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { useSession } from '@/components/SessionProvider';
+import { useNavigate } from 'react-router-dom';
 
 interface Invoice {
   id: string;
@@ -19,24 +21,32 @@ interface Invoice {
 }
 
 export default function AdminInvoices() {
+  const { session, user, loading } = useSession();
+  const navigate = useNavigate();
+
   const [invoices, setInvoices] = useState<Invoice[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingData, setLoadingData] = useState(true);
   const subscriptionRef = useRef<any>(null);
 
   useEffect(() => {
-    fetchInvoices();
-    setupRealtimeSubscription();
-
+    if (!loading) {
+      if (!session || user?.role !== 'admin') {
+        navigate('/login');
+      } else {
+        fetchInvoices();
+        setupRealtimeSubscription();
+      }
+    }
     return () => {
       if (subscriptionRef.current) {
         supabase.removeChannel(subscriptionRef.current);
         subscriptionRef.current = null;
       }
     };
-  }, []);
+  }, [session, user, loading, navigate]);
 
   const fetchInvoices = async () => {
-    setLoading(true);
+    setLoadingData(true);
     const { data, error } = await supabase
       .from('invoices')
       .select('*')
@@ -48,7 +58,7 @@ export default function AdminInvoices() {
     } else {
       setInvoices(data || []);
     }
-    setLoading(false);
+    setLoadingData(false);
   };
 
   const setupRealtimeSubscription = () => {
@@ -80,12 +90,16 @@ export default function AdminInvoices() {
     }
   };
 
-  if (loading) {
+  if (loading || loadingData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
+  }
+
+  if (!session || user?.role !== 'admin') {
+    return null;
   }
 
   return (
