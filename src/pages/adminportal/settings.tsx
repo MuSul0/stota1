@@ -12,8 +12,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Trash2, Edit, Upload, Video } from 'lucide-react';
 import { toast } from 'sonner';
+import { useSession } from '@/components/SessionProvider';
+import { useNavigate } from 'react-router-dom';
 
 export default function AdminSettings() {
+  const { session, user, loading } = useSession();
+  const navigate = useNavigate();
+
   const [settings, setSettings] = useState({
     companyName: 'Nikolai Transport',
     contactEmail: 'info@nikolai-transport.de',
@@ -31,7 +36,7 @@ export default function AdminSettings() {
     images: Array<{ id: string; url: string; title: string }>;
     videos: Array<{ id: string; url: string; title: string }>;
   }>({ images: [], videos: [] });
-  const [loading, setLoading] = useState(false);
+  const [loadingData, setLoadingData] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [newMedia, setNewMedia] = useState({
     type: 'image',
@@ -40,12 +45,18 @@ export default function AdminSettings() {
   });
 
   useEffect(() => {
-    fetchSettings();
-    fetchMedia();
-  }, []);
+    if (!loading) {
+      if (!session || user?.role !== 'admin') {
+        navigate('/login');
+      } else {
+        fetchSettings();
+        fetchMedia();
+      }
+    }
+  }, [session, user, loading, navigate]);
 
   const fetchSettings = async () => {
-    setLoading(true);
+    setLoadingData(true);
     try {
       const { data, error } = await supabase
         .from('settings')
@@ -66,11 +77,12 @@ export default function AdminSettings() {
           currency: data.currency || 'EUR'
         });
       }
+      if (error) throw error;
     } catch (error) {
       toast.error('Fehler beim Laden der Einstellungen');
       console.error(error);
     } finally {
-      setLoading(false);
+      setLoadingData(false);
     }
   };
 
@@ -97,7 +109,7 @@ export default function AdminSettings() {
   };
 
   const handleSave = async () => {
-    setLoading(true);
+    setLoadingData(true);
     try {
       const { error } = await supabase
         .from('settings')
@@ -124,7 +136,7 @@ export default function AdminSettings() {
       toast.error('Fehler beim Speichern der Einstellungen');
       console.error(error);
     } finally {
-      setLoading(false);
+      setLoadingData(false);
     }
   };
 
@@ -186,6 +198,18 @@ export default function AdminSettings() {
       console.error(error);
     }
   };
+
+  if (loading || loadingData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <p className="text-gray-600 text-lg">Lade Einstellungen...</p>
+      </div>
+    );
+  }
+
+  if (!session || user?.role !== 'admin') {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -398,8 +422,8 @@ export default function AdminSettings() {
         </Tabs>
 
         <div className="flex justify-end">
-          <Button onClick={handleSave} disabled={loading}>
-            {loading ? 'Speichern...' : 'Einstellungen speichern'}
+          <Button onClick={handleSave} disabled={loadingData}>
+            {loadingData ? 'Speichern...' : 'Einstellungen speichern'}
           </Button>
         </div>
       </main>
