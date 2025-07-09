@@ -26,7 +26,7 @@ const Leistungen = () => {
       pricing: 'Ab 25€/Stunde',
       availability: 'Mo-Sa, 7:00-18:00',
       imageAlt: 'Professionelle Reinigungskraft bei der Arbeit in modernem Büro',
-      imageUrl: 'https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/service-detail-cleaning.jpg'
+      imageUrl: ''
     },
     {
       icon: Truck,
@@ -44,7 +44,7 @@ const Leistungen = () => {
       pricing: 'Ab 45€/Fahrt',
       availability: '24/7 verfügbar',
       imageAlt: 'Nikolai Transport Fahrzeug beim sicheren Beladen von Möbeln',
-      imageUrl: 'https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/service-detail-transport.jpg'
+      imageUrl: ''
     },
     {
       icon: Home,
@@ -62,7 +62,7 @@ const Leistungen = () => {
       pricing: 'Ab 35€/Stunde pro Person',
       availability: 'Mo-Sa, nach Vereinbarung',
       imageAlt: 'Umzugsteam beim professionellen Verpacken und Transportieren',
-      imageUrl: 'https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/service-detail-moving.jpg'
+      imageUrl: ''
     }
   ];
 
@@ -72,7 +72,7 @@ const Leistungen = () => {
 
       {/* Hero Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/services-hero-bg.jpg')] bg-cover bg-center opacity-20"></div>
+        <div className="absolute inset-0 bg-[url('')] bg-cover bg-center opacity-20"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <motion.h1 

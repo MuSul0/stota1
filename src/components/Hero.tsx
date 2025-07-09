@@ -33,7 +33,7 @@ const Hero = () => {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/hero-background.jpg"
+          src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
           alt="Professionelle Umzugshelfer beim Transport"
           className="w-full h-full object-cover"
         />

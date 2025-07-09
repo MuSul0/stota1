@@ -14,63 +14,63 @@ const Galerie = () => {
       title: 'Büroreinigung Innenstadt',
       category: 'Reinigung',
       description: 'Regelmäßige Reinigung eines 500m² Bürokomplexes',
-      imageUrl: 'https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/gallery-office-cleaning.jpg',
+      imageUrl: '',
       type: 'image'
     },
     {
       title: 'Familienumzug nach München',
       category: 'Umzug',
       description: 'Kompletter Umzug einer 4-Zimmer-Wohnung mit Möbelmontage',
-      imageUrl: 'https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/gallery-moving-family.jpg',
+      imageUrl: '',
       type: 'video'
     },
     {
       title: 'Praxisreinigung Zahnarzt',
       category: 'Reinigung',
       description: 'Hygienische Reinigung einer Zahnarztpraxis nach Hygienestandards',
-      imageUrl: 'https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/gallery-clinic-cleaning.jpg',
+      imageUrl: '',
       type: 'image'
     },
     {
       title: 'Klaviertransport',
       category: 'Transport',
       description: 'Sicherer Transport eines Flügels in den 3. Stock',
-      imageUrl: 'https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/gallery-piano-transport.jpg',
+      imageUrl: '',
       type: 'image'
     },
     {
       title: 'Grundreinigung nach Renovierung',
       category: 'Reinigung',
       description: 'Komplette Grundreinigung nach Renovierungsarbeiten',
-      imageUrl: 'https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/gallery-post-renovation-cleaning.jpg',
+      imageUrl: '',
       type: 'image'
     },
     {
       title: 'Firmenumzug IT-Unternehmen',
       category: 'Umzug',
       description: 'Umzug eines IT-Unternehmens mit sensibler Technik',
-      imageUrl: 'https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/gallery-office-moving.jpg',
+      imageUrl: '',
       type: 'video'
     },
     {
       title: 'Fensterreinigung Hochhaus',
       category: 'Reinigung',
       description: 'Professionelle Fensterreinigung an einem 8-stöckigen Gebäude',
-      imageUrl: 'https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/gallery-window-cleaning.jpg',
+      imageUrl: '',
       type: 'image'
     },
     {
       title: 'Antiquitätentransport',
       category: 'Transport',
       description: 'Vorsichtiger Transport wertvoller Antiquitäten',
-      imageUrl: 'https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/gallery-antiques-transport.jpg',
+      imageUrl: '',
       type: 'image'
     },
     {
       title: 'Hotelreinigung',
       category: 'Reinigung',
       description: 'Tägliche Reinigung eines Boutique-Hotels',
-      imageUrl: 'https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/gallery-hotel-cleaning.jpg',
+      imageUrl: '',
       type: 'image'
     }
   ];
@@ -87,7 +87,7 @@ const Galerie = () => {
 
       {/* Hero Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/gallery-hero-bg.jpg')] bg-cover bg-center opacity-20"></div>
+        <div className="absolute inset-0 bg-[url('')] bg-cover bg-center opacity-20"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6">
@@ -201,7 +201,7 @@ const Galerie = () => {
             <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
               <div className="relative">
                 <img 
-                  src="https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/video-office-cleaning.jpg"
+                  src=""
                   alt="Büroreinigung Zeitraffer"
                   className="w-full h-64 object-cover"
                 />
@@ -227,7 +227,7 @@ const Galerie = () => {
             <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
               <div className="relative">
                 <img 
-                  src="https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/video-family-move.jpg"
+                  src=""
                   alt="Familienumzug dokumentiert"
                   className="w-full h-64 object-cover"
                 />
@@ -278,7 +278,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Vorher</p>
                       <img 
-                        src="https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/before-office.jpg"
+                        src=""
                         alt="Unordentliches Büro vor der Reinigung"
                         className="w-full h-32 object-cover rounded-lg"
                       />
@@ -286,7 +286,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Nachher</p>
                       <img 
-                        src="https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/after-office.jpg"
+                        src=""
                         alt="Perfekt gereinigtes Büro"
                         className="w-full h-32 object-cover rounded-lg"
                       />
@@ -307,7 +307,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Vorher</p>
                       <img 
-                        src="https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/before-kitchen.jpg"
+                        src=""
                         alt="Verschmutzte Küche vor der Reinigung"
                         className="w-full h-32 object-cover rounded-lg"
                       />
@@ -315,7 +315,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Nachher</p>
                       <img 
-                        src="https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/after-kitchen.jpg"
+                        src=""
                         alt="Glänzende saubere Küche"
                         className="w-full h-32 object-cover rounded-lg"
                       />
