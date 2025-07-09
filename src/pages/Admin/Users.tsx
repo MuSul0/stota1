@@ -15,7 +15,6 @@ interface User {
   role: string;
   created_at: string;
   last_sign_in_at: string | null;
-  is_active: boolean;
 }
 
 export default function AdminUsers() {
@@ -54,7 +53,6 @@ export default function AdminUsers() {
           role: profile.role || 'user',
           created_at: authUser.created_at,
           last_sign_in_at: authUser.last_sign_in_at,
-          is_active: authUser.last_sign_in_at !== null
         };
       });
 
@@ -81,22 +79,6 @@ export default function AdminUsers() {
       fetchUsers();
     } catch (error) {
       toast.error('Fehler beim Aktualisieren der Rolle');
-      console.error(error);
-    }
-  };
-
-  const toggleUserStatus = async (userId: string, currentStatus: boolean) => {
-    try {
-      const { error } = await supabase.auth.admin.updateUserById(userId, {
-        user_metadata: { is_active: !currentStatus }
-      });
-
-      if (error) throw error;
-      
-      toast.success(`Benutzer ${currentStatus ? 'deaktiviert' : 'aktiviert'}`);
-      fetchUsers();
-    } catch (error) {
-      toast.error('Fehler beim Ändern des Status');
       console.error(error);
     }
   };
@@ -138,7 +120,6 @@ export default function AdminUsers() {
                 <TableHead>Rolle</TableHead>
                 <TableHead>Registriert am</TableHead>
                 <TableHead>Letzte Anmeldung</TableHead>
-                <TableHead>Status</TableHead>
                 <TableHead className="text-right">Aktionen</TableHead>
               </TableRow>
             </TableHeader>
@@ -162,19 +143,7 @@ export default function AdminUsers() {
                       ? new Date(user.last_sign_in_at).toLocaleString() 
                       : 'Nie'}
                   </TableCell>
-                  <TableCell>
-                    <Badge variant={user.is_active ? 'default' : 'secondary'}>
-                      {user.is_active ? 'Aktiv' : 'Inaktiv'}
-                    </Badge>
-                  </TableCell>
                   <TableCell className="text-right space-x-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => toggleUserStatus(user.id, user.is_active)}
-                    >
-                      {user.is_active ? 'Deaktivieren' : 'Aktivieren'}
-                    </Button>
                     <Select
                       value={user.role}
                       onValueChange={(value) => updateUserRole(user.id, value)}
