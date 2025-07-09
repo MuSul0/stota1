@@ -47,7 +47,7 @@ const Index = () => {
       <Header />
       <Hero />
 
-      {/* Verbesserter Services Abschnitt */}
+      {/* Verbesserter Services Abschnitt mit 2x2 Grid */}
       <ParallaxSection speed={0.1}>
         <section className="py-20 bg-white rounded-3xl shadow-lg mx-6 md:mx-12 lg:mx-24">
           <div className="container mx-auto px-6">
@@ -72,7 +72,7 @@ const Index = () => {
               </motion.p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-12 max-w-5xl mx-auto">
               {serviceCategories.map(({ icon: Icon, title, description, link, colorClass }, index) => (
                 <motion.div
                   key={title}
