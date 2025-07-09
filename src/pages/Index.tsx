@@ -42,7 +42,7 @@ const Index = () => {
             title: 'Reinigungsservice',
             description: 'Professionelle Reinigung für Büros, Praxen und Privathaushalte – für ein makelloses Ergebnis.',
             features: ['Büro- & Praxisreinigung', 'Haushaltsreinigung', 'Fenster- & Glasreinigung', 'Grundreinigung'],
-            image_url: '',
+            image_url: 'https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/service-cleaning.jpg',
             price: 'Ab 25€/Std.',
             popular: true
           },
@@ -52,7 +52,7 @@ const Index = () => {
             title: 'Transportdienst',
             description: 'Sicherer und pünktlicher Transport Ihrer Güter – von Möbeln bis zu Spezialsendungen.',
             features: ['Möbeltransport', 'Express-Kurier', 'Sperrguttransport', 'Regionale Fahrten'],
-            image_url: '',
+            image_url: 'https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/service-transport.jpg',
             price: 'Ab 45€/Fahrt',
             popular: false
           },
@@ -62,7 +62,7 @@ const Index = () => {
             title: 'Umzugshilfe & Montage',
             description: 'Ihr stressfreier Umzug mit Rundum-Service – wir kümmern uns um alles.',
             features: ['Komplette Umzugsplanung', 'Verpackungsservice', 'Möbelmontage', 'Entrümpelung'],
-            image_url: '',
+            image_url: 'https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/service-moving.jpg',
             price: 'Ab 35€/Std.',
             popular: false
           }
@@ -340,7 +340,7 @@ const Index = () => {
             >
               <div className="relative rounded-xl overflow-hidden shadow-xl">
                 <img 
-                  src=""
+                  src="https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/referral-program.jpg"
                   alt="Freunde teilen eine Empfehlung"
                   className="w-full h-96 object-cover"
                 />
@@ -444,7 +444,7 @@ const Index = () => {
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
                 <img 
-                  src=""
+                  src="https://edcuorkphchuobrfqvyb.supabase.co/storage/v1/object/public/public_assets/about-us-teaser.jpg"
                   alt="Nikolai Müller, Gründer"
                   className="w-full h-96 object-cover rounded-xl shadow-xl"
                 />
