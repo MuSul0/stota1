@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { useSession } from '@/components/SessionProvider';
+import { useNavigate } from 'react-router-dom';
 
 interface Notification {
   id: string;
@@ -18,24 +19,32 @@ interface Notification {
 }
 
 export default function Notifications() {
+  const { session, user, loading } = useSession();
+  const navigate = useNavigate();
+
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingData, setLoadingData] = useState(true);
   const subscriptionRef = useRef<any>(null);
 
   useEffect(() => {
-    fetchNotifications();
-    setupRealtimeSubscription();
-
+    if (!loading) {
+      if (!session || user?.role !== 'admin') {
+        navigate('/login');
+      } else {
+        fetchNotifications();
+        setupRealtimeSubscription();
+      }
+    }
     return () => {
       if (subscriptionRef.current) {
         supabase.removeChannel(subscriptionRef.current);
         subscriptionRef.current = null;
       }
     };
-  }, []);
+  }, [session, user, loading, navigate]);
 
   const fetchNotifications = async () => {
-    setLoading(true);
+    setLoadingData(true);
     try {
       const { data, error } = await supabase
         .from('messages')
@@ -60,7 +69,7 @@ export default function Notifications() {
       toast.error('Fehler beim Laden der Benachrichtigungen');
       console.error(error);
     } finally {
-      setLoading(false);
+      setLoadingData(false);
     }
   };
 
@@ -93,7 +102,7 @@ export default function Notifications() {
     }
   };
 
-  if (loading) {
+  if (loading || loadingData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -101,9 +110,12 @@ export default function Notifications() {
     );
   }
 
+  if (!session || user?.role !== 'admin') {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header entfernt */}
       <main className="flex-grow container mx-auto px-6 py-12 max-w-7xl">
         <h1 className="text-3xl font-bold mb-8">Benachrichtigungen</h1>
 
@@ -153,7 +165,6 @@ export default function Notifications() {
           </Card>
         )}
       </main>
-      {/* Footer entfernt */}
     </div>
   );
 }

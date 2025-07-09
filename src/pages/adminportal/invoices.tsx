@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -103,7 +102,6 @@ export default function AdminInvoices() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header entfernt */}
       <main className="flex-grow container mx-auto px-6 py-12 max-w-7xl">
         <h1 className="text-3xl font-bold mb-8">Rechnungen</h1>
 
@@ -151,7 +149,6 @@ export default function AdminInvoices() {
           </Card>
         )}
       </main>
-      {/* Footer entfernt */}
     </div>
   );
 }

@@ -1,12 +1,25 @@
 import { useState } from 'react';
-// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 import { toast } from 'sonner';
+import { useSession } from '@/components/SessionProvider';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 export default function Reports() {
+  const { session, user, loading } = useSession();
+  const navigate = useNavigate();
+
   const [exporting, setExporting] = useState(false);
+
+  useEffect(() => {
+    if (!loading) {
+      if (!session || user?.role !== 'admin') {
+        navigate('/login');
+      }
+    }
+  }, [session, user, loading, navigate]);
 
   const handleExport = () => {
     setExporting(true);
@@ -17,9 +30,20 @@ export default function Reports() {
     }, 1500);
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <p className="text-gray-600 text-lg">Lade Berichte...</p>
+      </div>
+    );
+  }
+
+  if (!session || user?.role !== 'admin') {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header entfernt */}
       <main className="flex-grow container mx-auto px-6 py-12 max-w-4xl">
         <h1 className="text-3xl font-bold mb-8">Berichte & Export</h1>
 
@@ -40,7 +64,6 @@ export default function Reports() {
           </CardContent>
         </Card>
       </main>
-      {/* Footer entfernt */}
     </div>
   );
 }

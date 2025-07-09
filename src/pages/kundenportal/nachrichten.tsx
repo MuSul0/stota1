@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSession } from '@/components/SessionProvider';
-// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
@@ -36,7 +35,7 @@ export default function Nachrichten() {
 
   useEffect(() => {
     if (!loading) {
-      if (!session || user?.user_metadata?.role !== 'kunde') {
+      if (!session || user?.role !== 'kunde') {
         navigate('/login');
       } else {
         fetchNachrichten();
@@ -50,7 +49,7 @@ export default function Nachrichten() {
         subscriptionRef.current = null;
       }
     };
-  }, [session, user, loading]);
+  }, [session, user, loading, navigate]);
 
   const fetchNachrichten = async () => {
     if (!user) return;
@@ -133,7 +132,7 @@ export default function Nachrichten() {
     );
   }
 
-  if (!session || user?.user_metadata?.role !== 'kunde') {
+  if (!session || user?.role !== 'kunde') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <p className="text-red-600 text-lg">Zugriff verweigert. Bitte als Kunde anmelden.</p>
@@ -143,7 +142,6 @@ export default function Nachrichten() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header entfernt */}
       <main className="flex-grow container mx-auto px-6 py-12 max-w-5xl space-y-8">
         <h1 className="text-3xl font-bold">Ihre Nachrichten</h1>
         <p className="text-gray-700">Kommunikation mit unserem Team.</p>
@@ -232,7 +230,6 @@ export default function Nachrichten() {
           </Card>
         )}
       </main>
-      {/* Footer entfernt */}
     </div>
   );
 }

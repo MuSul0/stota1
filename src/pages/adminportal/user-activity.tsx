@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { toast } from 'sonner';
@@ -49,8 +48,8 @@ export default function UserActivity() {
           id: authUser.id,
           email: authUser.email || '',
           role: profile.role || 'user',
+          created_at: authUser.created_at,
           last_sign_in_at: authUser.last_sign_in_at,
-          created_at: authUser.created_at
         };
       });
 
@@ -77,7 +76,6 @@ export default function UserActivity() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header entfernt */}
       <main className="flex-grow container mx-auto px-6 py-12 max-w-7xl">
         <h1 className="text-3xl font-bold mb-8">Benutzeraktivität</h1>
 
@@ -113,7 +111,6 @@ export default function UserActivity() {
           </Card>
         )}
       </main>
-      {/* Footer entfernt */}
     </div>
   );
 }

@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSession } from '@/components/SessionProvider';
-// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function Auftraege() {
@@ -10,7 +9,7 @@ export default function Auftraege() {
 
   useEffect(() => {
     if (!loading) {
-      if (!session || user?.user_metadata?.role !== 'kunde') {
+      if (!session || user?.role !== 'kunde') {
         navigate('/login');
       }
     }
@@ -24,7 +23,7 @@ export default function Auftraege() {
     );
   }
 
-  if (!session || user?.user_metadata?.role !== 'kunde') {
+  if (!session || user?.role !== 'kunde') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <p className="text-red-600 text-lg">Zugriff verweigert. Bitte als Kunde anmelden.</p>
@@ -34,7 +33,6 @@ export default function Auftraege() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header entfernt */}
       <main className="flex-grow container mx-auto px-6 py-12">
         <h1 className="text-3xl font-bold mb-6">Ihre Aufträge</h1>
         <p className="mb-8 text-gray-700">Verfolgen Sie den Status Ihrer Aufträge.</p>
@@ -48,7 +46,6 @@ export default function Auftraege() {
           </CardContent>
         </Card>
       </main>
-      {/* Footer entfernt */}
     </div>
   );
 }

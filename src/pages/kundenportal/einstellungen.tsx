@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSession } from '@/components/SessionProvider';
-// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,7 +18,7 @@ export default function Einstellungen() {
 
   useEffect(() => {
     if (!loading) {
-      if (!session || user?.user_metadata?.role !== 'kunde') {
+      if (!session || user?.role !== 'kunde') {
         navigate('/login');
       } else {
         setEmail(user.email || '');
@@ -90,7 +89,7 @@ export default function Einstellungen() {
     );
   }
 
-  if (!session || user?.user_metadata?.role !== 'kunde') {
+  if (!session || user?.role !== 'kunde') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <p className="text-red-600 text-lg">Zugriff verweigert. Bitte als Kunde anmelden.</p>
@@ -100,7 +99,6 @@ export default function Einstellungen() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header entfernt */}
       <main className="flex-grow container mx-auto px-6 py-12 max-w-lg">
         <h1 className="text-3xl font-bold mb-6">Kontoeinstellungen</h1>
         <p className="mb-8 text-gray-700">Verwalten Sie Ihre Kontaktdaten und Präferenzen.</p>
@@ -146,7 +144,6 @@ export default function Einstellungen() {
           </CardContent>
         </Card>
       </main>
-      {/* Footer entfernt */}
     </div>
   );
 }

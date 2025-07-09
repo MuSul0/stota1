@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -62,7 +61,29 @@ export default function AdminSettings() {
         .select('*')
         .single();
 
-      if (data) {
+      if (error && error.code === 'PGRST116') { // No rows found
+        // Insert default settings if no row exists
+        const { error: insertError } = await supabase
+          .from('settings')
+          .insert({
+            id: 1, // Assuming a single settings row with ID 1
+            company_name: settings.companyName,
+            contact_email: settings.contactEmail,
+            phone_number: settings.phoneNumber,
+            address: settings.address,
+            maintenance_mode: settings.maintenanceMode,
+            analytics_enabled: settings.analyticsEnabled,
+            dark_mode: settings.darkMode,
+            default_language: settings.defaultLanguage,
+            timezone: settings.timezone,
+            currency: settings.currency
+          });
+        if (insertError) throw insertError;
+        toast.success('Standardeinstellungen initialisiert');
+        fetchSettings(); // Re-fetch after insert
+      } else if (error) {
+        throw error;
+      } else if (data) {
         setSettings({
           companyName: data.company_name || '',
           contactEmail: data.contact_email || '',
@@ -76,9 +97,8 @@ export default function AdminSettings() {
           currency: data.currency || 'EUR'
         });
       }
-      if (error) throw error;
     } catch (error) {
-      toast.error('Fehler beim Laden der Einstellungen');
+      toast.error('Fehler beim Laden/Initialisieren der Einstellungen');
       console.error(error);
     } finally {
       setLoadingData(false);
@@ -212,7 +232,6 @@ export default function AdminSettings() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header entfernt */}
       <main className="flex-grow container mx-auto px-6 py-12 max-w-7xl space-y-6">
         <h1 className="text-3xl font-bold">Einstellungen</h1>
         
@@ -426,7 +445,6 @@ export default function AdminSettings() {
           </Button>
         </div>
       </main>
-      {/* Footer entfernt */}
     </div>
   );
 }

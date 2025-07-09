@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,9 +7,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Trash2, Video, Upload, Edit } from 'lucide-react';
 import { toast } from 'sonner';
-// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
+import { useSession } from '@/components/SessionProvider';
+import { useNavigate } from 'react-router-dom';
 
 const MediaManager = () => {
+  const { session, user, loading } = useSession();
+  const navigate = useNavigate();
+
   const [media, setMedia] = useState<{
     images: Array<{ id: string; url: string; title: string }>;
     videos: Array<{ id: string; url: string; title: string }>;
@@ -23,8 +26,14 @@ const MediaManager = () => {
   });
 
   useEffect(() => {
-    fetchMedia();
-  }, []);
+    if (!loading) {
+      if (!session || user?.role !== 'admin') {
+        navigate('/login');
+      } else {
+        fetchMedia();
+      }
+    }
+  }, [session, user, loading, navigate]);
 
   const fetchMedia = async () => {
     try {
@@ -107,9 +116,20 @@ const MediaManager = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <p className="text-gray-600 text-lg">Lade Medienverwaltung...</p>
+      </div>
+    );
+  }
+
+  if (!session || user?.role !== 'admin') {
+    return null;
+  }
+
   return (
     <div className="space-y-6 min-h-screen">
-      {/* Header entfernt */}
       <div className="container mx-auto px-6 py-12">
         <h1 className="text-3xl font-bold mb-6">Medienverwaltung</h1>
         
@@ -242,7 +262,6 @@ const MediaManager = () => {
           </div>
         </div>
       </div>
-      {/* Footer entfernt */}
     </div>
   );
 };

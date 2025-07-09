@@ -1,6 +1,5 @@
 import { useSession } from '@/components/SessionProvider';
 import { useNavigate } from 'react-router-dom';
-// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -27,7 +26,7 @@ export default function Fahrzeuge() {
 
   useEffect(() => {
     if (!loading) {
-      if (!session || user?.user_metadata?.role !== 'mitarbeiter') {
+      if (!session || user?.role !== 'mitarbeiter') {
         navigate('/login');
       } else {
         fetchFahrzeuge();
@@ -112,13 +111,12 @@ export default function Fahrzeuge() {
     );
   }
 
-  if (!session || user?.user_metadata?.role !== 'mitarbeiter') {
+  if (!session || user?.role !== 'mitarbeiter') {
     return null;
   }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header entfernt */}
       <motion.main 
         className="flex-grow container mx-auto px-6 py-12 max-w-5xl space-y-8"
         initial={{ opacity: 0, y: 20 }}
@@ -178,7 +176,6 @@ export default function Fahrzeuge() {
           </Card>
         )}
       </motion.main>
-      {/* Footer entfernt */}
     </div>
   );
 }

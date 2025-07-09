@@ -1,14 +1,22 @@
 import { useSession } from '@/components/SessionProvider';
 import { redirect, useNavigate } from 'react-router-dom';
-// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Clock, CalendarCheck, Truck, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useEffect } from 'react';
 
 export default function Mitarbeiterportal() {
   const { session, user, loading } = useSession();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading) {
+      if (!session || user?.role !== 'mitarbeiter') {
+        navigate('/login');
+      }
+    }
+  }, [session, user, loading, navigate]);
 
   if (loading) {
     return (
@@ -18,8 +26,8 @@ export default function Mitarbeiterportal() {
     );
   }
 
-  if (!session || user?.user_metadata?.role !== 'mitarbeiter') {
-    redirect('/login');
+  if (!session || user?.role !== 'mitarbeiter') {
+    return null; // Redirect handled by useEffect
   }
 
   const cards = [
@@ -63,7 +71,6 @@ export default function Mitarbeiterportal() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header entfernt */}
       <motion.main 
         className="flex-grow container mx-auto px-4 py-12"
         initial={{ opacity: 0, y: 20 }}
@@ -97,7 +104,6 @@ export default function Mitarbeiterportal() {
           ))}
         </div>
       </motion.main>
-      {/* Footer entfernt */}
     </div>
   );
 }

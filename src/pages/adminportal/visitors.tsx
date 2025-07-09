@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { useSession } from '@/components/SessionProvider';
+import { useNavigate } from 'react-router-dom';
 
 interface Visitor {
   id: string;
@@ -16,15 +17,24 @@ interface Visitor {
 }
 
 export default function Visitors() {
+  const { session, user, loading } = useSession();
+  const navigate = useNavigate();
+
   const [visitors, setVisitors] = useState<Visitor[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingData, setLoadingData] = useState(true);
 
   useEffect(() => {
-    fetchVisitors();
-  }, []);
+    if (!loading) {
+      if (!session || user?.role !== 'admin') {
+        navigate('/login');
+      } else {
+        fetchVisitors();
+      }
+    }
+  }, [session, user, loading, navigate]);
 
   const fetchVisitors = async () => {
-    setLoading(true);
+    setLoadingData(true);
     try {
       const { data, error } = await supabase
         .from('visitors')
@@ -39,11 +49,11 @@ export default function Visitors() {
       toast.error('Fehler beim Laden der Besucher');
       console.error(error);
     } finally {
-      setLoading(false);
+      setLoadingData(false);
     }
   };
 
-  if (loading) {
+  if (loading || loadingData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -51,9 +61,12 @@ export default function Visitors() {
     );
   }
 
+  if (!session || user?.role !== 'admin') {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header entfernt */}
       <main className="flex-grow container mx-auto px-6 py-12 max-w-7xl">
         <h1 className="text-3xl font-bold mb-8">Besucher-Tracking</h1>
 
@@ -91,7 +104,6 @@ export default function Visitors() {
           </Card>
         )}
       </main>
-      {/* Footer entfernt */}
     </div>
   );
 }

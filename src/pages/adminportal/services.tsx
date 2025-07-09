@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-// Header und Footer entfernt, da sie vom AdminLayout bereitgestellt werden
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -12,6 +11,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { PlusCircle, Edit, Trash2, Save, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { useSession } from '@/components/SessionProvider';
+import { useNavigate } from 'react-router-dom';
 
 interface Service {
   id: string;
@@ -25,26 +26,34 @@ interface Service {
 }
 
 export default function AdminServices() {
+  const { session, user, loading } = useSession();
+  const navigate = useNavigate();
+
   const [services, setServices] = useState<Service[]>([]);
   const [editingService, setEditingService] = useState<Service | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loadingData, setLoadingData] = useState(true);
   const subscriptionRef = useRef<any>(null);
 
   useEffect(() => {
-    fetchServices();
-    setupRealtimeSubscription();
-
+    if (!loading) {
+      if (!session || user?.role !== 'admin') {
+        navigate('/login');
+      } else {
+        fetchServices();
+        setupRealtimeSubscription();
+      }
+    }
     return () => {
       if (subscriptionRef.current) {
         supabase.removeChannel(subscriptionRef.current);
         subscriptionRef.current = null;
       }
     };
-  }, []);
+  }, [session, user, loading, navigate]);
 
   const fetchServices = async () => {
-    setLoading(true);
+    setLoadingData(true);
     try {
       const { data, error } = await supabase
         .from('services')
@@ -58,7 +67,7 @@ export default function AdminServices() {
       toast.error('Fehler beim Laden der Services');
       console.error(error);
     } finally {
-      setLoading(false);
+      setLoadingData(false);
     }
   };
 
@@ -162,7 +171,7 @@ export default function AdminServices() {
     }
   };
 
-  if (loading) {
+  if (loading || loadingData) {
     return (
       <div className="flex justify-center p-8">
         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
@@ -170,9 +179,12 @@ export default function AdminServices() {
     );
   }
 
+  if (!session || user?.role !== 'admin') {
+    return null;
+  }
+
   return (
     <div className="space-y-6 min-h-screen bg-gray-50 flex flex-col">
-      {/* Header entfernt */}
       <main className="flex-grow container mx-auto px-6 py-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
           <h1 className="text-3xl font-bold">Services</h1>
@@ -362,7 +374,6 @@ export default function AdminServices() {
           </DialogContent>
         </Dialog>
       </main>
-      {/* Footer entfernt */}
     </div>
   );
 }
