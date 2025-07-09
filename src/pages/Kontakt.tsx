@@ -230,8 +230,8 @@ const Kontakt = () => {
                     <div>
                       <h3 className="font-semibold mb-1">Adresse</h3>
                       <p className="text-gray-700">
-                        Musterstraße 123<br />
-                        12345 Musterstadt<br />
+                        Schalker Str. 143<br />
+                        45881 Gelsenkirchen<br />
                         Deutschland
                       </p>
                     </div>
@@ -277,7 +277,7 @@ const Kontakt = () => {
                   <div className="bg-gray-200 rounded-lg h-64 flex items-center justify-center overflow-hidden">
                     {/* Hier könnte eine tatsächliche Google Maps Einbettung erfolgen */}
                     <iframe 
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2436.4700000000003!2d11.576124!3d48.137154!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x479e75f9f2b3b3b3%3A0x123456789abcdef!2sMusterstra%C3%9Fe%20123%2C%2012345%20Musterstadt%2C%20Germany!5e0!3m2!1sen!2sus!4v1678901234567!5m2!1sen!2sus" 
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2436.4700000000003!2d7.041111!3d51.511111!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47b8e1f1f1f1f1f1%3A0x123456789abcdef!2sSchalker%20Str.%20143%2C%2045881%20Gelsenkirchen%2C%20Germany!5e0!3m2!1sen!2sus!4v1678901234567!5m2!1sen!2sus" 
                       width="100%" 
                       height="100%" 
                       style={{ border: 0 }} 
@@ -288,7 +288,7 @@ const Kontakt = () => {
                     ></iframe>
                   </div>
                   <p className="text-sm text-gray-500 mt-2 text-center">
-                    Standort: Musterstraße 123, 12345 Musterstadt
+                    Standort: Schalker Str. 143, 45881 Gelsenkirchen
                   </p>
                 </CardContent>
               </Card>

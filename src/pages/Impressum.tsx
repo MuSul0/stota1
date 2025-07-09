@@ -20,8 +20,8 @@ const Impressum = () => {
                 <div>
                   <h3 className="font-semibold mb-2">Stotta Transport</h3>
                   <p>Inhaber: Stotta Müller</p>
-                  <p>Musterstraße 123</p>
-                  <p>12345 Musterstadt</p>
+                  <p>Schalker Str. 143</p>
+                  <p>45881 Gelsenkirchen</p>
                   <p>Deutschland</p>
                 </div>
               </CardContent>

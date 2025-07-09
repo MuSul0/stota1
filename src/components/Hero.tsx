@@ -138,7 +138,7 @@ const Hero = () => {
                 </div>
                 <div className="flex items-center space-x-3">
                   <MapPin className="h-6 w-6 text-blue-600" />
-                  <span className="text-lg text-gray-700">Musterstraße 123, 12345 Musterstadt</span>
+                  <span className="text-lg text-gray-700">Schalker Str. 143, 45881 Gelsenkirchen</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Clock className="h-6 w-6 text-blue-600" />

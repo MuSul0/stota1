@@ -70,8 +70,8 @@ const Datenschutz = () => {
                 <div className="bg-gray-50 p-4 rounded">
                   <p>Stotta Transport<br />
                   Stotta Müller<br />
-                  Musterstraße 123<br />
-                  12345 Musterstadt</p>
+                  Schalker Str. 143<br />
+                  45881 Gelsenkirchen</p>
                   <p className="mt-2">
                   Telefon: +49 123 456 789<br />
                   E-Mail: info@stotta-transport.de</p>
