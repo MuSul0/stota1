@@ -133,28 +133,16 @@ const Kontakt = () => {
                     </div>
 
                     <div>
-                      <Label htmlFor="email">E-Mail *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
-                        required
-                        placeholder="ihre.email@beispiel.de"
-                      />
-                    </div>
-
-                    <div>
                       <Label htmlFor="service">Gewünschte Leistung</Label>
                       <Select value={formData.service} onValueChange={(value) => handleInputChange('service', value)}>
                         <SelectTrigger>
                           <SelectValue placeholder="Wählen Sie eine Leistung" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="reinigung">Reinigungsservice</SelectItem>
-                          <SelectItem value="transport">Transport & Kurier</SelectItem>
-                          <SelectItem value="umzug">Umzugshilfe</SelectItem>
-                          <SelectItem value="beratung">Beratung</SelectItem>
+                          <SelectItem value="transporte">Transporte</SelectItem>
+                          <SelectItem value="garten-landschaftsbau">Garten- & Landschaftsbau</SelectItem>
+                          <SelectItem value="reinigung">Reinigung</SelectItem>
+                          <SelectItem value="entsorgung">Entsorgung</SelectItem>
                           <SelectItem value="sonstiges">Sonstiges</SelectItem>
                         </SelectContent>
                       </Select>
