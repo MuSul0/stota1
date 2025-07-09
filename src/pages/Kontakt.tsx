@@ -14,7 +14,8 @@ import { supabase } from '@/integrations/supabase/client';
 
 const Kontakt = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     phone: '',
     service: '',
@@ -24,6 +25,12 @@ const Kontakt = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.email.trim() || !formData.phone.trim() || !formData.service.trim() || !formData.message.trim()) {
+      toast.error('Bitte füllen Sie alle Pflichtfelder aus.');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -31,11 +38,11 @@ const Kontakt = () => {
         .from('contact_requests')
         .insert([
           {
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone || null,
-            service: formData.service || null,
-            message: formData.message
+            name: `${formData.firstName.trim()} ${formData.lastName.trim()}`, // Kombiniere Vor- und Nachname
+            email: formData.email.trim(),
+            phone: formData.phone.trim(),
+            service: formData.service.trim(),
+            message: formData.message.trim()
           }
         ]);
 
@@ -46,7 +53,7 @@ const Kontakt = () => {
       toast.success("Ihre Nachricht wurde erfolgreich gesendet!", {
         description: "Wir melden uns schnellstmöglich bei Ihnen zurück.",
       });
-      setFormData({ name: '', email: '', phone: '', service: '', message: '' });
+      setFormData({ firstName: '', lastName: '', email: '', phone: '', service: '', message: '' });
     } catch (error: any) {
       toast.error('Fehler beim Senden der Nachricht: ' + error.message);
       console.error('Fehler beim Senden der Nachricht:', error);
@@ -111,30 +118,55 @@ const Kontakt = () => {
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="name">Name *</Label>
+                        <Label htmlFor="firstName">Vorname *</Label>
                         <Input
-                          id="name"
-                          value={formData.name}
-                          onChange={(e) => handleInputChange('name', e.target.value)}
+                          id="firstName"
+                          value={formData.firstName}
+                          onChange={(e) => handleInputChange('firstName', e.target.value)}
                           required
-                          placeholder="Ihr vollständiger Name"
+                          placeholder="Ihr Vorname"
                         />
                       </div>
                       <div>
-                        <Label htmlFor="phone">Telefon</Label>
+                        <Label htmlFor="lastName">Nachname *</Label>
+                        <Input
+                          id="lastName"
+                          value={formData.lastName}
+                          onChange={(e) => handleInputChange('lastName', e.target.value)}
+                          required
+                          placeholder="Ihr Nachname"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="email">E-Mail *</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          value={formData.email}
+                          onChange={(e) => handleInputChange('email', e.target.value)}
+                          required
+                          placeholder="Ihre E-Mail-Adresse"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="phone">Telefon *</Label>
                         <Input
                           id="phone"
                           type="tel"
                           value={formData.phone}
                           onChange={(e) => handleInputChange('phone', e.target.value)}
+                          required
                           placeholder="Ihre Telefonnummer"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <Label htmlFor="service">Gewünschte Leistung</Label>
-                      <Select value={formData.service} onValueChange={(value) => handleInputChange('service', value)}>
+                      <Label htmlFor="service">Gewünschte Leistung *</Label>
+                      <Select value={formData.service} onValueChange={(value) => handleInputChange('service', value)} required>
                         <SelectTrigger>
                           <SelectValue placeholder="Wählen Sie eine Leistung" />
                         </SelectTrigger>
