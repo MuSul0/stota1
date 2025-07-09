@@ -39,6 +39,7 @@ import AdminServices from '@/pages/adminportal/services';
 import MediaManager from '@/pages/adminportal/media-manager';
 import Notifications from '@/pages/adminportal/notifications';
 import Reports from '@/pages/adminportal/reports';
+import EmployeeRegistration from '@/pages/adminportal/employee-registration';
 
 // Neue Leistungs-Unterseiten
 import Transporte from '@/pages/Leistungen/Transporte';
@@ -95,6 +96,7 @@ function App() {
                 <Route index element={<AdminDashboard />} />
                 <Route path="dashboard" element={<AdminDashboard />} />
                 <Route path="users" element={<AdminUsers />} />
+                <Route path="employee-registration" element={<EmployeeRegistration />} />
                 <Route path="invoices" element={<AdminInvoices />} />
                 <Route path="settings" element={<AdminSettings />} />
                 <Route path="services" element={<AdminServices />} />

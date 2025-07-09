@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 const navItems = [
   { to: "dashboard", label: "Dashboard" },
   { to: "users", label: "Benutzer" },
+  { to: "employee-registration", label: "Mitarbeiter registrieren" },
   { to: "services", label: "Services" },
   { to: "invoices", label: "Rechnungen" },
   { to: "notifications", label: "Benachrichtigungen" },
