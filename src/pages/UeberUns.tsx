@@ -1,12 +1,12 @@
 import { Heart, Shield, Clock, Award, Users, Target, Lightbulb, Handshake } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ParallaxSection from '@/components/ParallaxSection';
-import { useMedia } from '@/hooks/useMedia'; // Import the new hook
+import { useMedia } from '@/hooks/useMedia';
 
 const UeberUns = () => {
   const { media: aboutUsMainImage, loading: loadingAboutUsMainImage, error: aboutUsMainError } = useMedia({ title: 'About Us Main Image', type: 'image' });
@@ -60,63 +60,53 @@ const UeberUns = () => {
 
   if (aboutUsMainError || stottaMullerProfileError || mariaSchmidtProfileError || thomasWeberProfileError) {
     console.error("Fehler beim Laden der Bilder auf der 'Über uns'-Seite:", aboutUsMainError, stottaMullerProfileError, mariaSchmidtProfileError, thomasWeberProfileError);
-    // Optional: Fallback zu Standardbildern oder Fehlermeldung anzeigen
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex flex-col">
       <Header />
 
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('')] bg-cover bg-center opacity-20"></div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <motion.div 
-              className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              👥 Lernen Sie uns kennen
-            </motion.div>
-            <motion.h1 
-              className="text-5xl md:text-6xl font-bold mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              Über Stotta Transport
-            </motion.h1>
-            <motion.p 
-              className="text-xl text-blue-100 leading-relaxed"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-            >
-              Seit über einem Jahrzehnt gestalten wir Räume neu und bewegen Leben vorwärts. 
-              Entdecken Sie die Geschichte hinter Stotta Transport – wo Leidenschaft auf Präzision trifft und jeder Auftrag ein Versprechen ist.
-            </motion.p>
-          </div>
+      <section className="py-24 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden">
+        <div className="container mx-auto px-6 max-w-5xl text-center">
+          <motion.h1 
+            className="text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            Über Stotta Transport
+          </motion.h1>
+          <motion.p 
+            className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            Seit über einem Jahrzehnt gestalten wir Räume neu und bewegen Leben vorwärts. 
+            Entdecken Sie die Geschichte hinter Stotta Transport – wo Leidenschaft auf Präzision trifft und jeder Auftrag ein Versprechen ist.
+          </motion.p>
         </div>
       </section>
 
       {/* Story Section */}
       <ParallaxSection speed={0.05}>
-        <section className="py-20 bg-white">
-          <div className="container mx-auto px-4">
+        <section className="py-20 bg-white rounded-3xl shadow-lg mx-6 md:mx-12 lg:mx-24">
+          <div className="container mx-auto px-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <motion.div
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
+                viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
-                <div className="inline-block bg-blue-100 text-blue-600 px-4 py-2 rounded-full text-sm font-medium mb-6">
+                <div className="inline-block bg-blue-100 text-blue-600 px-5 py-3 rounded-full text-base font-semibold mb-6">
                   📖 Unsere Geschichte
                 </div>
-                <h2 className="text-4xl font-bold mb-8 text-gray-800">Von der Vision zur Realität</h2>
-                <div className="space-y-6 text-gray-600 text-lg leading-relaxed">
+                <h2 className="text-4xl font-bold mb-8 text-gray-900">
+                  Von der Vision zur Realität
+                </h2>
+                <div className="space-y-6 text-gray-700 text-lg leading-relaxed">
                   <p>
                     Im Jahr 2014 begann unsere Reise mit einer klaren Vision: Stotta wollte einen Dienstleister schaffen, der nicht nur arbeitet, sondern Werte lebt. Aus einem kleinen Familienunternehmen ist eine feste Größe in der Region geworden, bekannt für <strong className="text-blue-600">ehrliche Arbeit, unerschütterliche Zuverlässigkeit und faire Preise</strong>.
                   </p>
@@ -125,7 +115,7 @@ const UeberUns = () => {
                   </p>
                 </div>
                 <div className="mt-8">
-                  <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white" asChild>
+                  <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full px-10 py-4 shadow-lg font-semibold" asChild>
                     <Link to="/kontakt">Werden Sie Teil unserer Geschichte</Link>
                   </Button>
                 </div>
@@ -133,23 +123,19 @@ const UeberUns = () => {
               <motion.div
                 initial={{ opacity: 0, x: 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
+                viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="relative"
+                className="relative rounded-3xl overflow-hidden shadow-2xl"
               >
-                <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                  <img 
-                    src={aboutUsMainImage?.url || ""} // Fallback image
-                    alt="Stotta Müller vor seinem ersten Transporter im Jahr 2014"
-                    className="w-full h-96 object-cover"
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-                    <p className="text-white font-medium">Stotta Müller, 2014</p>
-                    <p className="text-white/80 text-sm">Der Anfang einer Erfolgsgeschichte</p>
-                  </div>
+                <img 
+                  src={aboutUsMainImage?.url || ""} // Fallback image
+                  alt="Stotta Müller vor seinem ersten Transporter im Jahr 2014"
+                  className="w-full h-96 object-cover rounded-3xl"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 rounded-b-3xl">
+                  <p className="text-white font-medium">Stotta Müller, 2014</p>
+                  <p className="text-white/80 text-sm">Der Anfang einer Erfolgsgeschichte</p>
                 </div>
-                <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full opacity-20 animate-pulse"></div>
-                <div className="absolute -bottom-6 -left-6 w-20 h-20 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full opacity-20 animate-pulse delay-1000"></div>
               </motion.div>
             </div>
           </div>
@@ -158,31 +144,31 @@ const UeberUns = () => {
 
       {/* Timeline Section */}
       <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <motion.div 
-              className="inline-block bg-purple-100 text-purple-600 px-4 py-2 rounded-full text-sm font-medium mb-4"
+              className="inline-block bg-purple-100 text-purple-600 px-5 py-3 rounded-full text-base font-semibold mb-4"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
               🚀 Unsere Reise
             </motion.div>
             <motion.h2 
-              className="text-4xl font-bold mb-6 text-gray-800"
+              className="text-4xl font-bold mb-6 text-gray-900"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               Unsere Evolution: Eine Reise durch die Zeit
             </motion.h2>
             <motion.p 
-              className="text-xl text-gray-600 max-w-2xl mx-auto"
+              className="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               Von der ersten Idee bis zum Branchenführer – die entscheidenden Momente, die uns geprägt haben.
@@ -205,8 +191,8 @@ const UeberUns = () => {
                     <Card className="hover:shadow-xl transition-shadow duration-300">
                       <CardContent className="p-6">
                         <div className="text-2xl font-bold text-blue-600 mb-2">{milestone.year}</div>
-                        <h3 className="text-xl font-bold mb-2 text-gray-800">{milestone.title}</h3>
-                        <p className="text-gray-600">{milestone.description}</p>
+                        <h3 className="text-xl font-bold mb-2 text-gray-900">{milestone.title}</h3>
+                        <p className="text-gray-700">{milestone.description}</p>
                       </CardContent>
                     </Card>
                   </div>
@@ -223,55 +209,52 @@ const UeberUns = () => {
 
       {/* Values Section */}
       <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <motion.div 
-              className="inline-block bg-green-100 text-green-600 px-4 py-2 rounded-full text-sm font-medium mb-4"
+              className="inline-block bg-green-100 text-green-600 px-5 py-3 rounded-full text-base font-semibold mb-4"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
               💎 Unser Fundament
             </motion.div>
             <motion.h2 
-              className="text-4xl font-bold mb-6 text-gray-800"
+              className="text-4xl font-bold mb-6 text-gray-900"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               Werte, die uns tragen
             </motion.h2>
             <motion.p 
-              className="text-xl text-gray-600 max-w-2xl mx-auto"
+              className="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               Diese Prinzipien sind der Herzschlag unserer Arbeit und garantieren Ihre Zufriedenheit.
             </motion.p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
             {values.map((value, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 50 }}
+                initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.7, delay: index * 0.15 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.15 }}
+                className="flex flex-col items-center text-center p-8 border rounded-3xl shadow hover:shadow-lg transition-shadow duration-300"
               >
-                <Card className="text-center h-full hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-0 bg-gradient-to-br from-white to-gray-50">
-                  <CardContent className="p-8">
-                    <div className={`w-20 h-20 bg-gradient-to-r ${value.color} rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg`}>
-                      <value.icon className="h-10 w-10 text-white" />
-                    </div>
-                    <h3 className="text-xl font-bold mb-4 text-gray-800">{value.title}</h3>
-                    <p className="text-gray-600 leading-relaxed">{value.description}</p>
-                  </CardContent>
-                </Card>
+                <div className={`w-24 h-24 bg-gradient-to-r ${value.color} rounded-full flex items-center justify-center mb-8 shadow-lg`}>
+                  <value.icon className="h-12 w-12 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold mb-4 text-gray-900">{value.title}</h3>
+                <p className="text-gray-700 text-lg leading-relaxed">{value.description}</p>
               </motion.div>
             ))}
           </div>
@@ -280,42 +263,42 @@ const UeberUns = () => {
 
       {/* Team Section */}
       <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <motion.div 
-              className="inline-block bg-orange-100 text-orange-600 px-4 py-2 rounded-full text-sm font-medium mb-4"
+              className="inline-block bg-orange-100 text-orange-600 px-5 py-3 rounded-full text-base font-semibold mb-4"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
               👨‍👩‍👧‍👦 Unser Team
             </motion.div>
             <motion.h2 
-              className="text-4xl font-bold mb-6 text-gray-800"
+              className="text-4xl font-bold mb-6 text-gray-900"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               Das Herz von Stotta Transport: Unser Team
             </motion.h2>
             <motion.p 
-              className="text-xl text-gray-600 max-w-2xl mx-auto"
+              className="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               Treffen Sie die Gesichter, die Ihre Projekte zum Erfolg führen.
             </motion.p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             <motion.div
-              initial={{ opacity: 0, y: 50 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.15 }}
             >
               <Card className="text-center hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
@@ -330,9 +313,9 @@ const UeberUns = () => {
                       <Users className="h-5 w-5 text-white" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-2 text-gray-800">Stotta Müller</h3>
+                  <h3 className="text-xl font-bold mb-2 text-gray-900">Stotta Müller</h3>
                   <p className="text-blue-600 mb-3 font-medium">Geschäftsführer & Gründer</p>
-                  <p className="text-gray-600 text-sm leading-relaxed">
+                  <p className="text-gray-700 text-base leading-relaxed">
                     Als Visionär und treibende Kraft hinter Stotta Transport führt Stotta das Unternehmen mit über 15 Jahren Branchenerfahrung. Seine unermüdliche Leidenschaft für exzellenten Service ist der Funke, der jedes Projekt zum Leuchten bringt.
                   </p>
                 </CardContent>
@@ -340,9 +323,9 @@ const UeberUns = () => {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 50 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.30 }}
             >
               <Card className="text-center hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
@@ -357,9 +340,9 @@ const UeberUns = () => {
                       <Award className="h-5 w-5 text-white" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-2 text-gray-800">Maria Schmidt</h3>
+                  <h3 className="text-xl font-bold mb-2 text-gray-900">Maria Schmidt</h3>
                   <p className="text-green-600 mb-3 font-medium">Teamleiterin Reinigung</p>
-                  <p className="text-gray-600 text-sm leading-relaxed">
+                  <p className="text-gray-700 text-base leading-relaxed">
                     Mit 8 Jahren Expertise ist Maria unsere Meisterin der Sauberkeit. Ihre akribische Detailverliebtheit und ihr ansteckendes Lächeln machen sie zur unverzichtbaren Teamleiterin im Reinigungsbereich.
                   </p>
                 </CardContent>
@@ -367,9 +350,9 @@ const UeberUns = () => {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 50 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.45 }}
             >
               <Card className="text-center hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
@@ -384,79 +367,13 @@ const UeberUns = () => {
                       <Target className="h-5 w-5 text-white" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-2 text-gray-800">Thomas Weber</h3>
+                  <h3 className="text-xl font-bold mb-2 text-gray-900">Thomas Weber</h3>
                   <p className="text-orange-600 mb-3 font-medium">Spezialist Transport & Umzug</p>
-                  <p className="text-gray-600 text-sm leading-relaxed">
+                  <p className="text-gray-700 text-base leading-relaxed">
                     Wenn es um Transport und Umzug geht, ist Thomas Ihr Mann. Mit ruhiger Hand und tiefgreifendem Fachwissen navigiert er selbst die komplexesten Herausforderungen sicher ans Ziel.
                   </p>
                 </CardContent>
               </Card>
-            </motion.div>
-          </div>
-
-          <motion.div
-            className="text-center"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-          >
-            <p className="text-gray-600 mb-6">Und viele weitere talentierte Mitarbeiter, die täglich ihr Bestes geben, um Ihre Erwartungen zu übertreffen.</p>
-            <Button size="lg" variant="outline" className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white" asChild>
-              <Link to="/kontakt">Lernen Sie unser Team persönlich kennen</Link>
-            </Button>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Mission Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-900 via-purple-900 to-blue-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('')] bg-cover bg-center opacity-10"></div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <motion.div 
-              className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.6 }}
-            >
-              🎯 Unsere Mission
-            </motion.div>
-            <motion.h2 
-              className="text-4xl md:text-5xl font-bold mb-8"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              Was uns jeden Tag antreibt: Ihre Zufriedenheit
-            </motion.h2>
-            <motion.blockquote 
-              className="text-2xl text-blue-100 mb-8 leading-relaxed italic"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              "Wir sind angetreten, um das Leben unserer Kunden spürbar zu erleichtern. Durch zuverlässige, erstklassige Dienstleistungen schaffen wir Freiräume und sorgen für ein Lächeln. Jeder Kunde ist für uns einzigartig und verdient unsere volle Hingabe."
-            </motion.blockquote>
-            <motion.div 
-              className="flex items-center justify-center space-x-4"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-            >
-              <img 
-                src={stottaMullerProfile?.url || ""} // Fallback image
-                alt="Stotta Müller"
-                className="w-16 h-16 rounded-full object-cover border-2 border-white/30"
-              />
-              <div className="text-left">
-                <p className="text-lg font-medium">Stotta Müller</p>
-                <p className="text-blue-200">Gründer & Geschäftsführer</p>
-              </div>
             </motion.div>
           </div>
         </div>
