@@ -1,9 +1,8 @@
-import { Sparkles, Truck, Home, Leaf, CheckCircle, Clock, Euro } from 'lucide-react';
+import { Sparkles, Truck, Home, Leaf } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ParallaxSection from '@/components/ParallaxSection';
@@ -53,23 +52,23 @@ const Leistungen = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="py-24 bg-gradient-to-r from-blue-700 to-blue-900 text-white relative overflow-hidden">
+      <section className="py-28 bg-gradient-to-r from-blue-800 to-blue-900 text-white relative overflow-hidden">
         <div className="container mx-auto px-6 text-center max-w-4xl">
           <motion.h1 
-            className="text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg"
-            initial={{ opacity: 0, y: 20 }}
+            className="text-6xl font-extrabold mb-6 drop-shadow-lg tracking-tight"
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
           >
             Unsere Leistungen
           </motion.h1>
           <motion.p 
-            className="text-xl md:text-2xl text-blue-200 leading-relaxed"
-            initial={{ opacity: 0, y: 20 }}
+            className="text-2xl text-blue-200 max-w-3xl mx-auto leading-relaxed"
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
           >
-            Entdecken Sie unser vielfältiges Angebot an professionellen Dienstleistungen – maßgeschneidert für Ihre Bedürfnisse.
+            Maßgeschneiderte Lösungen für Privat- und Geschäftskunden – professionell, zuverlässig und mit Herz.
           </motion.p>
         </div>
       </section>
@@ -77,32 +76,33 @@ const Leistungen = () => {
       {/* Services Grid */}
       <section className="py-20 flex-grow">
         <div className="container mx-auto px-6 max-w-7xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
             {serviceCategories.map((category, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.6, delay: index * 0.15 }}
+                className="group"
               >
-                <Card className="h-full rounded-3xl shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col">
-                  <CardHeader className="flex items-center space-x-4 pb-4">
-                    <div className={`w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 bg-gradient-to-br ${category.colorClass} text-white shadow-lg`}>
-                      <category.icon className="w-8 h-8" />
+                <Card className="h-full rounded-3xl shadow-lg hover:shadow-2xl transition-shadow duration-400 flex flex-col border border-transparent group-hover:border-blue-400">
+                  <CardHeader className="flex items-center space-x-5 pb-6">
+                    <div className={`w-20 h-20 rounded-full flex items-center justify-center flex-shrink-0 bg-gradient-to-br ${category.colorClass} text-white shadow-lg transition-transform duration-300 group-hover:scale-110`}>
+                      <category.icon className="w-10 h-10" />
                     </div>
                     <div>
-                      <CardTitle className="text-2xl font-bold text-gray-900">{category.title}</CardTitle>
-                      <CardDescription className="text-gray-600">{category.subtitle}</CardDescription>
+                      <CardTitle className="text-3xl font-extrabold text-gray-900">{category.title}</CardTitle>
+                      <CardDescription className="text-gray-600 text-lg">{category.subtitle}</CardDescription>
                     </div>
                   </CardHeader>
-                  <CardContent className="flex-grow text-gray-700 text-base leading-relaxed">
+                  <CardContent className="flex-grow text-gray-700 text-lg leading-relaxed">
                     {category.description}
                   </CardContent>
                   <div className="p-6 pt-0">
                     <Button 
                       asChild 
-                      className={`w-full bg-gradient-to-r ${category.colorClass} hover:from-opacity-90 hover:to-opacity-90 text-white rounded-xl shadow-md`}
+                      className={`w-full bg-gradient-to-r ${category.colorClass} hover:from-opacity-90 hover:to-opacity-90 text-white rounded-xl shadow-md font-semibold text-lg`}
                     >
                       <Link to={category.link} aria-label={`Mehr erfahren über ${category.title}`}>
                         Mehr erfahren
@@ -117,37 +117,37 @@ const Leistungen = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-900 to-blue-700 text-white">
+      <section className="py-24 bg-gradient-to-r from-blue-900 to-blue-700 text-white">
         <div className="container mx-auto px-6 max-w-4xl text-center">
           <motion.h2 
-            className="text-4xl font-extrabold mb-6 drop-shadow-lg"
-            initial={{ opacity: 0, y: 20 }}
+            className="text-5xl font-extrabold mb-8 drop-shadow-lg tracking-tight"
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.7 }}
           >
-            Bereit für Ihr Projekt?
+            Bereit für Ihr nächstes Projekt?
           </motion.h2>
           <motion.p 
-            className="text-lg mb-8 max-w-3xl mx-auto leading-relaxed"
-            initial={{ opacity: 0, y: 20 }}
+            className="text-2xl mb-12 max-w-3xl mx-auto leading-relaxed"
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
           >
             Kontaktieren Sie uns für ein kostenloses und unverbindliches Angebot. Wir freuen uns darauf, Sie zu unterstützen!
           </motion.p>
           <motion.div 
-            className="flex flex-col sm:flex-row justify-center gap-6 max-w-md mx-auto"
-            initial={{ opacity: 0, y: 20 }}
+            className="flex flex-col sm:flex-row gap-6 justify-center max-w-md mx-auto"
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: 0.7, delay: 0.4 }}
           >
-            <Button size="lg" className="bg-white text-blue-700 hover:bg-gray-100 rounded-full px-10 py-4 shadow-lg" asChild>
+            <Button size="lg" className="bg-white text-blue-700 hover:bg-gray-100 rounded-full px-12 py-5 shadow-xl font-semibold text-lg" asChild>
               <Link to="/kontakt">Jetzt Kontakt aufnehmen</Link>
             </Button>
-            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-blue-700 rounded-full px-10 py-4 shadow-lg" asChild>
+            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-blue-700 rounded-full px-12 py-5 shadow-xl font-semibold text-lg" asChild>
               <a href="tel:+49123456789">Sofort anrufen</a>
             </Button>
           </motion.div>
