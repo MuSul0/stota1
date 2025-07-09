@@ -78,12 +78,12 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-tr from-blue-600 to-purple-700 px-4">
-      <Card className="max-w-md w-full p-8 rounded-2xl shadow-2xl bg-white/90 backdrop-blur-md border border-white/30">
-        <CardHeader className="flex flex-col items-center space-y-6">
+      <Card className="max-w-md w-full p-10 rounded-3xl shadow-2xl bg-white/95 backdrop-blur-md border border-white/40">
+        <CardHeader className="flex flex-col items-center space-y-4">
           <Logo />
           <div className="text-center">
             <CardTitle className="text-3xl font-extrabold text-gray-900">Neu hier? Registrieren</CardTitle>
-            <CardDescription className="text-gray-600">
+            <CardDescription className="text-gray-600 max-w-xs mx-auto">
               Erstellen Sie ein Konto, um auf das Kundenportal zuzugreifen.
             </CardDescription>
           </div>
@@ -91,7 +91,7 @@ const Register = () => {
         <CardContent>
           <form onSubmit={handleRegister} className="space-y-6">
             <div>
-              <Label htmlFor="name" className="text-gray-700 font-semibold">Name</Label>
+              <Label htmlFor="name" className="block text-gray-700 font-semibold mb-1">Name</Label>
               <Input
                 id="name"
                 type="text"
@@ -104,7 +104,7 @@ const Register = () => {
               />
             </div>
             <div>
-              <Label htmlFor="email" className="text-gray-700 font-semibold">E-Mail</Label>
+              <Label htmlFor="email" className="block text-gray-700 font-semibold mb-1">E-Mail</Label>
               <Input
                 id="email"
                 type="email"
@@ -117,7 +117,7 @@ const Register = () => {
               />
             </div>
             <div>
-              <Label htmlFor="password" className="text-gray-700 font-semibold">Passwort</Label>
+              <Label htmlFor="password" className="block text-gray-700 font-semibold mb-1">Passwort</Label>
               <Input
                 id="password"
                 type="password"
@@ -129,11 +129,15 @@ const Register = () => {
                 className="mt-1"
               />
             </div>
-            <Button type="submit" className="w-full py-3 text-lg font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg shadow-lg transition-all duration-300" disabled={loading}>
+            <Button 
+              type="submit" 
+              className="w-full py-3 text-lg font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-xl shadow-lg transition-all duration-300"
+              disabled={loading}
+            >
               {loading ? <Loader2 className="animate-spin mx-auto" /> : 'Registrieren'}
             </Button>
           </form>
-          <p className="mt-6 text-center text-gray-200 select-none text-sm">
+          <p className="mt-6 text-center text-gray-700 select-none text-sm">
             Bereits registriert?{' '}
             <Link to="/login" className="text-blue-600 hover:underline font-medium">
               Hier anmelden
