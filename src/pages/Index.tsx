@@ -1,10 +1,9 @@
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
-import ServiceCard from '@/components/ServiceCard';
 import ParallaxSection from '@/components/ParallaxSection';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, Clock, Truck, Home, Sparkles, Star, Quote, Users, Lightbulb, Handshake, Briefcase, Smile, Euro, PhoneCall, CalendarCheck, Wrench, ThumbsUp, Gift } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CheckCircle, Clock, Truck, Home, Sparkles, Star, Quote, Users, Lightbulb, Handshake, Briefcase, Smile, Euro, PhoneCall, CalendarCheck, Wrench, ThumbsUp, Gift, Leaf } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
@@ -12,75 +11,48 @@ import { motion } from 'framer-motion';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { supabase } from '@/integrations/supabase/client';
 
-interface Service {
-  id: string;
-  icon: string;
-  title: string;
-  description: string;
-  features: string[];
-  image_url: string;
-  price: string;
-  popular: boolean;
-}
-
 const Index = () => {
   const servicesRef = useRef<HTMLDivElement>(null);
-  const [services, setServices] = useState<Service[]>([]);
-  const [loadingServices, setLoadingServices] = useState(true);
 
-  useEffect(() => {
-    const fetchServices = async () => {
-      setLoadingServices(true);
-      const { data, error } = await supabase.from('services').select('*');
-      if (error) {
-        console.error('Error fetching services:', error);
-        // Fallback to static data if fetching fails
-        setServices([
-          {
-            id: 'static-1',
-            icon: 'Sparkles',
-            title: 'Reinigungsservice',
-            description: 'Professionelle Reinigung für Büros, Praxen und Privathaushalte – für ein makelloses Ergebnis.',
-            features: ['Büro- & Praxisreinigung', 'Haushaltsreinigung', 'Fenster- & Glasreinigung', 'Grundreinigung'],
-            image_url: '',
-            price: 'Ab 25€/Std.',
-            popular: true
-          },
-          {
-            id: 'static-2',
-            icon: 'Truck',
-            title: 'Transportdienst',
-            description: 'Sicherer und pünktlicher Transport Ihrer Güter – von Möbeln bis zu Spezialsendungen.',
-            features: ['Möbeltransport', 'Express-Kurier', 'Sperrguttransport', 'Regionale Fahrten'],
-            image_url: '',
-            price: 'Ab 45€/Fahrt',
-            popular: false
-          },
-          {
-            id: 'static-3',
-            icon: 'Home',
-            title: 'Umzugshilfe & Montage',
-            description: 'Ihr stressfreier Umzug mit Rundum-Service – wir kümmern uns um alles.',
-            features: ['Komplette Umzugsplanung', 'Verpackungsservice', 'Möbelmontage', 'Entrümpelung'],
-            image_url: '',
-            price: 'Ab 35€/Std.',
-            popular: false
-          }
-        ]);
-      } else {
-        setServices(data as Service[]);
-      }
-      setLoadingServices(false);
-    };
-
-    fetchServices();
-  }, []);
-
-  // Map icon strings to LucideIcon components
-  const getIconComponent = (iconName: string) => {
-    const icons: { [key: string]: any } = { Sparkles, Truck, Home, CheckCircle, Clock, Euro, Star, Quote, Users, Lightbulb, Handshake, Briefcase, Smile, Wrench, PhoneCall, CalendarCheck, ThumbsUp, Gift };
-    return icons[iconName] || Sparkles; // Default to Sparkles if not found
-  };
+  // Definieren der Service-Kategorien direkt in der Komponente
+  const serviceCategories = [
+    {
+      icon: Truck,
+      title: 'Transporte',
+      subtitle: 'Ihre Güter sicher ans Ziel',
+      description: 'Sicherer und pünktlicher Transport Ihrer Güter – von empfindlichen Hightech-Waren bis zu kompletten Umzügen für Privat- und Firmenkunden.',
+      link: '/leistungen/transporte',
+      colorClass: 'from-blue-600 to-blue-800',
+      iconColor: 'text-blue-600'
+    },
+    {
+      icon: Leaf,
+      title: 'Garten- & Landschaftsbau',
+      subtitle: 'Ihr Traumgarten – von der Idee zur Realität',
+      description: 'Von der regelmäßigen Gartenpflege über Rasen mähen und Heckenschnitt bis hin zu Baumfällungen und der Neugestaltung Ihrer Außenanlagen.',
+      link: '/leistungen/garten-landschaftsbau',
+      colorClass: 'from-orange-600 to-red-800',
+      iconColor: 'text-orange-600'
+    },
+    {
+      icon: Sparkles,
+      title: 'Reinigung',
+      subtitle: 'Glanz & Hygiene für Ihr Zuhause & Geschäft',
+      description: 'Professionelle Reinigungsdienste für Privat- und Gewerbekunden. Von der Grundreinigung bis zur Fahrzeugaufbereitung – wir sorgen für makellose Sauberkeit.',
+      link: '/leistungen/reinigung',
+      colorClass: 'from-purple-600 to-indigo-800',
+      iconColor: 'text-purple-600'
+    },
+    {
+      icon: Home, // Using Home for Entsorgung as a general "clearing out" icon
+      title: 'Entsorgung',
+      subtitle: 'Sauber & Umweltgerecht entsorgen',
+      description: 'Wir kümmern uns um die fachgerechte Entsorgung Ihrer alten Möbel, Elektrogeräte, Gartenabfälle und Renovierungsreste – schnell, zuverlässig und umweltbewusst.',
+      link: '/leistungen/entsorgung',
+      colorClass: 'from-green-600 to-emerald-800',
+      iconColor: 'text-green-600'
+    }
+  ];
 
   const stats = [
     { value: '500+', label: 'Zufriedene Kunden', icon: Users },
@@ -101,7 +73,7 @@ const Index = () => {
       description: 'Ihre Bedürfnisse stehen im Mittelpunkt. Wir bieten maßgeschneiderte Lösungen und persönlichen Service.'
     },
     {
-      icon: Wrench, // Changed from Tool to Wrench
+      icon: Wrench,
       title: 'Modernste Ausstattung',
       description: 'Dank modernem Equipment und bewährten Methoden führen wir alle Arbeiten sicher und präzise aus.'
     },
@@ -174,7 +146,7 @@ const Index = () => {
       
       <Hero />
 
-      {/* Services Section */}
+      {/* Services Section - Updated to show categories */}
       <ParallaxSection speed={0.1}>
         <section ref={servicesRef} className="py-20 bg-white">
           <div className="container mx-auto px-4">
@@ -199,24 +171,35 @@ const Index = () => {
               </motion.p>
             </div>
 
-            {loadingServices ? (
-              <div className="text-center text-gray-600">Services werden geladen...</div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {services.map((service, index) => (
-                  <ServiceCard
-                    key={service.id}
-                    icon={getIconComponent(service.icon)}
-                    title={service.title}
-                    description={service.description}
-                    features={service.features}
-                    imageUrl={service.image_url}
-                    price={service.price}
-                    popular={service.popular}
-                  />
-                ))}
-              </div>
-            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12">
+              {serviceCategories.map((category, index) => (
+                <motion.div 
+                  key={index} 
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  transition={{ duration: 0.7, delay: index * 0.1 }}
+                >
+                  <Card className="h-full flex flex-col hover:shadow-xl transition-shadow duration-300">
+                    <CardHeader className="flex flex-row items-center space-x-4 pb-2">
+                      <div className={`w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 bg-gradient-to-br ${category.colorClass} text-white shadow-lg`}>
+                        <category.icon className="h-8 w-8" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-2xl font-bold">{category.title}</CardTitle>
+                        <CardDescription className="text-gray-600">{category.subtitle}</CardDescription>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="flex-grow">
+                      <p className="text-gray-700 mb-6">{category.description}</p>
+                      <Button asChild className={`w-full bg-gradient-to-r ${category.colorClass} hover:from-opacity-90 hover:to-opacity-90 text-white`}>
+                        <Link to={category.link}>Mehr erfahren</Link>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
             <div className="text-center mt-12">
               <Button size="lg" asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
                 <Link to="/leistungen">Alle Leistungen entdecken</Link>
@@ -442,12 +425,21 @@ const Index = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, amount: 0.5 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
+                className="relative"
               >
-                <img 
-                  src=""
-                  alt="Nikolai Müller, Gründer"
-                  className="w-full h-96 object-cover rounded-xl shadow-xl"
-                />
+                <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                  <img 
+                    src=""
+                    alt="Nikolai Müller vor seinem ersten Transporter im Jahr 2014"
+                    className="w-full h-96 object-cover"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                    <p className="text-white font-medium">Nikolai Müller, 2014</p>
+                    <p className="text-white/80 text-sm">Der Anfang einer Erfolgsgeschichte</p>
+                  </div>
+                </div>
+                <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full opacity-20 animate-pulse"></div>
+                <div className="absolute -bottom-6 -left-6 w-20 h-20 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full opacity-20 animate-pulse delay-1000"></div>
               </motion.div>
             </div>
           </div>
