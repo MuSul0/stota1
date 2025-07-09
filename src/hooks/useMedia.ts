@@ -10,71 +10,90 @@ export interface MediaItem {
   created_at: string;
 }
 
+export interface ServiceItem {
+  id: string;
+  title: string;
+  description: string;
+  price: string;
+  duration: string;
+  category: string;
+  is_active: boolean;
+  created_at: string;
+}
+
 interface UseMediaOptions {
   title?: string; // Fetch a specific media item by title
-  type?: string;  // Filter by type (e.g., 'image', 'video')
+  type?: string;  // Filter by type (e.g., 'image', 'video', 'service')
+  fetchAll?: boolean; // Fetch all media items regardless of type
 }
 
 export function useMedia(options: UseMediaOptions = {}) {
-  const [mediaData, setMediaData] = useState<MediaItem[] | null>(null);
+  const [data, setData] = useState<MediaItem[] | ServiceItem[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const queryKey = useMemo(() => JSON.stringify(options), [options]);
 
   useEffect(() => {
-    const fetchMediaItems = async () => {
+    const fetchDataItems = async () => {
       setLoading(true);
       setError(null);
       try {
-        let query = supabase.from('media').select('*');
+        let query;
+        let tableName = 'media'; // Default table
 
-        if (options.title) {
-          query = query.eq('title', options.title);
-        }
-        if (options.type) {
-          query = query.eq('type', options.type);
+        if (options.type === 'service') {
+          tableName = 'services';
+          query = supabase.from(tableName).select('*').eq('is_active', true).order('title', { ascending: true });
+        } else {
+          query = supabase.from(tableName).select('*');
+          if (options.title) {
+            query = query.eq('title', options.title);
+          }
+          if (options.type) {
+            query = query.eq('type', options.type);
+          }
         }
 
-        const { data, error: fetchError } = await query;
+        const { data: fetchedData, error: fetchError } = await query;
 
         if (fetchError) {
           throw fetchError;
         }
 
-        setMediaData(data as MediaItem[]);
+        setData(fetchedData as MediaItem[] | ServiceItem[]);
       } catch (err: any) {
-        console.error('Error fetching media:', err.message);
+        console.error(`Error fetching ${options.type || 'media'}:`, err.message);
         setError(err.message);
-        toast.error('Fehler beim Laden der Medien: ' + err.message);
+        toast.error(`Fehler beim Laden der ${options.type || 'Medien'}: ` + err.message);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchMediaItems();
+    fetchDataItems();
 
     // Setup real-time subscription for relevant changes
     const channel = supabase
-      .channel(`public:media:${queryKey}`) // Unique channel name based on query
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'media' }, (payload) => {
-        // Re-fetch data on any change to the media table
-        fetchMediaItems();
+      .channel(`public:${options.type || 'media'}:${queryKey}`) // Unique channel name based on query
+      .on('postgres_changes', { event: '*', schema: 'public', table: options.type === 'service' ? 'services' : 'media' }, (payload) => {
+        // Re-fetch data on any change to the relevant table
+        fetchDataItems();
       })
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [queryKey]); // Re-run effect if options change
+  }, [queryKey, options.type]); // Re-run effect if options or type change
 
-  // Return single item if title was requested, otherwise array
-  const resultMedia = useMemo(() => {
-    if (options.title) {
-      return mediaData?.[0] || null; // Return the first item if title was specified
+  // Return single item if title was requested and not a service, otherwise array
+  const resultData = useMemo(() => {
+    if (options.title && options.type !== 'service') {
+      return (data as MediaItem[])?.[0] || null; // Return the first item if title was specified and it's media
     }
-    return mediaData; // Return array otherwise
-  }, [mediaData, options.title]);
+    return data; // Return array otherwise
+  }, [data, options.title, options.type]);
 
-  return { media: resultMedia, loading, error };
+  return { media: resultData, loading, error };
 }
