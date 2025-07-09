@@ -6,8 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ParallaxSection from '@/components/ParallaxSection';
+import { useMedia } from '@/hooks/useMedia'; // Import the new hook
 
 const UeberUns = () => {
+  const { media: aboutUsMainImage, loading: loadingAboutUsMainImage, error: aboutUsMainError } = useMedia({ title: 'About Us Main Image', type: 'image' });
+  const { media: stottaMullerProfile, loading: loadingStottaMullerProfile, error: stottaMullerProfileError } = useMedia({ title: 'Stotta Müller Profile', type: 'image' });
+  const { media: mariaSchmidtProfile, loading: loadingMariaSchmidtProfile, error: mariaSchmidtProfileError } = useMedia({ title: 'Maria Schmidt Profile', type: 'image' });
+  const { media: thomasWeberProfile, loading: loadingThomasWeberProfile, error: thomasWeberProfileError } = useMedia({ title: 'Thomas Weber Profile', type: 'image' });
+
   const values = [
     {
       icon: Shield,
@@ -43,6 +49,19 @@ const UeberUns = () => {
     { year: '2022', title: 'Auszeichnung', description: 'Als bester Dienstleister der Region für herausragenden Service prämiert.' },
     { year: '2024', title: 'Heute', description: 'Ein starkes Team von 15 Mitarbeitern, 3 Standorte und über 500 begeisterte Kunden.' }
   ];
+
+  if (loadingAboutUsMainImage || loadingStottaMullerProfile || loadingMariaSchmidtProfile || loadingThomasWeberProfile) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <p className="text-gray-600 text-lg">Lade Über uns...</p>
+      </div>
+    );
+  }
+
+  if (aboutUsMainError || stottaMullerProfileError || mariaSchmidtProfileError || thomasWeberProfileError) {
+    console.error("Fehler beim Laden der Bilder auf der 'Über uns'-Seite:", aboutUsMainError, stottaMullerProfileError, mariaSchmidtProfileError, thomasWeberProfileError);
+    // Optional: Fallback zu Standardbildern oder Fehlermeldung anzeigen
+  }
 
   return (
     <div className="min-h-screen">
@@ -120,7 +139,7 @@ const UeberUns = () => {
               >
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                   <img 
-                    src=""
+                    src={aboutUsMainImage?.url || ""} // Fallback image
                     alt="Stotta Müller vor seinem ersten Transporter im Jahr 2014"
                     className="w-full h-96 object-cover"
                   />
@@ -303,7 +322,7 @@ const UeberUns = () => {
                 <CardContent className="p-8">
                   <div className="relative mb-6">
                     <img 
-                      src=""
+                      src={stottaMullerProfile?.url || ""} // Fallback image
                       alt="Stotta Müller - Geschäftsführer"
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
@@ -330,7 +349,7 @@ const UeberUns = () => {
                 <CardContent className="p-8">
                   <div className="relative mb-6">
                     <img 
-                      src=""
+                      src={mariaSchmidtProfile?.url || ""} // Fallback image
                       alt="Maria Schmidt - Teamleiterin"
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
@@ -357,7 +376,7 @@ const UeberUns = () => {
                 <CardContent className="p-8">
                   <div className="relative mb-6">
                     <img 
-                      src=""
+                      src={thomasWeberProfile?.url || ""} // Fallback image
                       alt="Thomas Weber - Transport Spezialist"
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
@@ -430,7 +449,7 @@ const UeberUns = () => {
               transition={{ duration: 0.6, delay: 0.6 }}
             >
               <img 
-                src=""
+                src={stottaMullerProfile?.url || ""} // Fallback image
                 alt="Stotta Müller"
                 className="w-16 h-16 rounded-full object-cover border-2 border-white/30"
               />

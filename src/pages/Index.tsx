@@ -10,9 +10,13 @@ import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { supabase } from '@/integrations/supabase/client';
+import { useMedia } from '@/hooks/useMedia'; // Import the new hook
 
 const Index = () => {
   const servicesRef = useRef<HTMLDivElement>(null);
+
+  const { media: referralProgramImage, loading: loadingReferralProgramImage, error: referralError } = useMedia({ title: 'Referral Program Teaser', type: 'image' });
+  const { media: aboutUsImage, loading: loadingAboutUsImage, error: aboutUsError } = useMedia({ title: 'About Us Teaser', type: 'image' });
 
   // Definieren der Service-Kategorien direkt in der Komponente
   const serviceCategories = [
@@ -139,6 +143,19 @@ const Index = () => {
       />
     ));
   };
+
+  if (loadingReferralProgramImage || loadingAboutUsImage) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <p className="text-gray-600 text-lg">Lade Startseite...</p>
+      </div>
+    );
+  }
+
+  if (referralError || aboutUsError) {
+    console.error("Fehler beim Laden der Bilder auf der Startseite:", referralError, aboutUsError);
+    // Optional: Fallback zu Standardbildern oder Fehlermeldung anzeigen
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
@@ -323,7 +340,7 @@ const Index = () => {
             >
               <div className="relative rounded-xl overflow-hidden shadow-xl">
                 <img 
-                  src=""
+                  src={referralProgramImage?.url || ""} // Fallback image
                   alt="Freunde teilen eine Empfehlung"
                   className="w-full h-96 object-cover"
                 />
@@ -429,7 +446,7 @@ const Index = () => {
               >
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                   <img 
-                    src=""
+                    src={aboutUsImage?.url || ""} // Fallback image
                     alt="Stotta Müller vor seinem ersten Transporter im Jahr 2014"
                     className="w-full h-96 object-cover"
                   />

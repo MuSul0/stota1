@@ -1,85 +1,69 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Play, Eye, Filter } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useMedia } from '@/hooks/useMedia'; // Import the new hook
 
 const Galerie = () => {
   const [activeFilter, setActiveFilter] = useState('Alle');
+  const { media: allMedia, loading: loadingMedia, error: mediaError } = useMedia({ fetchAll: true });
 
-  const projects = [
-    {
-      title: 'Büroreinigung Innenstadt',
-      category: 'Reinigung',
-      description: 'Regelmäßige Reinigung eines 500m² Bürokomplexes',
-      imageUrl: '',
-      type: 'image'
-    },
-    {
-      title: 'Familienumzug nach München',
-      category: 'Umzug',
-      description: 'Kompletter Umzug einer 4-Zimmer-Wohnung mit Möbelmontage',
-      imageUrl: '',
-      type: 'video'
-    },
-    {
-      title: 'Praxisreinigung Zahnarzt',
-      category: 'Reinigung',
-      description: 'Hygienische Reinigung einer Zahnarztpraxis nach Hygienestandards',
-      imageUrl: '',
-      type: 'image'
-    },
-    {
-      title: 'Klaviertransport',
-      category: 'Transport',
-      description: 'Sicherer Transport eines Flügels in den 3. Stock',
-      imageUrl: '',
-      type: 'image'
-    },
-    {
-      title: 'Grundreinigung nach Renovierung',
-      category: 'Reinigung',
-      description: 'Komplette Grundreinigung nach Renovierungsarbeiten',
-      imageUrl: '',
-      type: 'image'
-    },
-    {
-      title: 'Firmenumzug IT-Unternehmen',
-      category: 'Umzug',
-      description: 'Umzug eines IT-Unternehmens mit sensibler Technik',
-      imageUrl: '',
-      type: 'video'
-    },
-    {
-      title: 'Fensterreinigung Hochhaus',
-      category: 'Reinigung',
-      description: 'Professionelle Fensterreinigung an einem 8-stöckigen Gebäude',
-      imageUrl: '',
-      type: 'image'
-    },
-    {
-      title: 'Antiquitätentransport',
-      category: 'Transport',
-      description: 'Vorsichtiger Transport wertvoller Antiquitäten',
-      imageUrl: '',
-      type: 'image'
-    },
-    {
-      title: 'Hotelreinigung',
-      category: 'Reinigung',
-      description: 'Tägliche Reinigung eines Boutique-Hotels',
-      imageUrl: '',
-      type: 'image'
-    }
-  ];
+  // Transform fetched media into the structure expected by the component
+  const projects = useMemo(() => {
+    if (!allMedia || !Array.isArray(allMedia)) return [];
+    return allMedia.map(item => {
+      let category = 'Sonstiges'; // Default category
+      if (item.title.toLowerCase().includes('reinigung')) {
+        category = 'Reinigung';
+      } else if (item.title.toLowerCase().includes('umzug')) {
+        category = 'Umzug';
+      } else if (item.title.toLowerCase().includes('transport')) {
+        category = 'Transport';
+      }
+      return {
+        title: item.title,
+        category: category,
+        description: item.title, // Using title as description for simplicity
+        imageUrl: item.url,
+        type: item.type,
+        id: item.id, // Keep ID for key
+      };
+    });
+  }, [allMedia]);
 
-  const categories = ['Alle', 'Reinigung', 'Transport', 'Umzug'];
+  const categories = ['Alle', 'Reinigung', 'Transport', 'Umzug', 'Sonstiges'];
 
   const filteredProjects = activeFilter === 'Alle' 
     ? projects 
     : projects.filter(project => project.category === activeFilter);
+
+  // Fetch specific images for Before/After and Video sections
+  const { media: officeBefore, loading: loadingOfficeBefore } = useMedia({ title: 'Office Cleaning Before', type: 'image' });
+  const { media: officeAfter, loading: loadingOfficeAfter } = useMedia({ title: 'Office Cleaning After', type: 'image' });
+  const { media: kitchenBefore, loading: loadingKitchenBefore } = useMedia({ title: 'Kitchen Cleaning Before', type: 'image' });
+  const { media: kitchenAfter, loading: loadingKitchenAfter } = useMedia({ title: 'Kitchen Cleaning After', type: 'image' });
+  const { media: officeTimelapse, loading: loadingOfficeTimelapse } = useMedia({ title: 'Office Cleaning Timelapse', type: 'video' });
+  const { media: familyMoveVideo, loading: loadingFamilyMoveVideo } = useMedia({ title: 'Family Move Documented', type: 'video' });
+
+
+  if (loadingMedia || loadingOfficeBefore || loadingOfficeAfter || loadingKitchenBefore || loadingKitchenAfter || loadingOfficeTimelapse || loadingFamilyMoveVideo) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <p className="text-gray-600 text-lg">Lade Galerie...</p>
+      </div>
+    );
+  }
+
+  if (mediaError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <p className="text-red-600 text-lg">Fehler beim Laden der Galerie: {mediaError}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
@@ -132,8 +116,8 @@ const Galerie = () => {
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProjects.map((project, index) => (
-              <Card key={index} className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
+            {filteredProjects.map((project) => (
+              <Card key={project.id} className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
                 <div className="relative overflow-hidden">
                   <img 
                     src={project.imageUrl}
@@ -147,7 +131,8 @@ const Galerie = () => {
                     className={`absolute top-4 left-4 ${
                       project.category === 'Reinigung' ? 'bg-green-500' :
                       project.category === 'Transport' ? 'bg-blue-500' :
-                      'bg-orange-500'
+                      project.category === 'Umzug' ? 'bg-orange-500' :
+                      'bg-gray-500' // Default for 'Sonstiges'
                     } text-white`}
                   >
                     {project.category}
@@ -201,7 +186,7 @@ const Galerie = () => {
             <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
               <div className="relative">
                 <img 
-                  src=""
+                  src={officeTimelapse?.url || ""} // Fallback image
                   alt="Büroreinigung Zeitraffer"
                   className="w-full h-64 object-cover"
                 />
@@ -227,7 +212,7 @@ const Galerie = () => {
             <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
               <div className="relative">
                 <img 
-                  src=""
+                  src={familyMoveVideo?.url || ""} // Fallback image
                   alt="Familienumzug dokumentiert"
                   className="w-full h-64 object-cover"
                 />
@@ -278,7 +263,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Vorher</p>
                       <img 
-                        src=""
+                        src={officeBefore?.url || ""} // Fallback image
                         alt="Unordentliches Büro vor der Reinigung"
                         className="w-full h-32 object-cover rounded-lg"
                       />
@@ -286,7 +271,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Nachher</p>
                       <img 
-                        src=""
+                        src={officeAfter?.url || ""} // Fallback image
                         alt="Perfekt gereinigtes Büro"
                         className="w-full h-32 object-cover rounded-lg"
                       />
@@ -307,7 +292,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Vorher</p>
                       <img 
-                        src=""
+                        src={kitchenBefore?.url || ""} // Fallback image
                         alt="Verschmutzte Küche vor der Reinigung"
                         className="w-full h-32 object-cover rounded-lg"
                       />
@@ -315,7 +300,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Nachher</p>
                       <img 
-                        src=""
+                        src={kitchenAfter?.url || ""} // Fallback image
                         alt="Glänzende saubere Küche"
                         className="w-full h-32 object-cover rounded-lg"
                       />
