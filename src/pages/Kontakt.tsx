@@ -11,7 +11,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
-import { useMedia } from '@/hooks/useMedia'; // Importiere den useMedia Hook
 
 const Kontakt = () => {
   const [formData, setFormData] = useState({
@@ -22,9 +21,6 @@ const Kontakt = () => {
     message: ''
   });
   const [loading, setLoading] = useState(false);
-
-  // Services aus der Datenbank laden
-  const { media: services, loading: loadingServices, error: servicesError } = useMedia({ type: 'service' });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -137,22 +133,29 @@ const Kontakt = () => {
                     </div>
 
                     <div>
+                      <Label htmlFor="email">E-Mail *</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => handleInputChange('email', e.target.value)}
+                        required
+                        placeholder="ihre.email@beispiel.de"
+                      />
+                    </div>
+
+                    <div>
                       <Label htmlFor="service">Gewünschte Leistung</Label>
                       <Select value={formData.service} onValueChange={(value) => handleInputChange('service', value)}>
                         <SelectTrigger>
-                          <SelectValue placeholder={loadingServices ? "Lade Leistungen..." : "Wählen Sie eine Leistung"} />
+                          <SelectValue placeholder="Wählen Sie eine Leistung" />
                         </SelectTrigger>
                         <SelectContent>
-                          {servicesError && <SelectItem value="" disabled>Fehler beim Laden der Leistungen</SelectItem>}
-                          {!loadingServices && services && services.length > 0 ? (
-                            services.map((service: any) => (
-                              <SelectItem key={service.id} value={service.title}>
-                                {service.title}
-                              </SelectItem>
-                            ))
-                          ) : (
-                            !loadingServices && !servicesError && <SelectItem value="" disabled>Keine Leistungen gefunden</SelectItem>
-                          )}
+                          <SelectItem value="reinigung">Reinigungsservice</SelectItem>
+                          <SelectItem value="transport">Transport & Kurier</SelectItem>
+                          <SelectItem value="umzug">Umzugshilfe</SelectItem>
+                          <SelectItem value="beratung">Beratung</SelectItem>
+                          <SelectItem value="sonstiges">Sonstiges</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
