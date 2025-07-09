@@ -169,7 +169,7 @@ const Index = () => {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <motion.h2 
-                className="text-3xl md:text-4xl font-bold mb-4"
+                className="text-3xl md:text-4xl font-bold mb-4 text-gray-800"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.5 }}
@@ -197,13 +197,13 @@ const Index = () => {
                   viewport={{ once: true, amount: 0.3 }}
                   transition={{ duration: 0.7, delay: index * 0.1 }}
                 >
-                  <Card className="h-full flex flex-col hover:shadow-xl transition-shadow duration-300 rounded-xl">
+                  <Card className="h-full flex flex-col hover:shadow-xl transition-shadow duration-300 rounded-2xl border border-gray-200">
                     <CardHeader className="flex flex-row items-center space-x-4 pb-2">
                       <div className={`w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 bg-gradient-to-br ${category.colorClass} text-white shadow-lg`}>
                         <category.icon className="h-8 w-8" />
                       </div>
                       <div>
-                        <CardTitle className="text-2xl font-bold">{category.title}</CardTitle>
+                        <CardTitle className="text-2xl font-bold text-gray-900">{category.title}</CardTitle>
                         <CardDescription className="text-gray-600">{category.subtitle}</CardDescription>
                       </div>
                     </CardHeader>
@@ -218,7 +218,7 @@ const Index = () => {
               ))}
             </div>
             <div className="text-center mt-12">
-              <Button size="lg" asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+              <Button size="lg" asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full px-8 py-3 shadow-lg">
                 <Link to="/leistungen">Alle Leistungen entdecken</Link>
               </Button>
             </div>
@@ -264,7 +264,7 @@ const Index = () => {
               ✅ Ihre Vorteile
             </motion.div>
             <motion.h2 
-              className="text-3xl md:text-4xl font-bold mb-4"
+              className="text-3xl md:text-4xl font-bold mb-4 text-gray-800"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
@@ -292,7 +292,7 @@ const Index = () => {
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.7, delay: index * 0.15 }}
               >
-                <Card className="text-center h-full hover:shadow-xl transition-shadow duration-300 rounded-xl">
+                <Card className="text-center h-full hover:shadow-xl transition-shadow duration-300 rounded-2xl border border-gray-200">
                   <CardContent className="p-6">
                     <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <advantage.icon className="h-8 w-8 text-blue-600" />
@@ -328,7 +328,7 @@ const Index = () => {
                 Mit unserem Empfehlungsprogramm belohnen wir Sie und Ihre Freunde für jedes erfolgreiche Projekt. 
                 Eine Win-Win-Situation für alle!
               </p>
-              <Button size="lg" asChild className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white">
+              <Button size="lg" asChild className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-full px-8 py-3 shadow-lg">
                 <Link to="/empfehlungsprogramm">Mehr über das Programm erfahren</Link>
               </Button>
             </motion.div>
@@ -338,7 +338,7 @@ const Index = () => {
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <div className="relative rounded-xl overflow-hidden shadow-xl">
+              <div className="relative rounded-2xl overflow-hidden shadow-xl">
                 <img 
                   src={referralProgramImage?.url || ""} // Fallback image
                   alt="Freunde teilen eine Empfehlung"
@@ -367,7 +367,7 @@ const Index = () => {
               ⚙️ Unser Prozess
             </motion.div>
             <motion.h2 
-              className="text-3xl md:text-4xl font-bold mb-4"
+              className="text-3xl md:text-4xl font-bold mb-4 text-gray-800"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
@@ -395,7 +395,7 @@ const Index = () => {
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.7, delay: index * 0.15 }}
               >
-                <Card className="text-center h-full hover:shadow-xl transition-shadow duration-300 rounded-xl">
+                <Card className="text-center h-full hover:shadow-xl transition-shadow duration-300 rounded-2xl border border-gray-200">
                   <CardContent className="p-6">
                     <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <step.icon className="h-8 w-8 text-purple-600" />
@@ -433,7 +433,7 @@ const Index = () => {
                   für Zuverlässigkeit, Qualität und einen Service, der von Herzen kommt. 
                   Unser engagiertes Team arbeitet täglich daran, Ihre Erwartungen zu übertreffen.
                 </p>
-                <Button size="lg" asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                <Button size="lg" asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full px-8 py-3 shadow-lg">
                   <Link to="/ueber-uns">Mehr über uns erfahren</Link>
                 </Button>
               </motion.div>
@@ -469,7 +469,7 @@ const Index = () => {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <motion.h2 
-                className="text-3xl md:text-4xl font-bold mb-4"
+                className="text-3xl md:text-4xl font-bold mb-4 text-gray-800"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.5 }}
@@ -497,7 +497,7 @@ const Index = () => {
                   viewport={{ once: true, amount: 0.3 }}
                   transition={{ duration: 0.7, delay: index * 0.15 }}
                 >
-                  <Card className="h-full hover:shadow-xl transition-shadow duration-300 rounded-xl">
+                  <Card className="h-full hover:shadow-xl transition-shadow duration-300 rounded-2xl border border-gray-200">
                     <CardContent className="p-6">
                       <div className="flex items-center mb-4">
                         <Avatar className="mr-4">
@@ -506,7 +506,7 @@ const Index = () => {
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
-                          <h3 className="font-semibold">{testimonial.name}</h3>
+                          <h3 className="font-semibold text-gray-900">{testimonial.name}</h3>
                           <p className="text-sm text-gray-600">{testimonial.location}</p>
                         </div>
                       </div>
@@ -523,7 +523,7 @@ const Index = () => {
               ))}
             </div>
             <div className="text-center mt-12">
-              <Button size="lg" variant="outline" asChild className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white">
+              <Button size="lg" variant="outline" asChild className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white rounded-full px-8 py-3 shadow-lg">
                 <Link to="/bewertungen">Alle Bewertungen lesen</Link>
               </Button>
             </div>
@@ -559,10 +559,10 @@ const Index = () => {
             viewport={{ once: true, amount: 0.5 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100" asChild>
+            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 rounded-full px-8 py-3 shadow-lg" asChild>
               <Link to="/kontakt">Jetzt anfragen</Link>
             </Button>
-            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-blue-600" asChild>
+            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-blue-600 rounded-full px-8 py-3 shadow-lg" asChild>
               <a href="tel:+49123456789">+49 123 456 789</a>
             </Button>
           </motion.div>
