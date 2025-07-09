@@ -43,11 +43,10 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4">Unsere Leistungen</h4>
             <ul className="space-y-2">
-              <li className="text-gray-300">Gebäudereinigung</li>
-              <li className="text-gray-300">Privatreinigung</li>
-              <li className="text-gray-300">Transport & Kurier</li>
-              <li className="text-gray-300">Umzugshilfe</li>
-              <li className="text-gray-300">Möbelmontage</li>
+              <li className="text-gray-300">Transporte</li>
+              <li className="text-gray-300">Garten- & Landschaftsbau</li>
+              <li className="text-gray-300">Reinigung</li>
+              <li className="text-gray-300">Entsorgung</li>
             </ul>
           </div>
 
