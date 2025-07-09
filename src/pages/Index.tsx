@@ -197,7 +197,7 @@ const Index = () => {
                   viewport={{ once: true, amount: 0.3 }}
                   transition={{ duration: 0.7, delay: index * 0.1 }}
                 >
-                  <Card className="h-full flex flex-col hover:shadow-xl transition-shadow duration-300">
+                  <Card className="h-full flex flex-col hover:shadow-xl transition-shadow duration-300 rounded-xl">
                     <CardHeader className="flex flex-row items-center space-x-4 pb-2">
                       <div className={`w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 bg-gradient-to-br ${category.colorClass} text-white shadow-lg`}>
                         <category.icon className="h-8 w-8" />
@@ -292,7 +292,7 @@ const Index = () => {
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.7, delay: index * 0.15 }}
               >
-                <Card className="text-center h-full hover:shadow-xl transition-shadow duration-300">
+                <Card className="text-center h-full hover:shadow-xl transition-shadow duration-300 rounded-xl">
                   <CardContent className="p-6">
                     <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <advantage.icon className="h-8 w-8 text-blue-600" />
@@ -395,7 +395,7 @@ const Index = () => {
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.7, delay: index * 0.15 }}
               >
-                <Card className="text-center h-full hover:shadow-xl transition-shadow duration-300">
+                <Card className="text-center h-full hover:shadow-xl transition-shadow duration-300 rounded-xl">
                   <CardContent className="p-6">
                     <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <step.icon className="h-8 w-8 text-purple-600" />
@@ -497,7 +497,7 @@ const Index = () => {
                   viewport={{ once: true, amount: 0.3 }}
                   transition={{ duration: 0.7, delay: index * 0.15 }}
                 >
-                  <Card className="h-full hover:shadow-xl transition-shadow duration-300">
+                  <Card className="h-full hover:shadow-xl transition-shadow duration-300 rounded-xl">
                     <CardContent className="p-6">
                       <div className="flex items-center mb-4">
                         <Avatar className="mr-4">
