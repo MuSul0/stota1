@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">nikolai</string>
-    <string name="title_activity_main">nikolai</string>
-    <string name="package_name">com.example.nikolai</string>
-    <string name="custom_url_scheme">com.example.nikolai</string>
+    <string name="app_name">stotta</string>
+    <string name="title_activity_main">stotta</string>
+    <string name="package_name">com.example.stotta</string>
+    <string name="custom_url_scheme">com.example.stotta</string>
 </resources>

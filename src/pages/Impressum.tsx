@@ -18,8 +18,8 @@ const Impressum = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <h3 className="font-semibold mb-2">Nikolai Transport</h3>
-                  <p>Inhaber: Nikolai Müller</p>
+                  <h3 className="font-semibold mb-2">Stotta Transport</h3>
+                  <p>Inhaber: Stotta Müller</p>
                   <p>Musterstraße 123</p>
                   <p>12345 Musterstadt</p>
                   <p>Deutschland</p>
@@ -33,8 +33,8 @@ const Impressum = () => {
               </CardHeader>
               <CardContent className="space-y-2">
                 <p><strong>Telefon:</strong> +49 123 456 789</p>
-                <p><strong>E-Mail:</strong> info@nikolai-transport.de</p>
-                <p><strong>Website:</strong> www.nikolai-transport.de</p>
+                <p><strong>E-Mail:</strong> info@stotta-transport.de</p>
+                <p><strong>Website:</strong> www.stotta-transport.de</p>
               </CardContent>
             </Card>
 

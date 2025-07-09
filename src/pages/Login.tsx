@@ -139,7 +139,7 @@ const Login = () => {
         </CardContent>
       </Card>
       <p className="mt-6 text-center text-gray-200 select-none text-sm">
-        © 2024 Nikolai Transport. Alle Rechte vorbehalten.
+        © 2024 Stotta Transport. Alle Rechte vorbehalten.
       </p>
     </div>
   );

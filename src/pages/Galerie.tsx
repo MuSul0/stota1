@@ -191,7 +191,7 @@ const Galerie = () => {
             <div className="inline-block bg-red-100 text-red-600 px-4 py-2 rounded-full text-sm font-medium mb-4">
               🎥 Video-Galerie
             </div>
-            <h2 className="text-4xl font-bold mb-6 text-gray-800">Nikolai Transport in Aktion</h2>
+            <h2 className="text-4xl font-bold mb-6 text-gray-800">Stotta Transport in Aktion</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Sehen Sie uns bei der Arbeit und überzeugen Sie sich von unserer Professionalität
             </p>

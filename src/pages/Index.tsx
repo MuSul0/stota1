@@ -112,7 +112,7 @@ const Index = () => {
       name: 'Maria Schneider',
       location: 'München',
       rating: 5,
-      text: 'Nikolai Transport hat unseren Umzug perfekt organisiert. Alles verlief reibungslos und die Mitarbeiter waren äußerst professionell.',
+      text: 'Stotta Transport hat unseren Umzug perfekt organisiert. Alles verlief reibungslos und die Mitarbeiter waren äußerst professionell.',
       initials: 'MS'
     },
     {
@@ -253,7 +253,7 @@ const Index = () => {
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              Warum Nikolai Transport?
+              Warum Stotta Transport?
             </motion.h2>
             <motion.p 
               className="text-xl text-gray-600 max-w-2xl mx-auto"
@@ -430,11 +430,11 @@ const Index = () => {
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                   <img 
                     src=""
-                    alt="Nikolai Müller vor seinem ersten Transporter im Jahr 2014"
+                    alt="Stotta Müller vor seinem ersten Transporter im Jahr 2014"
                     className="w-full h-96 object-cover"
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-                    <p className="text-white font-medium">Nikolai Müller, 2014</p>
+                    <p className="text-white font-medium">Stotta Müller, 2014</p>
                     <p className="text-white/80 text-sm">Der Anfang einer Erfolgsgeschichte</p>
                   </div>
                 </div>

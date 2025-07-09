@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
-            <h3 className="text-xl font-bold mb-4 text-blue-400">Nikolai Transport</h3>
+            <h3 className="text-xl font-bold mb-4 text-blue-400">Stotta Transport</h3>
             <p className="text-gray-300 mb-4">
               Ihr zuverlässiger Partner für Reinigung, Transport und Umzugshilfe. 
               Stark im Service, schnell im Einsatz.
@@ -61,7 +61,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-blue-400" />
-                <span className="text-gray-300">info@nikolai-transport.de</span>
+                <span className="text-gray-300">info@stotta-transport.de</span>
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4 text-blue-400" />
@@ -73,7 +73,7 @@ const Footer = () => {
 
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">
-            © 2024 Nikolai Transport. Alle Rechte vorbehalten.
+            © 2024 Stotta Transport. Alle Rechte vorbehalten.
           </p>
           <div className="flex space-x-4 mt-4 md:mt-0">
             <Link to="/impressum" className="text-gray-400 hover:text-blue-400 text-sm transition-colors">

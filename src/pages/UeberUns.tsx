@@ -36,9 +36,9 @@ const UeberUns = () => {
   ];
 
   const milestones = [
-    { year: '2014', title: 'Gründung', description: 'Nikolai startet mit einem kleinen Transporter und einer großen Vision.' },
+    { year: '2014', title: 'Gründung', description: 'Stotta startet mit einem kleinen Transporter und einer großen Vision.' },
     { year: '2016', title: 'Expansion', description: 'Erstes eigenes Büro und ein wachsendes Team von 3 engagierten Mitarbeitern.' },
-    { year: '2018', title: 'Wachstum', description: 'Die Marke Nikolai Transport etabliert sich – über 100 zufriedene Kunden erreicht.' },
+    { year: '2018', title: 'Wachstum', description: 'Die Marke Stotta Transport etabliert sich – über 100 zufriedene Kunden erreicht.' },
     { year: '2020', title: 'Digitalisierung', description: 'Einführung eines modernen Online-Buchungssystems für mehr Komfort.' },
     { year: '2022', title: 'Auszeichnung', description: 'Als bester Dienstleister der Region für herausragenden Service prämiert.' },
     { year: '2024', title: 'Heute', description: 'Ein starkes Team von 15 Mitarbeitern, 3 Standorte und über 500 begeisterte Kunden.' }
@@ -67,7 +67,7 @@ const UeberUns = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              Über Nikolai Transport
+              Über Stotta Transport
             </motion.h1>
             <motion.p 
               className="text-xl text-blue-100 leading-relaxed"
@@ -76,7 +76,7 @@ const UeberUns = () => {
               transition={{ delay: 0.6 }}
             >
               Seit über einem Jahrzehnt gestalten wir Räume neu und bewegen Leben vorwärts. 
-              Entdecken Sie die Geschichte hinter Nikolai Transport – wo Leidenschaft auf Präzision trifft und jeder Auftrag ein Versprechen ist.
+              Entdecken Sie die Geschichte hinter Stotta Transport – wo Leidenschaft auf Präzision trifft und jeder Auftrag ein Versprechen ist.
             </motion.p>
           </div>
         </div>
@@ -99,7 +99,7 @@ const UeberUns = () => {
                 <h2 className="text-4xl font-bold mb-8 text-gray-800">Von der Vision zur Realität</h2>
                 <div className="space-y-6 text-gray-600 text-lg leading-relaxed">
                   <p>
-                    Im Jahr 2014 begann unsere Reise mit einer klaren Vision: Nikolai wollte einen Dienstleister schaffen, der nicht nur arbeitet, sondern Werte lebt. Aus einem kleinen Familienunternehmen ist eine feste Größe in der Region geworden, bekannt für <strong className="text-blue-600">ehrliche Arbeit, unerschütterliche Zuverlässigkeit und faire Preise</strong>.
+                    Im Jahr 2014 begann unsere Reise mit einer klaren Vision: Stotta wollte einen Dienstleister schaffen, der nicht nur arbeitet, sondern Werte lebt. Aus einem kleinen Familienunternehmen ist eine feste Größe in der Region geworden, bekannt für <strong className="text-blue-600">ehrliche Arbeit, unerschütterliche Zuverlässigkeit und faire Preise</strong>.
                   </p>
                   <p>
                     Heute blicken wir stolz auf über <strong className="text-green-600">500 begeisterte Kunden</strong> und ein Team von <strong className="text-purple-600">passionierten Experten</strong>. Jeder Auftrag, ob Reinigung, Transport oder Umzug, wird mit der Hingabe behandelt, die wir unserer eigenen Familie entgegenbringen würden. <strong className="text-purple-600">Das ist unser unumstößliches Versprechen an Sie.</strong>
@@ -121,11 +121,11 @@ const UeberUns = () => {
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                   <img 
                     src=""
-                    alt="Nikolai Müller vor seinem ersten Transporter im Jahr 2014"
+                    alt="Stotta Müller vor seinem ersten Transporter im Jahr 2014"
                     className="w-full h-96 object-cover"
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-                    <p className="text-white font-medium">Nikolai Müller, 2014</p>
+                    <p className="text-white font-medium">Stotta Müller, 2014</p>
                     <p className="text-white/80 text-sm">Der Anfang einer Erfolgsgeschichte</p>
                   </div>
                 </div>
@@ -279,7 +279,7 @@ const UeberUns = () => {
               viewport={{ once: true, amount: 0.5 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              Das Herz von Nikolai Transport: Unser Team
+              Das Herz von Stotta Transport: Unser Team
             </motion.h2>
             <motion.p 
               className="text-xl text-gray-600 max-w-2xl mx-auto"
@@ -304,17 +304,17 @@ const UeberUns = () => {
                   <div className="relative mb-6">
                     <img 
                       src=""
-                      alt="Nikolai Müller - Geschäftsführer"
+                      alt="Stotta Müller - Geschäftsführer"
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
                     <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
                       <Users className="h-5 w-5 text-white" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-2 text-gray-800">Nikolai Müller</h3>
+                  <h3 className="text-xl font-bold mb-2 text-gray-800">Stotta Müller</h3>
                   <p className="text-blue-600 mb-3 font-medium">Geschäftsführer & Gründer</p>
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    Als Visionär und treibende Kraft hinter Nikolai Transport führt Nikolai das Unternehmen mit über 15 Jahren Branchenerfahrung. Seine unermüdliche Leidenschaft für exzellenten Service ist der Funke, der jedes Projekt zum Leuchten bringt.
+                    Als Visionär und treibende Kraft hinter Stotta Transport führt Stotta das Unternehmen mit über 15 Jahren Branchenerfahrung. Seine unermüdliche Leidenschaft für exzellenten Service ist der Funke, der jedes Projekt zum Leuchten bringt.
                   </p>
                 </CardContent>
               </Card>
@@ -431,11 +431,11 @@ const UeberUns = () => {
             >
               <img 
                 src=""
-                alt="Nikolai Müller"
+                alt="Stotta Müller"
                 className="w-16 h-16 rounded-full object-cover border-2 border-white/30"
               />
               <div className="text-left">
-                <p className="text-lg font-medium">Nikolai Müller</p>
+                <p className="text-lg font-medium">Stotta Müller</p>
                 <p className="text-blue-200">Gründer & Geschäftsführer</p>
               </div>
             </motion.div>

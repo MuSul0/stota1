@@ -134,7 +134,7 @@ const Hero = () => {
                 </div>
                 <div className="flex items-center space-x-3">
                   <Mail className="h-6 w-6 text-blue-600" />
-                  <a href="mailto:info@nikolai-transport.de" className="text-lg text-gray-700 font-medium hover:text-blue-600 transition-colors">info@nikolai-transport.de</a>
+                  <a href="mailto:info@stotta-transport.de" className="text-lg text-gray-700 font-medium hover:text-blue-600 transition-colors">info@stotta-transport.de</a>
                 </div>
                 <div className="flex items-center space-x-3">
                   <MapPin className="h-6 w-6 text-blue-600" />

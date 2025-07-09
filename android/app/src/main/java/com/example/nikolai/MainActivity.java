@@ -1,4 +1,4 @@
-package com.example.nikolai;
+package com.example.stotta;
 
 import com.getcapacitor.BridgeActivity;
 
