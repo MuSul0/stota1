@@ -43,10 +43,10 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4">Unsere Leistungen</h4>
             <ul className="space-y-2">
-              <li className="text-gray-300">Transporte</li>
-              <li className="text-gray-300">Garten- & Landschaftsbau</li>
-              <li className="text-gray-300">Reinigung</li>
-              <li className="text-gray-300">Entsorgung</li>
+              <li><Link to="/leistungen/transporte" className="text-gray-300 hover:text-blue-400 transition-colors">Transporte</Link></li>
+              <li><Link to="/leistungen/garten-landschaftsbau" className="text-gray-300 hover:text-blue-400 transition-colors">Garten- & Landschaftsbau</Link></li>
+              <li><Link to="/leistungen/reinigung" className="text-gray-300 hover:text-blue-400 transition-colors">Reinigung</Link></li>
+              <li><Link to="/leistungen/entsorgung" className="text-gray-300 hover:text-blue-400 transition-colors">Entsorgung</Link></li>
             </ul>
           </div>
 
