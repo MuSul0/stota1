@@ -41,15 +41,6 @@ const UeberUns = () => {
     }
   ];
 
-  const milestones = [
-    { year: '2014', title: 'Gründung', description: 'Stotta startet mit einem kleinen Transporter und einer großen Vision.' },
-    { year: '2016', title: 'Expansion', description: 'Erstes eigenes Büro und ein wachsendes Team von 3 engagierten Mitarbeitern.' },
-    { year: '2018', title: 'Wachstum', description: 'Die Marke Stotta Transport etabliert sich – über 100 zufriedene Kunden erreicht.' },
-    { year: '2020', title: 'Digitalisierung', description: 'Einführung eines modernen Online-Buchungssystems für mehr Komfort.' },
-    { year: '2022', title: 'Auszeichnung', description: 'Als bester Dienstleister der Region für herausragenden Service prämiert.' },
-    { year: '2024', title: 'Heute', description: 'Ein starkes Team von 15 Mitarbeitern, 3 Standorte und über 500 begeisterte Kunden.' }
-  ];
-
   if (loadingAboutUsMainImage || loadingStottaMullerProfile || loadingMariaSchmidtProfile || loadingThomasWeberProfile) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -141,71 +132,6 @@ const UeberUns = () => {
           </div>
         </section>
       </ParallaxSection>
-
-      {/* Timeline Section */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="container mx-auto px-6 max-w-6xl">
-          <div className="text-center mb-16">
-            <motion.div 
-              className="inline-block bg-purple-100 text-purple-600 px-5 py-3 rounded-full text-base font-semibold mb-4"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              🚀 Unsere Reise
-            </motion.div>
-            <motion.h2 
-              className="text-4xl font-bold mb-6 text-gray-900"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              Unsere Evolution: Eine Reise durch die Zeit
-            </motion.h2>
-            <motion.p 
-              className="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              Von der ersten Idee bis zum Branchenführer – die entscheidenden Momente, die uns geprägt haben.
-            </motion.p>
-          </div>
-
-          <div className="relative">
-            <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></div>
-            <div className="space-y-12">
-              {milestones.map((milestone, index) => (
-                <motion.div 
-                  key={index} 
-                  className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -100 : 100 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.8, delay: index * 0.1 }}
-                >
-                  <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
-                    <Card className="hover:shadow-xl transition-shadow duration-300">
-                      <CardContent className="p-6">
-                        <div className="text-2xl font-bold text-blue-600 mb-2">{milestone.year}</div>
-                        <h3 className="text-xl font-bold mb-2 text-gray-900">{milestone.title}</h3>
-                        <p className="text-gray-700">{milestone.description}</p>
-                      </CardContent>
-                    </Card>
-                  </div>
-                  <div className="relative z-10">
-                    <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full border-4 border-white shadow-lg"></div>
-                  </div>
-                  <div className="w-1/2"></div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Values Section */}
       <section className="py-20 bg-white">
