@@ -30,7 +30,7 @@ import Arbeitszeiten from '@/pages/mitarbeiterportal/arbeitszeiten';
 import Auftraege from '@/pages/mitarbeiterportal/auftraege';
 import Fahrzeuge from '@/pages/mitarbeiterportal/fahrzeuge';
 import Team from '@/pages/mitarbeiterportal/team';
-import AdminLayout from '@/components/AdminLayout';
+import NewAdminLayout from '@/components/NewAdminLayout';
 import AdminDashboard from '@/pages/adminportal/dashboard';
 import AdminUsers from '@/pages/adminportal/users';
 import AdminInvoices from '@/pages/adminportal/invoices';
@@ -39,17 +39,12 @@ import AdminServices from '@/pages/adminportal/services';
 import MediaManager from '@/pages/adminportal/media-manager';
 import Notifications from '@/pages/adminportal/notifications';
 import Reports from '@/pages/adminportal/reports';
-import UserActivity from '@/pages/adminportal/user-activity';
-import Appointments from '@/pages/adminportal/appointments';
-import EmployeeRegistration from '@/pages/adminportal/employee-registration';
-import Visitors from '@/pages/adminportal/visitors';
 
 // Neue Leistungs-Unterseiten
 import Transporte from '@/pages/Leistungen/Transporte';
 import Entsorgung from '@/pages/Leistungen/Entsorgung';
 import Reinigung from '@/pages/Leistungen/Reinigung';
 import GartenLandschaftsbau from '@/pages/Leistungen/GartenLandschaftsbau';
-
 
 const queryClient = new QueryClient();
 
@@ -95,21 +90,17 @@ function App() {
               <Route path="/mitarbeiterportal/fahrzeuge" element={<Fahrzeuge />} />
               <Route path="/mitarbeiterportal/team" element={<Team />} />
 
-              {/* Adminportal mit Nested Routes */}
-              <Route path="/adminportal" element={<AdminLayout />}>
+              {/* Neuer moderner Adminbereich mit Nested Routes */}
+              <Route path="/adminportal" element={<NewAdminLayout />}>
                 <Route index element={<AdminDashboard />} />
                 <Route path="dashboard" element={<AdminDashboard />} />
                 <Route path="users" element={<AdminUsers />} />
-                <Route path="user-activity" element={<UserActivity />} />
-                <Route path="appointments" element={<Appointments />} />
-                <Route path="employee-registration" element={<EmployeeRegistration />} />
                 <Route path="invoices" element={<AdminInvoices />} />
                 <Route path="settings" element={<AdminSettings />} />
                 <Route path="services" element={<AdminServices />} />
                 <Route path="media-manager" element={<MediaManager />} />
                 <Route path="notifications" element={<Notifications />} />
                 <Route path="reports" element={<Reports />} />
-                <Route path="visitors" element={<Visitors />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />
