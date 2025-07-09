@@ -1,14 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { toast } from 'sonner';
-import { Loader2, UserPlus } from 'lucide-react';
-import { useSession } from '@/components/SessionProvider';
-import { useNavigate } from 'react-router-dom';
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { toast } from "sonner";
+import { Loader2, UserPlus } from "lucide-react";
 
 interface Employee {
   id: string;
@@ -19,46 +19,38 @@ interface Employee {
 }
 
 export default function EmployeeRegistration() {
-  const { session, user, loading } = useSession();
-  const navigate = useNavigate();
-
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [loadingState, setLoadingState] = useState(false);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const subscriptionRef = useRef<any>(null);
 
   useEffect(() => {
-    if (!loading) {
-      if (!session || user?.role !== 'admin') {
-        navigate('/login');
-      } else {
-        fetchEmployees();
-        setupRealtimeSubscription();
-      }
-    }
+    fetchEmployees();
+    setupRealtimeSubscription();
+
     return () => {
       if (subscriptionRef.current) {
         supabase.removeChannel(subscriptionRef.current);
         subscriptionRef.current = null;
       }
     };
-  }, [session, user, loading, navigate]);
+  }, []);
 
   const fetchEmployees = async () => {
     try {
       const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('role', 'mitarbeiter')
-        .order('created_at', { ascending: false });
+        .from("profiles")
+        .select("*")
+        .eq("role", "mitarbeiter")
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
 
       setEmployees(data || []);
     } catch (error) {
-      toast.error('Fehler beim Laden der Mitarbeiter');
+      toast.error("Fehler beim Laden der Mitarbeiter");
       console.error(error);
     }
   };
@@ -69,10 +61,14 @@ export default function EmployeeRegistration() {
       subscriptionRef.current = null;
     }
     const channel = supabase
-      .channel('public:profiles')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles', filter: 'role=eq.mitarbeiter' }, () => {
-        fetchEmployees();
-      })
+      .channel("public:profiles")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "profiles", filter: "role=eq.mitarbeiter" },
+        () => {
+          fetchEmployees();
+        }
+      )
       .subscribe();
 
     subscriptionRef.current = channel;
@@ -80,7 +76,7 @@ export default function EmployeeRegistration() {
 
   const handleRegister = async () => {
     if (!email || !password || !name) {
-      toast.error('Bitte alle Felder ausfüllen');
+      toast.error("Bitte alle Felder ausfüllen");
       return;
     }
 
@@ -90,46 +86,44 @@ export default function EmployeeRegistration() {
       const { data, error } = await supabase.auth.admin.createUser({
         email,
         password,
-        user_metadata: { role: 'mitarbeiter' },
-        email_confirm: true
+        user_metadata: { role: "mitarbeiter" },
+        email_confirm: true,
       });
 
       if (error) {
-        toast.error('Fehler bei der Registrierung: ' + error.message);
+        toast.error("Fehler bei der Registrierung: " + error.message);
         setLoadingState(false);
         return;
       }
 
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: data.user.id,
-          email,
-          first_name: name,
-          role: 'mitarbeiter',
-          created_at: new Date().toISOString()
-        });
+      const { error: profileError } = await supabase.from("profiles").insert({
+        id: data.user.id,
+        email,
+        first_name: name,
+        role: "mitarbeiter",
+        created_at: new Date().toISOString(),
+      });
 
       if (profileError) {
-        toast.error('Fehler beim Anlegen des Profils');
+        toast.error("Fehler beim Anlegen des Profils");
         setLoadingState(false);
         return;
       }
 
-      toast.success('Mitarbeiter erfolgreich registriert');
-      setEmail('');
-      setPassword('');
-      setName('');
+      toast.success("Mitarbeiter erfolgreich registriert");
+      setEmail("");
+      setPassword("");
+      setName("");
       fetchEmployees();
     } catch (error) {
-      toast.error('Unbekannter Fehler bei der Registrierung');
+      toast.error("Unbekannter Fehler bei der Registrierung");
       console.error(error);
     } finally {
       setLoadingState(false);
     }
   };
 
-  if (loading || loadingState) {
+  if (loadingState) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -137,16 +131,12 @@ export default function EmployeeRegistration() {
     );
   }
 
-  if (!session || user?.role !== 'admin') {
-    return null;
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <main className="flex-grow container mx-auto px-6 py-12 max-w-4xl space-y-8">
         <h1 className="text-3xl font-bold flex items-center gap-2">
           <UserPlus className="w-6 h-6 text-blue-600" />
-          Mitarbeiter in Echtzeit anmelden
+          Mitarbeiter registrieren
         </h1>
 
         <Card>
@@ -196,7 +186,7 @@ export default function EmployeeRegistration() {
               </div>
               <div className="md:col-span-3 flex justify-end">
                 <Button type="submit" disabled={loadingState} className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-                  {loadingState ? 'Registriere...' : 'Mitarbeiter registrieren'}
+                  {loadingState ? "Registriere..." : "Mitarbeiter registrieren"}
                 </Button>
               </div>
             </form>
@@ -220,9 +210,9 @@ export default function EmployeeRegistration() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {employees.map(emp => (
+                  {employees.map((emp) => (
                     <TableRow key={emp.id}>
-                      <TableCell>{emp.first_name || 'Unbekannt'}</TableCell>
+                      <TableCell>{emp.first_name || "Unbekannt"}</TableCell>
                       <TableCell>{emp.email}</TableCell>
                       <TableCell>{new Date(emp.created_at).toLocaleDateString()}</TableCell>
                     </TableRow>
