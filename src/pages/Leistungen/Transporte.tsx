@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Truck, Package, Box, Building, Home, Printer, Dumbbell, Smartphone } from 'lucide-react';
+import { Truck, Package, Box, Building, Home, Printer, Dumbbell, Smartphone, CheckCircle } from 'lucide-react';
 
 const Transporte = () => {
   const transportServices = [
