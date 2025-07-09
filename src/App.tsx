@@ -44,6 +44,13 @@ import Appointments from '@/pages/adminportal/appointments';
 import EmployeeRegistration from '@/pages/adminportal/employee-registration';
 import Visitors from '@/pages/adminportal/visitors';
 
+// Neue Leistungs-Unterseiten
+import Transporte from '@/pages/Leistungen/Transporte';
+import Entsorgung from '@/pages/Leistungen/Entsorgung';
+import Reinigung from '@/pages/Leistungen/Reinigung';
+import GartenLandschaftsbau from '@/pages/Leistungen/GartenLandschaftsbau';
+
+
 const queryClient = new QueryClient();
 
 function App() {
@@ -66,6 +73,12 @@ function App() {
               <Route path="/datenschutz" element={<Datenschutz />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+
+              {/* Neue Leistungs-Unterseiten */}
+              <Route path="/leistungen/transporte" element={<Transporte />} />
+              <Route path="/leistungen/entsorgung" element={<Entsorgung />} />
+              <Route path="/leistungen/reinigung" element={<Reinigung />} />
+              <Route path="/leistungen/garten-landschaftsbau" element={<GartenLandschaftsbau />} />
 
               {/* Kundenportal */}
               <Route path="/kundenportal" element={<KundenDashboard />} />
