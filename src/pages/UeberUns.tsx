@@ -8,8 +8,6 @@ import { motion } from 'framer-motion';
 import ParallaxSection from '@/components/ParallaxSection';
 
 const UeberUns = () => {
-  console.log('UeberUns component rendered'); // Added for debugging
-
   const values = [
     {
       icon: Shield,
@@ -373,8 +371,8 @@ const UeberUns = () => {
                     Wenn es um Transport und Umzug geht, ist Thomas Ihr Mann. Mit ruhiger Hand und tiefgreifendem Fachwissen navigiert er selbst die komplexesten Herausforderungen sicher ans Ziel.
                   </p>
                 </CardContent>
-              </motion.div>
-            ))}
+              </Card>
+            </motion.div>
           </div>
 
           <motion.div
