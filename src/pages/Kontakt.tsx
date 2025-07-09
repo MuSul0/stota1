@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import { supabase } from '@/integrations/supabase/client';
 
 const Kontakt = () => {
   const [formData, setFormData] = useState({
@@ -19,14 +20,39 @@ const Kontakt = () => {
     service: '',
     message: ''
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    toast.success("Ihre Nachricht wurde erfolgreich gesendet!", {
-      description: "Wir melden uns schnellstmöglich bei Ihnen zurück.",
-    });
-    setFormData({ name: '', email: '', phone: '', service: '', message: '' });
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase
+        .from('contact_requests')
+        .insert([
+          {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone || null,
+            service: formData.service || null,
+            message: formData.message
+          }
+        ]);
+
+      if (error) {
+        throw error;
+      }
+
+      toast.success("Ihre Nachricht wurde erfolgreich gesendet!", {
+        description: "Wir melden uns schnellstmöglich bei Ihnen zurück.",
+      });
+      setFormData({ name: '', email: '', phone: '', service: '', message: '' });
+    } catch (error: any) {
+      toast.error('Fehler beim Senden der Nachricht: ' + error.message);
+      console.error('Fehler beim Senden der Nachricht:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -146,9 +172,9 @@ const Kontakt = () => {
                       />
                     </div>
 
-                    <Button type="submit" size="lg" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                    <Button type="submit" size="lg" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white" disabled={loading}>
                       <Send className="mr-2 h-4 w-4" />
-                      Nachricht senden
+                      {loading ? 'Senden...' : 'Nachricht senden'}
                     </Button>
 
                     <p className="text-sm text-gray-600">
@@ -220,7 +246,6 @@ const Kontakt = () => {
                       <div className="text-gray-700 text-sm space-y-1">
                         <p>Montag - Freitag: 7:00 - 18:00</p>
                         <p>Samstag: 8:00 - 16:00</p>
-                        <p>Sonntag: Nach Vereinbarung</p>
                         <p className="text-blue-600 font-medium">Notfall-Service: 24/7</p>
                       </div>
                     </div>

@@ -1,0 +1,2 @@
+CREATE POLICY "Enable insert for authenticated users only" ON public.contact_requests FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "Enable read access for admins" ON public.contact_requests FOR SELECT TO authenticated USING ((auth.jwt() ->> 'role'::text) = 'admin'::text);
