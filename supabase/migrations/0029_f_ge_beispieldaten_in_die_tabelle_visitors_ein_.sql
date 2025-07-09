@@ -1,0 +1,4 @@
+INSERT INTO public.visitors (ip_address, user_agent, visited_at, country, city) VALUES
+('192.168.1.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36', now(), 'Germany', 'Berlin'),
+('192.168.1.2', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15', now() - INTERVAL '1 hour', 'Germany', 'Munich'),
+('192.168.1.3', 'Mozilla/5.0 (Linux; Android 10; SM-G973F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36', now() - INTERVAL '2 days', 'Austria', 'Vienna');

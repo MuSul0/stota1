@@ -40,7 +40,7 @@ export default function AdminDashboard() {
         .select('*', { count: 'exact', head: true });
       if (usersError) throw usersError;
 
-      // Anzahl abgeschlossene Services (angenommen services Tabelle)
+      // Anzahl Services (nicht abgeschlossene, sondern alle)
       const { count: servicesCount, error: servicesError } = await supabase
         .from('services')
         .select('*', { count: 'exact', head: true });
@@ -128,7 +128,7 @@ export default function AdminDashboard() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Abgeschlossene Services</CardTitle>
+              <CardTitle className="text-sm font-medium">Anzahl Services</CardTitle>
               <CheckCircle className="h-4 w-4 text-gray-500" />
             </CardHeader>
             <CardContent>
