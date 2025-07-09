@@ -1,4 +1,4 @@
-import { HeartHandshake, Sun, Users2, Flower, TreeDeciduous, Sparkles, SmilePlus, HandHeart, Star, Award, Target } from 'lucide-react';
+import { Heart, Shield, Clock, Award, Users, Target, Lightbulb, Handshake } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,48 +16,44 @@ const UeberUns = () => {
 
   const values = [
     {
-      icon: HeartHandshake,
-      title: 'Herzlichkeit',
-      description: 'Wir begegnen jedem Kunden mit Wärme und Respekt – Ihre Zufriedenheit liegt uns am Herzen.',
-      colorFrom: 'from-pink-300',
-      colorTo: 'to-yellow-300'
+      icon: Shield,
+      title: 'Zuverlässigkeit',
+      description: 'Ihre Termine sind uns heilig. Pünktlichkeit und absolute Verlässlichkeit sind nicht nur Versprechen, sondern unser täglicher Standard.',
+      color: 'from-blue-500 to-cyan-500'
     },
     {
-      icon: Sun,
-      title: 'Positivität',
-      description: 'Mit einem Lächeln und viel Energie sorgen wir für eine angenehme Zusammenarbeit.',
-      colorFrom: 'from-yellow-300',
-      colorTo: 'to-amber-400'
+      icon: Heart,
+      title: 'Menschlichkeit',
+      description: 'Hinter jedem Auftrag steht ein Mensch. Wir hören zu, verstehen und handeln mit Empathie, um Ihre individuellen Wünsche zu erfüllen.',
+      color: 'from-red-500 to-pink-500'
     },
     {
-      icon: Flower,
-      title: 'Nachhaltigkeit',
-      description: 'Wir achten auf Umweltfreundlichkeit und nachhaltige Lösungen in all unseren Dienstleistungen.',
-      colorFrom: 'from-green-300',
-      colorTo: 'to-emerald-400'
+      icon: Clock,
+      title: 'Effizienz',
+      description: 'Zeit ist Geld – und Ihre Zeit ist uns kostbar. Wir arbeiten zügig, präzise und ohne Kompromisse bei der Qualität.',
+      color: 'from-green-500 to-emerald-500'
     },
     {
-      icon: Users2,
-      title: 'Teamgeist',
-      description: 'Unser starkes Team arbeitet Hand in Hand, um Ihre Wünsche bestmöglich umzusetzen.',
-      colorFrom: 'from-blue-300',
-      colorTo: 'to-indigo-400'
+      icon: Award,
+      title: 'Qualität',
+      description: 'Wir streben nach Perfektion. Jeder Handgriff, jede Lösung ist darauf ausgelegt, Ihre Erwartungen nicht nur zu erfüllen, sondern zu übertreffen.',
+      color: 'from-purple-500 to-indigo-500'
     }
   ];
 
   const milestones = [
-    { year: '2014', title: 'Gründung', description: 'Stotta startet mit einem kleinen Transporter und einer großen Vision.', icon: TreeDeciduous },
-    { year: '2016', title: 'Expansion', description: 'Erstes eigenes Büro und ein wachsendes Team von 3 engagierten Mitarbeitern.', icon: Users2 },
-    { year: '2018', title: 'Wachstum', description: 'Die Marke Stotta Transport etabliert sich – über 100 zufriedene Kunden erreicht.', icon: Sparkles },
-    { year: '2020', title: 'Digitalisierung', description: 'Einführung eines modernen Online-Buchungssystems für mehr Komfort.', icon: Target },
-    { year: '2022', title: 'Auszeichnung', description: 'Als bester Dienstleister der Region für herausragenden Service prämiert.', icon: Award },
-    { year: '2024', title: 'Heute', description: 'Ein starkes Team von 15 Mitarbeitern, 3 Standorte und über 500 begeisterte Kunden.', icon: SmilePlus }
+    { year: '2014', title: 'Gründung', description: 'Stotta startet mit einem kleinen Transporter und einer großen Vision.' },
+    { year: '2016', title: 'Expansion', description: 'Erstes eigenes Büro und ein wachsendes Team von 3 engagierten Mitarbeitern.' },
+    { year: '2018', title: 'Wachstum', description: 'Die Marke Stotta Transport etabliert sich – über 100 zufriedene Kunden erreicht.' },
+    { year: '2020', title: 'Digitalisierung', description: 'Einführung eines modernen Online-Buchungssystems für mehr Komfort.' },
+    { year: '2022', title: 'Auszeichnung', description: 'Als bester Dienstleister der Region für herausragenden Service prämiert.' },
+    { year: '2024', title: 'Heute', description: 'Ein starkes Team von 15 Mitarbeitern, 3 Standorte und über 500 begeisterte Kunden.' }
   ];
 
   if (loadingAboutUsMainImage || loadingStottaMullerProfile || loadingMariaSchmidtProfile || loadingThomasWeberProfile) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-yellow-50">
-        <p className="text-pink-600 text-lg font-semibold">Lade Über uns...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <p className="text-gray-600 text-lg">Lade Über uns...</p>
       </div>
     );
   }
@@ -67,14 +63,14 @@ const UeberUns = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-yellow-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex flex-col">
       <Header />
 
       {/* Hero Section */}
-      <section className="py-24 bg-gradient-to-r from-pink-400 via-yellow-300 to-yellow-400 text-white relative overflow-hidden">
+      <section className="py-24 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden">
         <div className="container mx-auto px-6 max-w-5xl text-center">
           <motion.h1 
-            className="text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg tracking-wide"
+            className="text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -82,7 +78,7 @@ const UeberUns = () => {
             Über Stotta Transport
           </motion.h1>
           <motion.p 
-            className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed drop-shadow-sm"
+            className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
@@ -104,22 +100,22 @@ const UeberUns = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
-                <div className="inline-block bg-pink-100 text-pink-700 px-5 py-3 rounded-full text-base font-semibold mb-6 shadow-md">
+                <div className="inline-block bg-blue-100 text-blue-600 px-5 py-3 rounded-full text-base font-semibold mb-6">
                   📖 Unsere Geschichte
                 </div>
-                <h2 className="text-4xl font-bold mb-8 text-pink-900 tracking-tight">
+                <h2 className="text-4xl font-bold mb-8 text-gray-900">
                   Von der Vision zur Realität
                 </h2>
-                <div className="space-y-6 text-pink-800 text-lg leading-relaxed">
+                <div className="space-y-6 text-gray-700 text-lg leading-relaxed">
                   <p>
-                    Im Jahr 2014 begann unsere Reise mit einer klaren Vision: Stotta wollte einen Dienstleister schaffen, der nicht nur arbeitet, sondern Werte lebt. Aus einem kleinen Familienunternehmen ist eine feste Größe in der Region geworden, bekannt für <strong className="text-pink-600">ehrliche Arbeit, unerschütterliche Zuverlässigkeit und faire Preise</strong>.
+                    Im Jahr 2014 begann unsere Reise mit einer klaren Vision: Stotta wollte einen Dienstleister schaffen, der nicht nur arbeitet, sondern Werte lebt. Aus einem kleinen Familienunternehmen ist eine feste Größe in der Region geworden, bekannt für <strong className="text-blue-600">ehrliche Arbeit, unerschütterliche Zuverlässigkeit und faire Preise</strong>.
                   </p>
                   <p>
-                    Heute blicken wir stolz auf über <strong className="text-yellow-600">500 begeisterte Kunden</strong> und ein Team von <strong className="text-purple-600">passionierten Experten</strong>. Jeder Auftrag, ob Reinigung, Transport oder Umzug, wird mit der Hingabe behandelt, die wir unserer eigenen Familie entgegenbringen würden. <strong className="text-purple-600">Das ist unser unumstößliches Versprechen an Sie.</strong>
+                    Heute blicken wir stolz auf über <strong className="text-green-600">500 begeisterte Kunden</strong> und ein Team von <strong className="text-purple-600">passionierten Experten</strong>. Jeder Auftrag, ob Reinigung, Transport oder Umzug, wird mit der Hingabe behandelt, die wir unserer eigenen Familie entgegenbringen würden. <strong className="text-purple-600">Das ist unser unumstößliches Versprechen an Sie.</strong>
                   </p>
                 </div>
                 <div className="mt-8">
-                  <Button size="lg" className="bg-gradient-to-r from-pink-500 to-yellow-400 text-white rounded-full px-10 py-4 shadow-lg font-semibold hover:from-pink-600 hover:to-yellow-500 transition-colors" asChild>
+                  <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full px-10 py-4 shadow-lg font-semibold" asChild>
                     <Link to="/kontakt">Werden Sie Teil unserer Geschichte</Link>
                   </Button>
                 </div>
@@ -129,7 +125,7 @@ const UeberUns = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="relative rounded-3xl overflow-hidden shadow-2xl ring-4 ring-pink-300"
+                className="relative rounded-3xl overflow-hidden shadow-2xl"
               >
                 <img 
                   src={aboutUsMainImage?.url || ""} // Fallback image
@@ -137,7 +133,7 @@ const UeberUns = () => {
                   className="w-full h-96 object-cover rounded-3xl"
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 rounded-b-3xl">
-                  <p className="text-white font-semibold text-lg">Stotta Müller, 2014</p>
+                  <p className="text-white font-medium">Stotta Müller, 2014</p>
                   <p className="text-white/80 text-sm">Der Anfang einer Erfolgsgeschichte</p>
                 </div>
               </motion.div>
@@ -147,11 +143,11 @@ const UeberUns = () => {
       </ParallaxSection>
 
       {/* Timeline Section */}
-      <section className="py-20 bg-gradient-to-br from-yellow-50 to-pink-50">
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <motion.div 
-              className="inline-block bg-yellow-200 text-yellow-700 px-5 py-3 rounded-full text-base font-semibold mb-4 shadow-md"
+              className="inline-block bg-purple-100 text-purple-600 px-5 py-3 rounded-full text-base font-semibold mb-4"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -160,7 +156,7 @@ const UeberUns = () => {
               🚀 Unsere Reise
             </motion.div>
             <motion.h2 
-              className="text-4xl font-bold mb-6 text-pink-900 tracking-tight"
+              className="text-4xl font-bold mb-6 text-gray-900"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -169,7 +165,7 @@ const UeberUns = () => {
               Unsere Evolution: Eine Reise durch die Zeit
             </motion.h2>
             <motion.p 
-              className="text-lg text-pink-800 max-w-3xl mx-auto leading-relaxed"
+              className="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -180,7 +176,7 @@ const UeberUns = () => {
           </div>
 
           <div className="relative">
-            <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-pink-400 to-yellow-400 rounded-full shadow-lg"></div>
+            <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></div>
             <div className="space-y-12">
               {milestones.map((milestone, index) => (
                 <motion.div 
@@ -192,19 +188,16 @@ const UeberUns = () => {
                   transition={{ duration: 0.8, delay: index * 0.1 }}
                 >
                   <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
-                    <Card className="hover:shadow-xl transition-shadow duration-300 rounded-2xl border border-pink-300 bg-yellow-50">
+                    <Card className="hover:shadow-xl transition-shadow duration-300">
                       <CardContent className="p-6">
-                        <div className="flex items-center justify-center mb-4">
-                          <milestone.icon className="h-10 w-10 text-pink-500" />
-                        </div>
-                        <div className="text-2xl font-bold text-pink-600 mb-2">{milestone.year}</div>
-                        <h3 className="text-xl font-bold mb-2 text-pink-900">{milestone.title}</h3>
-                        <p className="text-pink-800">{milestone.description}</p>
+                        <div className="text-2xl font-bold text-blue-600 mb-2">{milestone.year}</div>
+                        <h3 className="text-xl font-bold mb-2 text-gray-900">{milestone.title}</h3>
+                        <p className="text-gray-700">{milestone.description}</p>
                       </CardContent>
                     </Card>
                   </div>
                   <div className="relative z-10">
-                    <div className="w-6 h-6 bg-gradient-to-r from-pink-400 to-yellow-400 rounded-full border-4 border-white shadow-lg"></div>
+                    <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full border-4 border-white shadow-lg"></div>
                   </div>
                   <div className="w-1/2"></div>
                 </motion.div>
@@ -219,7 +212,7 @@ const UeberUns = () => {
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <motion.div 
-              className="inline-block bg-pink-100 text-pink-700 px-5 py-3 rounded-full text-base font-semibold mb-4 shadow-md"
+              className="inline-block bg-green-100 text-green-600 px-5 py-3 rounded-full text-base font-semibold mb-4"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -228,7 +221,7 @@ const UeberUns = () => {
               💎 Unser Fundament
             </motion.div>
             <motion.h2 
-              className="text-4xl font-bold mb-6 text-pink-900 tracking-tight"
+              className="text-4xl font-bold mb-6 text-gray-900"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -237,7 +230,7 @@ const UeberUns = () => {
               Werte, die uns tragen
             </motion.h2>
             <motion.p 
-              className="text-lg text-pink-800 max-w-3xl mx-auto leading-relaxed"
+              className="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -255,13 +248,13 @@ const UeberUns = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.15 }}
-                className="flex flex-col items-center text-center p-8 rounded-3xl shadow-lg bg-gradient-to-br from-pink-50 to-yellow-50 hover:shadow-2xl transition-shadow duration-300"
+                className="flex flex-col items-center text-center p-8 border rounded-3xl shadow hover:shadow-lg transition-shadow duration-300"
               >
-                <div className={`w-24 h-24 bg-gradient-to-r ${value.colorFrom} ${value.colorTo} rounded-full flex items-center justify-center mb-8 shadow-lg`}>
-                  <value.icon className="h-12 w-12 text-white drop-shadow-md" />
+                <div className={`w-24 h-24 bg-gradient-to-r ${value.color} rounded-full flex items-center justify-center mb-8 shadow-lg`}>
+                  <value.icon className="h-12 w-12 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold mb-4 text-pink-900">{value.title}</h3>
-                <p className="text-pink-800 text-lg leading-relaxed">{value.description}</p>
+                <h3 className="text-2xl font-bold mb-4 text-gray-900">{value.title}</h3>
+                <p className="text-gray-700 text-lg leading-relaxed">{value.description}</p>
               </motion.div>
             ))}
           </div>
@@ -269,11 +262,11 @@ const UeberUns = () => {
       </section>
 
       {/* Team Section */}
-      <section className="py-20 bg-gradient-to-br from-yellow-50 to-pink-50">
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <motion.div 
-              className="inline-block bg-yellow-200 text-yellow-700 px-5 py-3 rounded-full text-base font-semibold mb-4 shadow-md"
+              className="inline-block bg-orange-100 text-orange-600 px-5 py-3 rounded-full text-base font-semibold mb-4"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -282,7 +275,7 @@ const UeberUns = () => {
               👨‍👩‍👧‍👦 Unser Team
             </motion.div>
             <motion.h2 
-              className="text-4xl font-bold mb-6 text-pink-900 tracking-tight"
+              className="text-4xl font-bold mb-6 text-gray-900"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -291,7 +284,7 @@ const UeberUns = () => {
               Das Herz von Stotta Transport: Unser Team
             </motion.h2>
             <motion.p 
-              className="text-lg text-pink-800 max-w-3xl mx-auto leading-relaxed"
+              className="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -308,21 +301,21 @@ const UeberUns = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.15 }}
             >
-              <Card className="text-center rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 ring-2 ring-pink-300">
+              <Card className="text-center hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
                 <CardContent className="p-8">
                   <div className="relative mb-6">
                     <img 
                       src={stottaMullerProfile?.url || ""} // Fallback image
                       alt="Stotta Müller - Geschäftsführer"
-                      className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg ring-4 ring-yellow-300"
+                      className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
-                    <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-gradient-to-r from-pink-500 to-yellow-400 rounded-full flex items-center justify-center shadow-lg">
-                      <Users2 className="h-6 w-6 text-white" />
+                    <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                      <Users className="h-5 w-5 text-white" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-2 text-pink-900">Stotta Müller</h3>
-                  <p className="text-yellow-700 mb-3 font-semibold">Geschäftsführer & Gründer</p>
-                  <p className="text-pink-800 text-base leading-relaxed">
+                  <h3 className="text-xl font-bold mb-2 text-gray-900">Stotta Müller</h3>
+                  <p className="text-blue-600 mb-3 font-medium">Geschäftsführer & Gründer</p>
+                  <p className="text-gray-700 text-base leading-relaxed">
                     Als Visionär und treibende Kraft hinter Stotta Transport führt Stotta das Unternehmen mit über 15 Jahren Branchenerfahrung. Seine unermüdliche Leidenschaft für exzellenten Service ist der Funke, der jedes Projekt zum Leuchten bringt.
                   </p>
                 </CardContent>
@@ -335,21 +328,21 @@ const UeberUns = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.30 }}
             >
-              <Card className="text-center rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 ring-2 ring-yellow-300">
+              <Card className="text-center hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
                 <CardContent className="p-8">
                   <div className="relative mb-6">
                     <img 
                       src={mariaSchmidtProfile?.url || ""} // Fallback image
                       alt="Maria Schmidt - Teamleiterin"
-                      className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg ring-4 ring-pink-300"
+                      className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
-                    <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-gradient-to-r from-yellow-400 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
-                      <Award className="h-6 w-6 text-white" />
+                    <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
+                      <Award className="h-5 w-5 text-white" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-2 text-pink-900">Maria Schmidt</h3>
-                  <p className="text-yellow-700 mb-3 font-semibold">Teamleiterin Reinigung</p>
-                  <p className="text-pink-800 text-base leading-relaxed">
+                  <h3 className="text-xl font-bold mb-2 text-gray-900">Maria Schmidt</h3>
+                  <p className="text-green-600 mb-3 font-medium">Teamleiterin Reinigung</p>
+                  <p className="text-gray-700 text-base leading-relaxed">
                     Mit 8 Jahren Expertise ist Maria unsere Meisterin der Sauberkeit. Ihre akribische Detailverliebtheit und ihr ansteckendes Lächeln machen sie zur unverzichtbaren Teamleiterin im Reinigungsbereich.
                   </p>
                 </CardContent>
@@ -362,21 +355,21 @@ const UeberUns = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.45 }}
             >
-              <Card className="text-center rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 ring-2 ring-yellow-300">
+              <Card className="text-center hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
                 <CardContent className="p-8">
                   <div className="relative mb-6">
                     <img 
                       src={thomasWeberProfile?.url || ""} // Fallback image
                       alt="Thomas Weber - Transport Spezialist"
-                      className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg ring-4 ring-pink-300"
+                      className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
-                    <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-gradient-to-r from-pink-500 to-yellow-400 rounded-full flex items-center justify-center shadow-lg">
-                      <Target className="h-6 w-6 text-white" />
+                    <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center">
+                      <Target className="h-5 w-5 text-white" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-2 text-pink-900">Thomas Weber</h3>
-                  <p className="text-yellow-700 mb-3 font-semibold">Spezialist Transport & Umzug</p>
-                  <p className="text-pink-800 text-base leading-relaxed">
+                  <h3 className="text-xl font-bold mb-2 text-gray-900">Thomas Weber</h3>
+                  <p className="text-orange-600 mb-3 font-medium">Spezialist Transport & Umzug</p>
+                  <p className="text-gray-700 text-base leading-relaxed">
                     Wenn es um Transport und Umzug geht, ist Thomas Ihr Mann. Mit ruhiger Hand und tiefgreifendem Fachwissen navigiert er selbst die komplexesten Herausforderungen sicher ans Ziel.
                   </p>
                 </CardContent>
