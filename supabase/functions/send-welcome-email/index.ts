@@ -28,9 +28,10 @@ serve(async (req) => {
       text = `Sehr geehrte/r Administrator/in,\n\nherzlich willkommen im Admin-Bereich von Stotta Transport!\n\nIhr Administratorkonto wurde erfolgreich erstellt.\n\nMit freundlichen Grüßen\nDas Systemteam`
     }
 
+    // Wichtig: Verwende den SUPABASE_SERVICE_ROLE_KEY für serverseitige Operationen
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '' // Hier geändert
     )
 
     const { error } = await supabase
