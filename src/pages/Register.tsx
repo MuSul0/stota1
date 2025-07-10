@@ -75,7 +75,8 @@ const Register = () => {
           });
 
         if (profileError) {
-          toast.error('Fehler beim Anlegen des Profils');
+          toast.error('Fehler beim Anlegen des Profils: ' + profileError.message);
+          console.error('Profil-Insert Fehler:', profileError);
           setLoading(false);
           return;
         }
