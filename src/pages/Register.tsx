@@ -47,7 +47,8 @@ const Register = () => {
 
     try {
       // Benutzer registrieren
-      const { data, error } = await supabase.auth.signUp({
+      // Der Datenbank-Trigger 'handle_new_user' wird das Profil in der 'profiles'-Tabelle anlegen.
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -59,27 +60,6 @@ const Register = () => {
         toast.error('Registrierung fehlgeschlagen: ' + error.message);
         setLoading(false);
         return;
-      }
-
-      // Profil in Tabelle anlegen
-      if (data.user) {
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert({
-            id: data.user.id,
-            email,
-            first_name: firstName.trim(),
-            last_name: lastName.trim(),
-            role: 'kunde',
-            created_at: new Date().toISOString()
-          });
-
-        if (profileError) {
-          toast.error('Fehler beim Anlegen des Profils: ' + profileError.message);
-          console.error('Profil-Insert Fehler:', profileError);
-          setLoading(false);
-          return;
-        }
       }
 
       toast.success('Registrierung erfolgreich! Bitte prüfen Sie Ihre E-Mails zur Bestätigung.');
