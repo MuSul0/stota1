@@ -1,0 +1,13 @@
+DROP POLICY IF EXISTS "Public profiles are viewable by everyone." ON public.profiles;
+DROP POLICY IF EXISTS "Users can insert their own profile." ON public.profiles;
+DROP POLICY IF EXISTS "Users can update own profile." ON public.profiles;
+DROP POLICY IF EXISTS "Enable read access for all users" ON public.profiles;
+DROP POLICY IF EXISTS "Enable insert for authenticated users" ON public.profiles;
+DROP POLICY IF EXISTS "Enable update for users based on id" ON public.profiles;
+DROP POLICY IF EXISTS "Kunden können nur ihr Profil sehen" ON public.profiles;
+DROP POLICY IF EXISTS "Mitarbeiter können Kundenprofile sehen" ON public.profiles;
+DROP POLICY IF EXISTS "Admins können alle Profile sehen" ON public.profiles;
+DROP POLICY IF EXISTS "Users can select their own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Mitarbeiter können Kundenprofile lesen" ON public.profiles;
+DROP POLICY IF EXISTS "Kunden können nur ihr Profil lesen" ON public.profiles;
