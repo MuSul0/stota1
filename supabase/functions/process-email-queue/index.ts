@@ -46,7 +46,7 @@ serve(async (req) => {
       try {
         // E-Mail mit Resend senden
         const { data, error: resendError } = await resend.emails.send({
-          from: 'Ihre-verifizierte-email@ihre-domain.de', // WICHTIG: Diesen Platzhalter durch Ihre bei Resend verifizierte Domain-E-Mail ersetzen!
+          from: 'onboarding@resend.dev', // WICHTIG: Ersetzen Sie dies durch eine E-Mail-Adresse von Ihrer verifizierten Resend-Domain!
           to: emailEntry.to_email,
           subject: emailEntry.subject,
           text: emailEntry.text,

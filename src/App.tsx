@@ -12,7 +12,6 @@ import Index from '@/pages/Index';
 import Leistungen from '@/pages/Leistungen';
 import UeberUns from '@/pages/UeberUns';
 import Galerie from '@/pages/Galerie';
-import GalerieKategorie from '@/pages/galerie/GalerieKategorie'; // Neuer Import
 import Bewertungen from '@/pages/Bewertungen';
 import Kontakt from '@/pages/Kontakt';
 import Empfehlungsprogramm from '@/pages/Empfehlungsprogramm';
@@ -66,7 +65,6 @@ function App() {
               <Route path="/leistungen" element={<Leistungen />} />
               <Route path="/ueber-uns" element={<UeberUns />} />
               <Route path="/galerie" element={<Galerie />} />
-              <Route path="/galerie/:categorySlug" element={<GalerieKategorie />} />
               <Route path="/bewertungen" element={<Bewertungen />} />
               <Route path="/kontakt" element={<Kontakt />} />
               <Route path="/empfehlungsprogramm" element={<Empfehlungsprogramm />} />
