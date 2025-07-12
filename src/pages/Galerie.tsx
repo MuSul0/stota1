@@ -4,7 +4,7 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useAllMedia } from '@/hooks/useAllMedia';
-import { Loader2 } from 'lucide-react';
+import { Loader2, CameraOff } from 'lucide-react';
 import { BeforeAfterCard } from '@/components/BeforeAfterCard';
 import { SingleMediaCard } from '@/components/SingleMediaCard';
 
@@ -125,78 +125,80 @@ const Galerie = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Header />
 
-      <section className="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-black opacity-20"></div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <motion.div 
-              className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              ✨ Vorher & Nachher
-            </motion.div>
-            <motion.h1 
-              className="text-5xl md:text-6xl font-bold mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              Unsere Arbeit im Detail
-            </motion.h1>
-            <motion.p 
-              className="text-xl text-blue-100 leading-relaxed"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-            >
-              Sehen Sie die Verwandlung. Von Transport und Entsorgung bis hin zu Reinigung und Gartenbau – unsere Projekte sprechen für sich.
-            </motion.p>
-          </div>
+      <section className="py-24 sm:py-32 bg-slate-900 text-white">
+        <div className="container mx-auto px-4 text-center">
+          <motion.div 
+            className="inline-block bg-slate-700/50 px-4 py-2 rounded-full text-sm font-medium mb-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            ✨ Vorher & Nachher
+          </motion.div>
+          <motion.h1 
+            className="text-4xl font-bold tracking-tight sm:text-6xl mb-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            Unsere Arbeit im Detail
+          </motion.h1>
+          <motion.p 
+            className="text-lg leading-8 text-slate-300 max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+          >
+            Sehen Sie die Verwandlung. Von Transport und Entsorgung bis hin zu Reinigung und Gartenbau – unsere Projekte sprechen für sich.
+          </motion.p>
         </div>
       </section>
 
-      <section className="py-20">
+      <main className="py-16 sm:py-24">
         <div className="container mx-auto px-4">
           {categories.length > 2 && (
-            <div className="flex justify-center gap-3 flex-wrap mb-12">
-              {categories.map(category => (
-                <Button
-                  key={category}
-                  variant={categoryFilter === category ? 'default' : 'outline'}
-                  onClick={() => setCategoryFilter(category)}
-                  className="capitalize"
-                >
-                  {formatCategoryName(category)}
-                </Button>
-              ))}
+            <div className="flex justify-center mb-16">
+              <div className="p-1.5 flex gap-2 rounded-full bg-muted">
+                {categories.map(category => (
+                  <Button
+                    key={category}
+                    variant={categoryFilter === category ? 'default' : 'ghost'}
+                    onClick={() => setCategoryFilter(category)}
+                    className="capitalize rounded-full px-6"
+                    size="lg"
+                  >
+                    {formatCategoryName(category)}
+                  </Button>
+                ))}
+              </div>
             </div>
           )}
 
           {loading ? (
             <div className="flex justify-center items-center h-64">
-              <Loader2 className="h-12 w-12 animate-spin text-blue-600" />
+              <Loader2 className="h-12 w-12 animate-spin text-primary" />
             </div>
           ) : (
             <>
               {filteredProjects.length > 0 && (
-                <div className="mb-16">
-                  <h2 className="text-3xl font-bold text-center mb-8">Vorher-Nachher-Projekte</h2>
+                <div className="mb-20">
+                  <h2 className="text-3xl font-bold text-center mb-4">Vorher-Nachher-Projekte</h2>
+                  <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-12">
+                    Sehen Sie den direkten Vergleich unserer Arbeit. Bewegen Sie den Schieberegler, um die Verwandlung zu entdecken.
+                  </p>
                   <motion.div 
-                    className="grid grid-cols-1 md:grid-cols-2 gap-8"
+                    className="grid grid-cols-1 lg:grid-cols-2 gap-8"
                     layout
                   >
                     {filteredProjects.map((project, index) => (
                       <motion.div
                         key={project.id}
                         layout
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: index * 0.05 }}
                       >
                         <BeforeAfterCard before={project.before} after={project.after} title={project.title} />
@@ -208,7 +210,10 @@ const Galerie = () => {
 
               {filteredSingles.length > 0 && (
                  <div className="mb-16">
-                  <h2 className="text-3xl font-bold text-center mb-8">Weitere Eindrücke</h2>
+                  <h2 className="text-3xl font-bold text-center mb-4">Weitere Eindrücke</h2>
+                  <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-12">
+                    Eine Sammlung weiterer Bilder und Videos aus unseren vielfältigen Projekten.
+                  </p>
                    <motion.div 
                     className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
                     layout
@@ -217,9 +222,8 @@ const Galerie = () => {
                       <motion.div
                         key={item.id}
                         layout
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: index * 0.05 }}
                       >
                         <SingleMediaCard item={item} />
@@ -229,16 +233,20 @@ const Galerie = () => {
                  </div>
               )}
 
-              {filteredProjects.length === 0 && filteredSingles.length === 0 && (
-                <div className="col-span-full text-center text-gray-500 py-16">
-                  <p className="text-lg">Für diese Kategorie wurden keine Medien gefunden.</p>
-                  <p>Bitte versuchen Sie eine andere Auswahl.</p>
+              {filteredProjects.length === 0 && filteredSingles.length === 0 && !loading && (
+                <div className="text-center text-muted-foreground py-16">
+                  <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-full bg-muted">
+                    <CameraOff className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-foreground mb-2">Keine Ergebnisse</h3>
+                  <p>Für diese Kategorie wurden leider keine Medien gefunden.</p>
+                  <p>Bitte versuchen Sie eine andere Auswahl oder schauen Sie später wieder vorbei.</p>
                 </div>
               )}
             </>
           )}
         </div>
-      </section>
+      </main>
 
       <Footer />
     </div>
