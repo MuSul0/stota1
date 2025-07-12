@@ -57,7 +57,11 @@ const Register = () => {
       });
 
       if (error) {
-        toast.error('Registrierung fehlgeschlagen: ' + error.message);
+        if (error.message.includes('email rate limit exceeded')) {
+          toast.error('Registrierung fehlgeschlagen: Zu viele Versuche. Bitte warten Sie einen Moment und versuchen Sie es erneut.');
+        } else {
+          toast.error('Registrierung fehlgeschlagen: ' + error.message);
+        }
         setLoading(false);
         return;
       }
