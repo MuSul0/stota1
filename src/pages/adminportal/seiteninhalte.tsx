@@ -23,7 +23,11 @@ const mediaSlots = {
     { title: "Family Move Documented", description: "Video-Dokumentation eines Familienumzugs.", type: "video" as const },
   ],
   weitere: [
-    { title: "Leistungen Hero Background", description: "Hintergrundbild für die Leistungsseite.", type: "image" as const },
+    { title: "Leistungen Hero Background", description: "Hintergrundbild für die Haupt-Leistungsseite.", type: "image" as const },
+    { title: "Reinigung Hero Background", description: "Hintergrundbild für die Reinigungs-Leistungsseite.", type: "image" as const },
+    { title: "GartenLandschaftsbau Hero Background", description: "Hintergrundbild für die Garten- & Landschaftsbau-Leistungsseite.", type: "image" as const },
+    { title: "Entsorgung Hero Background", description: "Hintergrundbild für die Entsorgungs-Leistungsseite.", type: "image" as const },
+    { title: "Transporte Hero Background", description: "Hintergrundbild für die Transporte-Leistungsseite.", type: "image" as const },
     { title: "Empfehlungsprogramm Hero Background", description: "Hintergrundbild für die Empfehlungsseite.", type: "image" as const },
     { title: "Kontakt Hero Background", description: "Hintergrundbild für die Kontaktseite.", type: "image" as const },
   ]

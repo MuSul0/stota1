@@ -5,8 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Sparkles, Home, Briefcase, Building, Car, Paintbrush, CheckCircle } from 'lucide-react';
+import { useMedia } from '@/hooks/useMedia';
 
 const Reinigung = () => {
+  const { media: heroBackground, loading: loadingHeroBackground } = useMedia({ title: 'Reinigung Hero Background' });
+
   const cleaningServices = [
     {
       icon: Sparkles,
@@ -57,8 +60,11 @@ const Reinigung = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-purple-700 to-indigo-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('')] bg-cover bg-center opacity-20"></div>
+      <section 
+        className="py-20 bg-gradient-to-r from-purple-700 to-indigo-900 text-white relative overflow-hidden"
+        style={{ backgroundImage: `url(${heroBackground?.url || 'https://placehold.co/1920x600/6b46c1/ffffff?text=Reinigung'})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+      >
+        <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="container mx-auto px-4 relative z-10 text-center">
           <motion.h1 
             className="text-4xl md:text-5xl font-bold mb-6"

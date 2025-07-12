@@ -5,8 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { UserPlus, Gift, CheckCircle, DollarSign, Users, MessageSquare } from 'lucide-react';
+import { useMedia } from '@/hooks/useMedia';
 
 const Empfehlungsprogramm = () => {
+  const { media: heroBackground, loading: loadingHeroBackground } = useMedia({ title: 'Empfehlungsprogramm Hero Background' });
+
   const howItWorksSteps = [
     {
       icon: UserPlus,
@@ -48,8 +51,11 @@ const Empfehlungsprogramm = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('')] bg-cover bg-center opacity-20"></div>
+      <section 
+        className="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden"
+        style={{ backgroundImage: `url(${heroBackground?.url || 'https://placehold.co/1920x600/4f46e5/ffffff?text=Empfehlungsprogramm'})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+      >
+        <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <motion.div 
