@@ -18,6 +18,11 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: "Alle Felder sind erforderlich." }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
+    // SICHERHEITS-FIX: Serverseitige Passwortlängen-Validierung
+    if (password.length < 6) {
+      return new Response(JSON.stringify({ error: "Das Passwort muss mindestens 6 Zeichen lang sein." }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
