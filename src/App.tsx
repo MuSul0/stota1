@@ -55,8 +55,8 @@ import CreateAdminUser from '@/pages/Admin/CreateAdminUser';
 
 function App() {
   return (
-    <SessionProvider>
-      <Router>
+    <Router>
+      <SessionProvider>
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Index />} />
@@ -112,9 +112,9 @@ function App() {
           {/* Catch-all for 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </Router>
+      </SessionProvider>
       <Toaster />
-    </SessionProvider>
+    </Router>
   );
 }
 
