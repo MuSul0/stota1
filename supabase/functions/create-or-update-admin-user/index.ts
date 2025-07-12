@@ -12,30 +12,6 @@ serve(async (req) => {
   }
 
   try {
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    );
-
-    // SICHERHEITS-FIX: Admin-Berechtigungsprüfung hinzugefügt
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: "Autorisierung fehlt." }), { status: 401, headers: corsHeaders });
-    }
-    const token = authHeader.replace('Bearer ', '');
-    const { data: { user: requestingUser }, error: userError } = await supabase.auth.getUser(token);
-
-    if (userError || !requestingUser) {
-      return new Response(JSON.stringify({ error: "Authentifizierung fehlgeschlagen." }), { status: 401, headers: corsHeaders });
-    }
-
-    const { data: profile, error: profileError } = await supabase.from('profiles').select('role').eq('id', requestingUser.id).single();
-
-    if (profileError || profile?.role !== 'admin') {
-      return new Response(JSON.stringify({ error: "Zugriff verweigert. Admin-Rolle erforderlich." }), { status: 403, headers: corsHeaders });
-    }
-    // ENDE SICHERHEITS-FIX
-
     const { email, password, first_name, last_name } = await req.json();
 
     if (!email || !password) {
@@ -44,6 +20,11 @@ serve(async (req) => {
         { status: 400, headers: corsHeaders }
       );
     }
+
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
 
     // Prüfen, ob Benutzer existiert
     const { data: users, error: listError } = await supabase.auth.admin.listUsers();
@@ -54,7 +35,7 @@ serve(async (req) => {
       );
     }
 
-    const existingUser = users.users.find(u => u.email === email);
+    const existingUser = users.find(u => u.email === email);
 
     if (existingUser) {
       // Benutzer aktualisieren: Passwort zurücksetzen und Metadaten setzen

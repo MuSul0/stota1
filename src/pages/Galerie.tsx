@@ -1,59 +1,103 @@
+import { useMemo } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useAllMedia } from '@/hooks/useAllMedia';
+import { Loader2 } from 'lucide-react';
+import { CategoryCard } from '@/components/Galerie/CategoryCard';
+
+const formatCategoryName = (name: string): string => {
+  return name
+    .replace(/[-_]/g, ' ')
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+};
 
 const Galerie = () => {
+  const { media, loading, error } = useAllMedia();
+
+  const categories = useMemo(() => {
+    if (!media) return [];
+    const categoryMap = new Map<string, { name: string; slug: string; imageUrl: string | null }>();
+    
+    media.forEach(item => {
+      if (item.page_context) {
+        if (!categoryMap.has(item.page_context)) {
+          categoryMap.set(item.page_context, {
+            name: formatCategoryName(item.page_context),
+            slug: item.page_context,
+            imageUrl: item.type === 'image' ? item.url : null,
+          });
+        } else {
+          const cat = categoryMap.get(item.page_context);
+          if (cat && !cat.imageUrl && item.type === 'image') {
+            cat.imageUrl = item.url;
+          }
+        }
+      }
+    });
+    return Array.from(categoryMap.values());
+  }, [media]);
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <div className="flex-grow flex items-center justify-center text-red-500">
+          Fehler beim Laden der Galerie: {error}
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       <Header />
 
-      {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('')] bg-cover bg-center opacity-20"></div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6">
-              ✨ Unsere Arbeit in Bildern
+      <section className="py-24 sm:py-32 bg-slate-900 text-white">
+        <div className="container mx-auto px-4 text-center">
+          <motion.h1 
+            className="text-4xl font-bold tracking-tight sm:text-6xl mb-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            Unsere Projekt-Galerie
+          </motion.h1>
+          <motion.p 
+            className="text-lg leading-8 text-slate-300 max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            Wählen Sie eine Kategorie, um sich von der Qualität unserer Arbeit zu überzeugen.
+          </motion.p>
+        </div>
+      </section>
+
+      <main className="py-16 sm:py-24">
+        <div className="container mx-auto px-4">
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <Loader2 className="h-12 w-12 animate-spin text-primary" />
             </div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">Unsere Projekte</h1>
-            <p className="text-xl text-blue-100 leading-relaxed">
-              Sehen Sie sich unsere erfolgreich abgeschlossenen Projekte an. 
-              Jedes Bild erzählt eine Geschichte von Qualität, Professionalität und Zufriedenheit.
-            </p>
-          </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {categories.map((cat, index) => (
+                <motion.div
+                  key={cat.slug}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <CategoryCard slug={cat.slug} name={cat.name} imageUrl={cat.imageUrl} />
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
-      </section>
-
-      {/* Placeholder for new content */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">Galerie im Aufbau</h2>
-          <p className="text-xl text-gray-600">
-            Wir überarbeiten unsere Galerie, um Ihnen bald neue und aufregende Einblicke in unsere Arbeit zu geben.
-          </p>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-900 via-purple-900 to-blue-900 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-6">
-            Möchten Sie auch solche Ergebnisse?
-          </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Kontaktieren Sie uns und lassen Sie uns gemeinsam Ihr nächstes Projekt verwirklichen.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-8 py-4" asChild>
-              <Link to="/kontakt">Projekt anfragen</Link>
-            </Button>
-            <Button size="lg" className="bg-indigo-600 text-white border-white hover:bg-white hover:text-indigo-600 px-8 py-4" asChild>
-              <a href="tel:+49123456789">Sofort anrufen</a>
-            </Button>
-          </div>
-        </div>
-      </section>
+      </main>
 
       <Footer />
     </div>
