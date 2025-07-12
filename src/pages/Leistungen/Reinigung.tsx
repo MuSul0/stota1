@@ -142,7 +142,7 @@ const Reinigung = () => {
             <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-100" asChild>
               <Link to="/kontakt">Reinigungstermin vereinbaren</Link>
             </Button>
-            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-purple-600" asChild>
+            <Button size="lg" className="bg-purple-500 text-white border-white hover:bg-white hover:text-purple-600" asChild>
               <a href="tel:+49123456789">Sofort anrufen</a>
             </Button>
           </div>

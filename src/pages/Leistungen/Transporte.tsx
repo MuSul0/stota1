@@ -148,7 +148,7 @@ const Transporte = () => {
             <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100" asChild>
               <Link to="/kontakt">Jetzt Transport anfragen</Link>
             </Button>
-            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-blue-600" asChild>
+            <Button size="lg" className="bg-blue-500 text-white border-white hover:bg-white hover:text-blue-600" asChild>
               <a href="tel:+49123456789">Sofort anrufen</a>
             </Button>
           </div>

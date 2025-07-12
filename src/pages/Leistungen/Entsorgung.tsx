@@ -130,7 +130,7 @@ const Entsorgung = () => {
             <Button size="lg" className="bg-white text-green-600 hover:bg-gray-100" asChild>
               <Link to="/kontakt">Jetzt Entsorgung buchen</Link>
             </Button>
-            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-green-600" asChild>
+            <Button size="lg" className="bg-green-500 text-white border-white hover:bg-white hover:text-green-600" asChild>
               <a href="tel:+49123456789">Sofort anrufen</a>
             </Button>
           </div>
