@@ -45,8 +45,24 @@ serve(async (req) => {
       );
     }
 
-    // The database trigger 'handle_new_user' will create the profile automatically.
-    // Manual insertion is not needed and would cause an error.
+    // Profil in Tabelle anlegen
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .insert({
+        id: data.user.id,
+        email,
+        role: "admin",
+        first_name: first_name || "",
+        last_name: last_name || "",
+        created_at: new Date().toISOString(),
+      });
+
+    if (profileError) {
+      return new Response(
+        JSON.stringify({ error: profileError.message }),
+        { status: 400, headers: corsHeaders }
+      );
+    }
 
     return new Response(
       JSON.stringify({ success: true, userId: data.user.id }),

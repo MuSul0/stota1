@@ -17,7 +17,7 @@ interface User {
   role: string;
   created_at: string;
   last_sign_in_at: string | null;
-  banned_until: string | null;
+  is_active: boolean;
 }
 
 export default function AdminUsers() {
@@ -56,7 +56,7 @@ export default function AdminUsers() {
           role: profile.role || "user",
           created_at: authUser.created_at,
           last_sign_in_at: authUser.last_sign_in_at,
-          banned_until: authUser.banned_until,
+          is_active: authUser.last_sign_in_at !== null,
         };
       });
 
@@ -87,24 +87,20 @@ export default function AdminUsers() {
     }
   };
 
-  const toggleUserStatus = async (userId: string, isBanned: boolean) => {
+  const toggleUserStatus = async (userId: string, currentStatus: boolean) => {
     try {
       const { error } = await supabase.auth.admin.updateUserById(userId, {
-        ban_duration: isBanned ? 'none' : '3650d', // Ban for 10 years or unban
+        user_metadata: { is_active: !currentStatus },
       });
 
       if (error) throw error;
 
-      toast.success(`Benutzer ${isBanned ? "aktiviert" : "deaktiviert"}`);
+      toast.success(`Benutzer ${currentStatus ? "deaktiviert" : "aktiviert"}`);
       fetchUsers();
     } catch (error) {
       toast.error("Fehler beim Ändern des Status");
       console.error(error);
     }
-  };
-
-  const isUserBanned = (user: User) => {
-    return user.banned_until && new Date(user.banned_until) > new Date();
   };
 
   if (loading) {
@@ -149,50 +145,47 @@ export default function AdminUsers() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredUsers.map((user) => {
-                const banned = isUserBanned(user);
-                return (
-                  <TableRow key={user.id}>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>
-                      <Select
-                        value={user.role}
-                        onValueChange={(value) => updateUserRole(user.id, value)}
-                      >
-                        <SelectTrigger className="w-[140px]">
-                          <SelectValue placeholder="Rolle" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="admin">Admin</SelectItem>
-                          <SelectItem value="mitarbeiter">Mitarbeiter</SelectItem>
-                          <SelectItem value="kunde">Kunde</SelectItem>
-                          <SelectItem value="user">Benutzer</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </TableCell>
-                    <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
-                    <TableCell>
-                      {user.last_sign_in_at
-                        ? new Date(user.last_sign_in_at).toLocaleString()
-                        : "Nie"}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={!banned ? "default" : "destructive"}>
-                        {!banned ? "Aktiv" : "Deaktiviert"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right space-x-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => toggleUserStatus(user.id, banned)}
-                      >
-                        {banned ? "Aktivieren" : "Deaktivieren"}
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+              {filteredUsers.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>
+                    <Select
+                      value={user.role}
+                      onValueChange={(value) => updateUserRole(user.id, value)}
+                    >
+                      <SelectTrigger className="w-[140px]">
+                        <SelectValue placeholder="Rolle" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="admin">Admin</SelectItem>
+                        <SelectItem value="mitarbeiter">Mitarbeiter</SelectItem>
+                        <SelectItem value="kunde">Kunde</SelectItem>
+                        <SelectItem value="user">Benutzer</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                  <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    {user.last_sign_in_at
+                      ? new Date(user.last_sign_in_at).toLocaleString()
+                      : "Nie"}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={user.is_active ? "default" : "secondary"}>
+                      {user.is_active ? "Aktiv" : "Inaktiv"}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right space-x-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => toggleUserStatus(user.id, user.is_active)}
+                    >
+                      {user.is_active ? "Deaktivieren" : "Aktivieren"}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </CardContent>

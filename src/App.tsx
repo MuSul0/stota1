@@ -19,13 +19,13 @@ import Impressum from '@/pages/Impressum';
 import Datenschutz from '@/pages/Datenschutz';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
-import KundenDashboard from '@/pages/kundenportal/Dashboard'; // Korrekter Import
+import KundenDashboard from '@/pages/kundenportal/index'; // Korrekter Import
 import KundenTermine from '@/pages/kundenportal/termine';
 import KundenAuftraege from '@/pages/kundenportal/auftraege';
 import KundenNachrichten from '@/pages/kundenportal/nachrichten';
 import KundenEinstellungen from '@/pages/kundenportal/einstellungen';
 import KundenSupport from '@/pages/kundenportal/support';
-import Mitarbeiterportal from '@/pages/mitarbeiterportal/Dashboard'; // Korrekter Import
+import Mitarbeiterportal from '@/pages/mitarbeiterportal/index'; // Korrekter Import
 import Arbeitszeiten from '@/pages/mitarbeiterportal/arbeitszeiten';
 import Auftraege from '@/pages/mitarbeiterportal/auftraege';
 import Fahrzeuge from '@/pages/mitarbeiterportal/fahrzeuge';

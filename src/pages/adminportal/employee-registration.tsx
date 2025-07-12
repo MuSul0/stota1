@@ -86,12 +86,26 @@ export default function EmployeeRegistration() {
       const { data, error } = await supabase.auth.admin.createUser({
         email,
         password,
-        user_metadata: { role: "mitarbeiter", first_name: name },
+        user_metadata: { role: "mitarbeiter" },
         email_confirm: true,
       });
 
       if (error) {
         toast.error("Fehler bei der Registrierung: " + error.message);
+        setLoadingState(false);
+        return;
+      }
+
+      const { error: profileError } = await supabase.from("profiles").insert({
+        id: data.user.id,
+        email,
+        first_name: name,
+        role: "mitarbeiter",
+        created_at: new Date().toISOString(),
+      });
+
+      if (profileError) {
+        toast.error("Fehler beim Anlegen des Profils");
         setLoadingState(false);
         return;
       }

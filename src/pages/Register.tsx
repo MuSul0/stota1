@@ -73,13 +73,13 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-slate-50 to-gray-200 dark:from-slate-900 dark:to-slate-800 px-4">
-      <Card className="max-w-md w-full p-10 rounded-3xl shadow-2xl bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border border-white/40 dark:border-slate-800">
+    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-tr from-blue-600 to-purple-700 px-4">
+      <Card className="max-w-md w-full p-10 rounded-3xl shadow-2xl bg-white/95 backdrop-blur-md border border-white/40">
         <CardHeader className="flex flex-col items-center space-y-4">
           <Logo />
           <div className="text-center">
-            <CardTitle className="text-3xl font-extrabold text-gray-900 dark:text-gray-50">Neu hier? Registrieren</CardTitle>
-            <CardDescription className="text-gray-600 dark:text-gray-400 max-w-xs mx-auto">
+            <CardTitle className="text-3xl font-extrabold text-gray-900">Neu hier? Registrieren</CardTitle>
+            <CardDescription className="text-gray-600 max-w-xs mx-auto">
               Erstellen Sie ein Konto, um auf das Kundenportal zuzugreifen.
             </CardDescription>
           </div>
@@ -162,13 +162,13 @@ const Register = () => {
                 onCheckedChange={(checked) => setAgreeTerms(!!checked)}
                 required
               />
-              <Label htmlFor="agreeTerms" className="text-gray-700 dark:text-gray-300 text-sm select-none">
+              <Label htmlFor="agreeTerms" className="text-gray-700 text-sm select-none">
                 Ich stimme den{' '}
-                <Link to="/nutzungsbedingungen" className="text-primary hover:underline">
+                <Link to="/nutzungsbedingungen" className="text-blue-600 hover:underline">
                   Nutzungsbedingungen
                 </Link>{' '}
                 und der{' '}
-                <Link to="/datenschutz" className="text-primary hover:underline">
+                <Link to="/datenschutz" className="text-blue-600 hover:underline">
                   Datenschutzerklärung
                 </Link>{' '}
                 zu.
@@ -176,21 +176,21 @@ const Register = () => {
             </div>
             <Button 
               type="submit" 
-              className="w-full py-3 text-lg font-semibold bg-gradient-to-r from-blue-600 to-accent hover:from-blue-700 hover:to-purple-700 text-white rounded-xl shadow-lg transition-all duration-300"
+              className="w-full py-3 text-lg font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-xl shadow-lg transition-all duration-300"
               disabled={loading}
             >
               {loading ? <Loader2 className="animate-spin mx-auto" /> : 'Registrieren'}
             </Button>
           </form>
 
-          <p className="mt-6 text-center text-gray-700 dark:text-gray-300 select-none text-sm">
+          <p className="mt-6 text-center text-gray-700 select-none text-sm">
             <strong>E-Mail-Bestätigung erforderlich</strong><br />
             Nach der Registrierung erhalten Sie eine E-Mail mit einem Bestätigungslink. Bitte klicken Sie darauf, um Ihr Konto zu aktivieren.
           </p>
 
-          <p className="mt-4 text-center text-gray-700 dark:text-gray-300 select-none text-sm">
+          <p className="mt-4 text-center text-gray-700 select-none text-sm">
             Bereits registriert?{' '}
-            <Link to="/login" className="text-primary hover:underline font-medium">
+            <Link to="/login" className="text-blue-600 hover:underline font-medium">
               Hier anmelden
             </Link>
           </p>

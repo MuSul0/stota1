@@ -1,4 +1,4 @@
-import { Heart, Shield, Clock, Award, Users, Target, Lightbulb, Handshake, Star, Briefcase, UserCheck, Truck } from 'lucide-react';
+import { Heart, Shield, Clock, Award, Users, Target, Lightbulb, Handshake } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -58,10 +58,10 @@ const UeberUns = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="py-28 bg-gradient-to-r from-gray-900 to-gray-800 text-white relative overflow-hidden">
+      <section className="py-24 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden">
         <div className="container mx-auto px-6 max-w-5xl text-center">
           <motion.h1 
-            className="text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg tracking-tight"
+            className="text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -69,7 +69,7 @@ const UeberUns = () => {
             Über Stotta Transport
           </motion.h1>
           <motion.p 
-            className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed text-gray-300"
+            className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
@@ -82,7 +82,7 @@ const UeberUns = () => {
 
       {/* Story Section */}
       <ParallaxSection speed={0.05}>
-        <section className="py-20 bg-white rounded-3xl shadow-lg mx-6 md:mx-12 lg:mx-24 -mt-20 relative z-10">
+        <section className="py-20 bg-white rounded-3xl shadow-lg mx-6 md:mx-12 lg:mx-24">
           <div className="container mx-auto px-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <motion.div
@@ -119,7 +119,7 @@ const UeberUns = () => {
                 className="relative rounded-3xl overflow-hidden shadow-2xl"
               >
                 <img 
-                  src={aboutUsMainImage?.url || "https://via.placeholder.com/600x400?text=Unsere+Geschichte"} // Fallback image
+                  src={aboutUsMainImage?.url || ""} // Fallback image
                   alt="Stotta Müller vor seinem ersten Transporter im Jahr 2014"
                   className="w-full h-96 object-cover rounded-3xl"
                 />
@@ -231,12 +231,12 @@ const UeberUns = () => {
                 <CardContent className="p-8">
                   <div className="relative mb-6">
                     <img 
-                      src={stottaMullerProfile?.url || "https://via.placeholder.com/128x128?text=Stotta+Muller"} // Fallback image
+                      src={stottaMullerProfile?.url || ""} // Fallback image
                       alt="Stotta Müller - Geschäftsführer"
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
                     <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                      <Briefcase className="h-5 w-5 text-white" />
+                      <Users className="h-5 w-5 text-white" />
                     </div>
                   </div>
                   <h3 className="text-xl font-bold mb-2 text-gray-900">Stotta Müller</h3>
@@ -258,12 +258,12 @@ const UeberUns = () => {
                 <CardContent className="p-8">
                   <div className="relative mb-6">
                     <img 
-                      src={mariaSchmidtProfile?.url || "https://via.placeholder.com/128x128?text=Maria+Schmidt"} // Fallback image
+                      src={mariaSchmidtProfile?.url || ""} // Fallback image
                       alt="Maria Schmidt - Teamleiterin"
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
                     <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
-                      <UserCheck className="h-5 w-5 text-white" />
+                      <Award className="h-5 w-5 text-white" />
                     </div>
                   </div>
                   <h3 className="text-xl font-bold mb-2 text-gray-900">Maria Schmidt</h3>
@@ -285,12 +285,12 @@ const UeberUns = () => {
                 <CardContent className="p-8">
                   <div className="relative mb-6">
                     <img 
-                      src={thomasWeberProfile?.url || "https://via.placeholder.com/128x128?text=Thomas+Weber"} // Fallback image
+                      src={thomasWeberProfile?.url || ""} // Fallback image
                       alt="Thomas Weber - Transport Spezialist"
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
                     <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center">
-                      <Truck className="h-5 w-5 text-white" />
+                      <Target className="h-5 w-5 text-white" />
                     </div>
                   </div>
                   <h3 className="text-xl font-bold mb-2 text-gray-900">Thomas Weber</h3>
@@ -302,44 +302,6 @@ const UeberUns = () => {
               </Card>
             </motion.div>
           </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-r from-blue-800 to-purple-800 text-white">
-        <div className="container mx-auto px-6 max-w-4xl text-center">
-          <motion.h2 
-            className="text-4xl md:text-5xl font-extrabold mb-6"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-          >
-            Werden Sie Teil unserer Erfolgsgeschichte!
-          </motion.h2>
-          <motion.p 
-            className="text-xl md:text-2xl mb-10 max-w-3xl mx-auto text-blue-100"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-          >
-            Wir freuen uns darauf, Sie kennenzulernen und Ihr nächstes Projekt zu einem vollen Erfolg zu machen.
-          </motion.p>
-          <motion.div 
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.4 }}
-          >
-            <Button size="lg" className="bg-white text-blue-700 hover:bg-gray-200 rounded-full px-10 py-6 shadow-xl font-semibold text-lg" asChild>
-              <Link to="/kontakt">Jetzt Kontakt aufnehmen</Link>
-            </Button>
-            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10 rounded-full px-10 py-6 shadow-xl font-semibold text-lg" asChild>
-              <a href="tel:+49123456789">Direkt anrufen</a>
-            </Button>
-          </motion.div>
         </div>
       </section>
 
