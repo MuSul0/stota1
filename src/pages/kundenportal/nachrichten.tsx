@@ -34,10 +34,13 @@ export default function Nachrichten() {
   const subscriptionRef = useRef<any>(null);
 
   useEffect(() => {
+    console.log('[Nachrichten] Aktueller Zustand: session:', session, 'user:', user, 'loading:', loading);
     if (!loading) {
-      if (!session || !['kunde', 'user'].includes(user?.role || '')) {
+      if (!session || (user?.role !== 'kunde' && user?.role !== 'user')) {
+        console.error(`[Nachrichten] Zugriff verweigert. Weiterleitung zu /login. Aktuelle Benutzerrolle: '${user?.role}'. Sitzung vorhanden: ${!!session}`);
         navigate('/login');
       } else {
+        console.log('[Nachrichten] Zugriff gewährt. Benutzerrolle ist:', user?.role);
         fetchNachrichten();
         setupRealtimeSubscription();
       }
@@ -132,7 +135,7 @@ export default function Nachrichten() {
     );
   }
 
-  if (!session || !['kunde', 'user'].includes(user?.role || '')) {
+  if (!session || (user?.role !== 'kunde' && user?.role !== 'user')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <p className="text-red-600 text-lg">Zugriff verweigert. Bitte als Kunde anmelden.</p>
