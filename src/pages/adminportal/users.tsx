@@ -43,8 +43,10 @@ export default function AdminUsers() {
       const { data, error } = await supabase.functions.invoke("admin-list-users");
       if (error) throw error;
       
-      setUsers(data);
-      setFilteredUsers(data);
+      // Sicherstellen, dass data ein Array ist, sonst ein leeres Array verwenden
+      const usersData = Array.isArray(data) ? data : [];
+      setUsers(usersData);
+      setFilteredUsers(usersData);
     } catch (error) {
       toast.error("Fehler beim Laden der Benutzer: " + (error as Error).message);
       console.error(error);
