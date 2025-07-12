@@ -10,13 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Trash2, Edit, Upload, Video } from 'lucide-react';
 import { toast } from 'sonner';
-import { useSession } from '@/components/SessionProvider';
-import { useNavigate } from 'react-router-dom';
 
 export default function AdminSettings() {
-  const { session, user, loading } = useSession();
-  const navigate = useNavigate();
-
   const [settings, setSettings] = useState({
     companyName: 'Nikolai Transport',
     contactEmail: 'info@nikolai-transport.de',
@@ -34,7 +29,7 @@ export default function AdminSettings() {
     images: Array<{ id: string; url: string; title: string }>;
     videos: Array<{ id: string; url: string; title: string }>;
   }>({ images: [], videos: [] });
-  const [loadingData, setLoadingData] = useState(false);
+  const [loadingData, setLoadingData] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [newMedia, setNewMedia] = useState({
     type: 'image',
@@ -43,15 +38,9 @@ export default function AdminSettings() {
   });
 
   useEffect(() => {
-    if (!loading) {
-      if (!session || user?.role !== 'admin') {
-        navigate('/login');
-      } else {
-        fetchSettings();
-        fetchMedia();
-      }
-    }
-  }, [session, user, loading, navigate]);
+    fetchSettings();
+    fetchMedia();
+  }, []);
 
   const fetchSettings = async () => {
     setLoadingData(true);
@@ -218,16 +207,12 @@ export default function AdminSettings() {
     }
   };
 
-  if (loading || loadingData) {
+  if (loadingData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <p className="text-gray-600 text-lg">Lade Einstellungen...</p>
       </div>
     );
-  }
-
-  if (!session || user?.role !== 'admin') {
-    return null;
   }
 
   return (

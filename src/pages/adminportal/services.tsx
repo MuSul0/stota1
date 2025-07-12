@@ -8,11 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { PlusCircle, Edit, Trash2, Save, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
-import { useSession } from '@/components/SessionProvider';
-import { useNavigate } from 'react-router-dom';
 
 interface Service {
   id: string;
@@ -26,9 +23,6 @@ interface Service {
 }
 
 export default function AdminServices() {
-  const { session, user, loading } = useSession();
-  const navigate = useNavigate();
-
   const [services, setServices] = useState<Service[]>([]);
   const [editingService, setEditingService] = useState<Service | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -36,21 +30,16 @@ export default function AdminServices() {
   const subscriptionRef = useRef<any>(null);
 
   useEffect(() => {
-    if (!loading) {
-      if (!session || user?.role !== 'admin') {
-        navigate('/login');
-      } else {
-        fetchServices();
-        setupRealtimeSubscription();
-      }
-    }
+    fetchServices();
+    setupRealtimeSubscription();
+    
     return () => {
       if (subscriptionRef.current) {
         supabase.removeChannel(subscriptionRef.current);
         subscriptionRef.current = null;
       }
     };
-  }, [session, user, loading, navigate]);
+  }, []);
 
   const fetchServices = async () => {
     setLoadingData(true);
@@ -171,16 +160,12 @@ export default function AdminServices() {
     }
   };
 
-  if (loading || loadingData) {
+  if (loadingData) {
     return (
       <div className="flex justify-center p-8">
         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
-  }
-
-  if (!session || user?.role !== 'admin') {
-    return null;
   }
 
   return (

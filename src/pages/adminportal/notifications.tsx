@@ -6,8 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
-import { useSession } from '@/components/SessionProvider';
-import { useNavigate } from 'react-router-dom';
 
 interface Notification {
   id: string;
@@ -19,29 +17,21 @@ interface Notification {
 }
 
 export default function Notifications() {
-  const { session, user, loading } = useSession();
-  const navigate = useNavigate();
-
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const subscriptionRef = useRef<any>(null);
 
   useEffect(() => {
-    if (!loading) {
-      if (!session || user?.role !== 'admin') {
-        navigate('/login');
-      } else {
-        fetchNotifications();
-        setupRealtimeSubscription();
-      }
-    }
+    fetchNotifications();
+    setupRealtimeSubscription();
+    
     return () => {
       if (subscriptionRef.current) {
         supabase.removeChannel(subscriptionRef.current);
         subscriptionRef.current = null;
       }
     };
-  }, [session, user, loading, navigate]);
+  }, []);
 
   const fetchNotifications = async () => {
     setLoadingData(true);
@@ -102,16 +92,12 @@ export default function Notifications() {
     }
   };
 
-  if (loading || loadingData) {
+  if (loadingData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
-  }
-
-  if (!session || user?.role !== 'admin') {
-    return null;
   }
 
   return (

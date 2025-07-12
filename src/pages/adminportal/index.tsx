@@ -13,7 +13,7 @@ export default function AdminDashboard() {
 
   React.useEffect(() => {
     if (!loading) {
-      if (!session || user?.user_metadata?.role !== 'admin') {
+      if (!session || user?.role !== 'admin') {
         navigate('/login');
       }
     }
@@ -27,7 +27,7 @@ export default function AdminDashboard() {
     );
   }
 
-  if (!session || user?.user_metadata?.role !== 'admin') {
+  if (!session || user?.role !== 'admin') {
     return null;
   }
 

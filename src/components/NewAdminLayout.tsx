@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Outlet, useNavigate, NavLink } from "react-router-dom";
-import { LogOut } from "lucide-react";
+import { LogOut, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useSession } from "@/components/SessionProvider";
 
 const navItems = [
   { to: "dashboard", label: "Dashboard" },
@@ -20,12 +21,32 @@ const navItems = [
 
 const NewAdminLayout = () => {
   const navigate = useNavigate();
-  const [isNavOpen, setIsNavOpen] = useState(true);
+  const { session, user, loading } = useSession();
+
+  useEffect(() => {
+    if (!loading) {
+      if (!session || user?.role !== 'admin') {
+        navigate('/login', { replace: true });
+      }
+    }
+  }, [session, user, loading, navigate]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate("/login");
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+        <Loader2 className="h-16 w-16 animate-spin text-white" />
+      </div>
+    );
+  }
+
+  if (!session || user?.role !== 'admin') {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 text-gray-100">
