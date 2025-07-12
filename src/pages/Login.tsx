@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import Logo from '@/components/Logo';
 import { Button } from '@/components/ui/button';
@@ -13,31 +13,11 @@ import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, Dialog
 import { useSession } from '@/components/SessionProvider';
 
 const Login = () => {
-  const navigate = useNavigate();
-  const { session, user, loading: sessionLoading } = useSession();
+  const { session, loading: sessionLoading } = useSession();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [isResetOpen, setIsResetOpen] = useState(false);
-
-  // Leitet den Benutzer weiter, wenn er bereits angemeldet ist
-  useEffect(() => {
-    if (!sessionLoading && session) {
-      switch (user?.role) {
-        case 'admin':
-          navigate('/adminportal', { replace: true });
-          break;
-        case 'mitarbeiter':
-          navigate('/mitarbeiterportal', { replace: true });
-          break;
-        case 'kunde':
-          navigate('/kundenportal', { replace: true });
-          break;
-        default:
-          navigate('/', { replace: true });
-      }
-    }
-  }, [session, user, sessionLoading, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +34,7 @@ const Login = () => {
     }
   };
 
-  // Zeigt einen Lade-Spinner an, während die Sitzung geprüft wird
+  // Zeigt einen Lade-Spinner an, während die Sitzung geprüft und der Benutzer weitergeleitet wird
   if (sessionLoading || session) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-blue-600 to-purple-700">

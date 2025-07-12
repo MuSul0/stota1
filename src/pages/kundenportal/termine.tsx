@@ -43,13 +43,10 @@ export default function Termine() {
   const subscriptionRef = useRef<any>(null);
 
   useEffect(() => {
-    console.log('[Termine] Aktueller Zustand: session:', session, 'user:', user, 'loading:', loading);
     if (!loading) {
-      if (!session || (user?.role !== 'kunde' && user?.role !== 'user')) {
-        console.error(`[Termine] Zugriff verweigert. Weiterleitung zu /login. Aktuelle Benutzerrolle: '${user?.role}'. Sitzung vorhanden: ${!!session}`);
+      if (!session || !['kunde', 'user'].includes(user?.role || '')) {
         navigate('/login');
       } else {
-        console.log('[Termine] Zugriff gewährt. Benutzerrolle ist:', user?.role);
         fetchTermine();
         setupRealtimeSubscription();
       }
@@ -146,7 +143,7 @@ export default function Termine() {
     );
   }
 
-  if (!session || (user?.role !== 'kunde' && user?.role !== 'user')) {
+  if (!session || !['kunde', 'user'].includes(user?.role || '')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <p className="text-red-600 text-lg">Zugriff verweigert. Bitte als Kunde anmelden.</p>
