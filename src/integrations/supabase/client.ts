@@ -1,11 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Supabase URL and anon public key for client-side usage
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://edcuorkphchuobrfqvyb.supabase.co';
-const supabaseKey = import.meta.env.VITE_SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVkY3VvcmtwaGNodW9icmZxdnliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEwNTk2MDQsImV4cCI6MjA2NjYzNTYwNH0.9CG7Nx32Eis0vZDk_wniAPAOZ7nLdnYLjuFDu2WActw';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Supabase URL und Key müssen definiert sein');
+  throw new Error('Supabase URL und Key müssen in Ihrer .env-Datei definiert sein. Bitte erstellen Sie eine .env-Datei im Stammverzeichnis Ihres Projekts mit VITE_SUPABASE_URL und VITE_SUPABASE_KEY.');
 }
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {
