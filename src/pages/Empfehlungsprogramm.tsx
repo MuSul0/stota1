@@ -1,17 +1,74 @@
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { supabase } from '@/integrations/supabase/client';
+import { showSuccess, showError, showLoading, dismissToast } from '@/utils/toast';
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { UserPlus, Gift, CheckCircle, DollarSign, Users, MessageSquare } from 'lucide-react';
+import { UserPlus, Gift, CheckCircle, DollarSign, Users, MessageSquare, Send } from 'lucide-react';
+
+const referralSchema = z.object({
+  referrerName: z.string().min(2, { message: "Ihr Name ist erforderlich." }),
+  referrerEmail: z.string().email({ message: "Bitte geben Sie eine gültige E-Mail-Adresse ein." }),
+  referredName: z.string().min(2, { message: "Der Name der empfohlenen Person ist erforderlich." }),
+  referredEmail: z.string().email({ message: "Bitte geben Sie eine gültige E-Mail-Adresse für die empfohlene Person ein." }),
+  referredPhone: z.string().optional(),
+  message: z.string().max(500, { message: "Die Nachricht darf maximal 500 Zeichen lang sein." }).optional(),
+});
 
 const Empfehlungsprogramm = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const form = useForm<z.infer<typeof referralSchema>>({
+    resolver: zodResolver(referralSchema),
+    defaultValues: {
+      referrerName: "",
+      referrerEmail: "",
+      referredName: "",
+      referredEmail: "",
+      referredPhone: "",
+      message: "",
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof referralSchema>) {
+    setIsSubmitting(true);
+    const toastId = showLoading("Empfehlung wird gesendet...");
+
+    const { error } = await supabase.from('referrals').insert({
+      referrer_name: values.referrerName,
+      referrer_email: values.referrerEmail,
+      referred_name: values.referredName,
+      referred_email: values.referredEmail,
+      referred_phone: values.referredPhone,
+      message: values.message,
+    });
+
+    dismissToast(toastId);
+    setIsSubmitting(false);
+
+    if (error) {
+      showError(`Fehler: ${error.message}`);
+    } else {
+      showSuccess("Vielen Dank! Ihre Empfehlung wurde erfolgreich gesendet.");
+      form.reset();
+    }
+  }
+
   const howItWorksSteps = [
     {
       icon: UserPlus,
       title: '1. Empfehlen Sie uns weiter',
-      description: 'Erzählen Sie Freunden, Familie oder Geschäftspartnern von Stotta Transport und unseren erstklassigen Dienstleistungen.'
+      description: 'Nutzen Sie das Formular unten oder erzählen Sie Freunden von unseren erstklassigen Dienstleistungen.'
     },
     {
       icon: CheckCircle,
@@ -84,15 +141,6 @@ const Empfehlungsprogramm = () => {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <motion.div 
-              className="inline-block bg-blue-100 text-blue-600 px-4 py-2 rounded-full text-sm font-medium mb-4"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.6 }}
-            >
-              💡 So funktioniert's
-            </motion.div>
             <motion.h2 
               className="text-4xl font-bold mb-6 text-gray-800"
               initial={{ opacity: 0, y: 20 }}
@@ -137,96 +185,124 @@ const Empfehlungsprogramm = () => {
         </div>
       </section>
 
-      {/* Benefits Section */}
+      {/* Referral Form Section */}
       <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <motion.div 
-              className="inline-block bg-green-100 text-green-600 px-4 py-2 rounded-full text-sm font-medium mb-4"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.6 }}
-            >
-              🎁 Ihre Vorteile
-            </motion.div>
-            <motion.h2 
-              className="text-4xl font-bold mb-6 text-gray-800"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              Warum sich Empfehlen lohnt
-            </motion.h2>
-            <motion.p 
-              className="text-xl text-gray-600 max-w-2xl mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              Wir belohnen Ihr Vertrauen und Ihre Unterstützung.
-            </motion.p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {benefits.map((benefit, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.7, delay: index * 0.15 }}
-              >
-                <Card className="text-center h-full hover:shadow-xl transition-shadow duration-300">
-                  <CardContent className="p-6">
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <benefit.icon className="h-8 w-8 text-green-600" />
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.7 }}
+          >
+            <Card className="max-w-4xl mx-auto shadow-xl">
+              <CardHeader className="text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Send className="h-8 w-8 text-blue-600" />
+                </div>
+                <CardTitle className="text-3xl font-bold">Jetzt direkt empfehlen</CardTitle>
+                <CardDescription className="text-lg text-gray-600">
+                  Füllen Sie das Formular aus, um einen Freund oder Kollegen zu empfehlen.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <div className="space-y-4">
+                        <h4 className="text-lg font-semibold text-gray-700 border-b pb-2">Ihre Daten (Empfehler)</h4>
+                        <FormField
+                          control={form.control}
+                          name="referrerName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Ihr Name</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Max Mustermann" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="referrerEmail"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Ihre E-Mail-Adresse</FormLabel>
+                              <FormControl>
+                                <Input placeholder="max.mustermann@email.de" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <div className="space-y-4">
+                        <h4 className="text-lg font-semibold text-gray-700 border-b pb-2">Daten des Empfohlenen</h4>
+                        <FormField
+                          control={form.control}
+                          name="referredName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Name des Kontakts</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Erika Musterfrau" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="referredEmail"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>E-Mail des Kontakts</FormLabel>
+                              <FormControl>
+                                <Input placeholder="erika.musterfrau@email.de" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                     </div>
-                    <h3 className="text-xl font-bold mb-2 text-gray-800">{benefit.title}</h3>
-                    <p className="text-gray-600">{benefit.description}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
+                    <FormField
+                      control={form.control}
+                      name="message"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Persönliche Nachricht (Optional)</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="z.B. 'Hallo, ich habe Stotta Transport für meinen Umzug genutzt und war sehr zufrieden. Vielleicht ist das auch etwas für dich!'"
+                              className="resize-none"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="text-center">
+                      <Button type="submit" size="lg" disabled={isSubmitting}>
+                        {isSubmitting ? 'Wird gesendet...' : 'Empfehlung absenden'}
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
       </section>
 
-      {/* FAQ Section (Placeholder) */}
+      {/* FAQ Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <motion.div 
-              className="inline-block bg-purple-100 text-purple-600 px-4 py-2 rounded-full text-sm font-medium mb-4"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.6 }}
-            >
-              ❓ Fragen & Antworten
-            </motion.div>
-            <motion.h2 
-              className="text-4xl font-bold mb-6 text-gray-800"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              Häufig gestellte Fragen
-            </motion.h2>
-            <motion.p 
-              className="text-xl text-gray-600 max-w-2xl mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              Hier finden Sie Antworten auf die wichtigsten Fragen zu unserem Empfehlungsprogramm.
-            </motion.p>
+            <h2 className="text-4xl font-bold mb-6 text-gray-800">Häufig gestellte Fragen</h2>
           </div>
-
           <div className="max-w-3xl mx-auto space-y-6">
             <Card>
               <CardHeader>
@@ -234,7 +310,7 @@ const Empfehlungsprogramm = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-700">
-                  Ganz einfach! Ihr empfohlener Kontakt muss bei seiner Anfrage oder Buchung lediglich Ihren Namen als Empfehlungsgeber angeben. Alternativ können Sie uns auch vorab informieren.
+                  Ganz einfach! Nutzen Sie das Formular oben auf dieser Seite. Alternativ kann Ihr empfohlener Kontakt bei seiner Anfrage oder Buchung auch einfach Ihren Namen als Empfehlungsgeber angeben.
                 </p>
               </CardContent>
             </Card>
@@ -259,44 +335,6 @@ const Empfehlungsprogramm = () => {
               </CardContent>
             </Card>
           </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-blue-600 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <motion.h2 
-            className="text-3xl md:text-4xl font-bold mb-4"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.6 }}
-          >
-            Bereit zum Empfehlen?
-          </motion.h2>
-          <motion.p 
-            className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            Kontaktieren Sie uns noch heute, um mehr über unser Empfehlungsprogramm zu erfahren oder direkt loszulegen!
-          </motion.p>
-          <motion.div 
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
-            <Button size="lg" className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors" asChild>
-              <Link to="/kontakt">Jetzt Kontakt aufnehmen</Link>
-            </Button>
-            <Button size="lg" variant="outline" className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors" asChild>
-              <a href="tel:+49123456789">Sofort anrufen</a>
-            </Button>
-          </motion.div>
         </div>
       </section>
 
