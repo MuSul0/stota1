@@ -119,7 +119,7 @@ const UeberUns = () => {
                 className="relative rounded-3xl overflow-hidden shadow-2xl"
               >
                 <img 
-                  src={aboutUsMainImage?.url || ""} // Fallback image
+                  src={aboutUsMainImage?.url || "https://via.placeholder.com/600x400?text=Unsere+Geschichte"} // Fallback image
                   alt="Stotta Müller vor seinem ersten Transporter im Jahr 2014"
                   className="w-full h-96 object-cover rounded-3xl"
                 />
@@ -231,7 +231,7 @@ const UeberUns = () => {
                 <CardContent className="p-8">
                   <div className="relative mb-6">
                     <img 
-                      src={stottaMullerProfile?.url || ""} // Fallback image
+                      src={stottaMullerProfile?.url || "https://via.placeholder.com/128x128?text=Stotta+Muller"} // Fallback image
                       alt="Stotta Müller - Geschäftsführer"
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
@@ -258,7 +258,7 @@ const UeberUns = () => {
                 <CardContent className="p-8">
                   <div className="relative mb-6">
                     <img 
-                      src={mariaSchmidtProfile?.url || ""} // Fallback image
+                      src={mariaSchmidtProfile?.url || "https://via.placeholder.com/128x128?text=Maria+Schmidt"} // Fallback image
                       alt="Maria Schmidt - Teamleiterin"
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
@@ -285,7 +285,7 @@ const UeberUns = () => {
                 <CardContent className="p-8">
                   <div className="relative mb-6">
                     <img 
-                      src={thomasWeberProfile?.url || ""} // Fallback image
+                      src={thomasWeberProfile?.url || "https://via.placeholder.com/128x128?text=Thomas+Weber"} // Fallback image
                       alt="Thomas Weber - Transport Spezialist"
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />

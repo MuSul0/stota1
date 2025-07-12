@@ -120,7 +120,7 @@ const Galerie = () => {
               <Card key={project.id} className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
                 <div className="relative overflow-hidden">
                   <img 
-                    src={project.imageUrl}
+                    src={project.imageUrl || "https://via.placeholder.com/400x250?text=Bild+nicht+gefunden"} // Fallback image
                     alt={project.title}
                     className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
                   />
@@ -186,7 +186,7 @@ const Galerie = () => {
             <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
               <div className="relative">
                 <img 
-                  src={officeTimelapse?.url || ""} // Fallback image
+                  src={officeTimelapse?.url || "https://via.placeholder.com/400x250?text=Video+Vorschau"} // Fallback image
                   alt="Büroreinigung Zeitraffer"
                   className="w-full h-64 object-cover"
                 />
@@ -212,7 +212,7 @@ const Galerie = () => {
             <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
               <div className="relative">
                 <img 
-                  src={familyMoveVideo?.url || ""} // Fallback image
+                  src={familyMoveVideo?.url || "https://via.placeholder.com/400x250?text=Video+Vorschau"} // Fallback image
                   alt="Familienumzug dokumentiert"
                   className="w-full h-64 object-cover"
                 />
@@ -263,7 +263,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Vorher</p>
                       <img 
-                        src={officeBefore?.url || ""} // Fallback image
+                        src={officeBefore?.url || "https://via.placeholder.com/200x150?text=Vorher"} // Fallback image
                         alt="Unordentliches Büro vor der Reinigung"
                         className="w-full h-32 object-cover rounded-lg"
                       />
@@ -271,7 +271,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Nachher</p>
                       <img 
-                        src={officeAfter?.url || ""} // Fallback image
+                        src={officeAfter?.url || "https://via.placeholder.com/200x150?text=Nachher"} // Fallback image
                         alt="Perfekt gereinigtes Büro"
                         className="w-full h-32 object-cover rounded-lg"
                       />
@@ -292,7 +292,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Vorher</p>
                       <img 
-                        src={kitchenBefore?.url || ""} // Fallback image
+                        src={kitchenBefore?.url || "https://via.placeholder.com/200x150?text=Vorher"} // Fallback image
                         alt="Verschmutzte Küche vor der Reinigung"
                         className="w-full h-32 object-cover rounded-lg"
                       />
@@ -300,7 +300,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Nachher</p>
                       <img 
-                        src={kitchenAfter?.url || ""} // Fallback image
+                        src={kitchenAfter?.url || "https://via.placeholder.com/200x150?text=Nachher"} // Fallback image
                         alt="Glänzende saubere Küche"
                         className="w-full h-32 object-cover rounded-lg"
                       />

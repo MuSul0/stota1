@@ -298,7 +298,7 @@ const Index = () => {
               className="relative rounded-3xl overflow-hidden shadow-xl"
             >
               <img 
-                src={referralProgramImage?.url || ""} // Fallback image
+                src={referralProgramImage?.url || "https://via.placeholder.com/600x400?text=Empfehlungsprogramm"} // Fallback image
                 alt="Freunde teilen eine Empfehlung"
                 className="w-full h-96 object-cover"
               />
@@ -399,7 +399,7 @@ const Index = () => {
                 className="relative rounded-3xl overflow-hidden shadow-2xl"
               >
                 <img 
-                  src={aboutUsImage?.url || ""} // Fallback image
+                  src={aboutUsImage?.url || "https://via.placeholder.com/600x400?text=Ueber+Uns"} // Fallback image
                   alt="Stotta Müller vor seinem ersten Transporter im Jahr 2014"
                   className="w-full h-96 object-cover rounded-3xl"
                 />
