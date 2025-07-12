@@ -33,19 +33,26 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
     };
 
     const handleAuthChange = async (event: string, session: Session | null) => {
+      console.log('Auth state change event:', event);
+      console.log('Current session in handler:', session);
+
       if (event === 'SIGNED_OUT') {
         setSession(null);
         setUser(null);
+        console.log('User signed out. Session and user state cleared.');
         navigate('/login');
       } else if (session) {
         setSession(session);
         const role = await getUserRole(session.user.id);
         setUser({ ...session.user, role: role || undefined });
+        console.log('User signed in/updated. Session and user state set.');
       }
       setLoading(false);
+      console.log('Loading state set to false.');
     };
 
     supabase.auth.getSession().then(({ data }) => {
+      console.log('Initial session data:', data.session);
       if (data.session) {
         handleAuthChange('SIGNED_IN', data.session);
       } else {
@@ -55,7 +62,10 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(handleAuthChange);
 
-    return () => subscription.unsubscribe();
+    return () => {
+      console.log('Unsubscribing from auth state changes.');
+      subscription.unsubscribe();
+    };
   }, [navigate]);
 
   return (
