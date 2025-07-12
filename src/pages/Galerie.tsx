@@ -5,11 +5,12 @@ import Footer from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { useMedia } from '@/hooks/useMedia'; // Import the new hook
+import { useMedia } from '@/hooks/useMedia';
+import { useAllMedia } from '@/hooks/useAllMedia'; // Import the new hook
 
 const Galerie = () => {
   const [activeFilter, setActiveFilter] = useState('Alle');
-  const { media: allMedia, loading: loadingMedia, error: mediaError } = useMedia();
+  const { media: allMedia, loading: loadingMedia, error: mediaError } = useAllMedia();
 
   // Transform fetched media into the structure expected by the component
   const projects = useMemo(() => {
@@ -26,7 +27,7 @@ const Galerie = () => {
       return {
         title: item.title,
         category: category,
-        description: item.title, // Using title as description for simplicity
+        description: item.description || item.title,
         imageUrl: item.url,
         type: item.type,
         id: item.id, // Keep ID for key
@@ -41,12 +42,12 @@ const Galerie = () => {
     : projects.filter(project => project.category === activeFilter);
 
   // Fetch specific images for Before/After and Video sections
-  const { media: officeBefore, loading: loadingOfficeBefore } = useMedia({ title: 'Office Cleaning Before', type: 'image' });
-  const { media: officeAfter, loading: loadingOfficeAfter } = useMedia({ title: 'Office Cleaning After', type: 'image' });
-  const { media: kitchenBefore, loading: loadingKitchenBefore } = useMedia({ title: 'Kitchen Cleaning Before', type: 'image' });
-  const { media: kitchenAfter, loading: loadingKitchenAfter } = useMedia({ title: 'Kitchen Cleaning After', type: 'image' });
-  const { media: officeTimelapse, loading: loadingOfficeTimelapse } = useMedia({ title: 'Office Cleaning Timelapse', type: 'video' });
-  const { media: familyMoveVideo, loading: loadingFamilyMoveVideo } = useMedia({ title: 'Family Move Documented', type: 'video' });
+  const { media: officeBefore, loading: loadingOfficeBefore } = useMedia({ title: 'Office Cleaning Before' });
+  const { media: officeAfter, loading: loadingOfficeAfter } = useMedia({ title: 'Office Cleaning After' });
+  const { media: kitchenBefore, loading: loadingKitchenBefore } = useMedia({ title: 'Kitchen Cleaning Before' });
+  const { media: kitchenAfter, loading: loadingKitchenAfter } = useMedia({ title: 'Kitchen Cleaning After' });
+  const { media: officeTimelapse, loading: loadingOfficeTimelapse } = useMedia({ title: 'Office Cleaning Timelapse' });
+  const { media: familyMoveVideo, loading: loadingFamilyMoveVideo } = useMedia({ title: 'Family Move Documented' });
 
 
   if (loadingMedia || loadingOfficeBefore || loadingOfficeAfter || loadingKitchenBefore || loadingKitchenAfter || loadingOfficeTimelapse || loadingFamilyMoveVideo) {
@@ -186,7 +187,7 @@ const Galerie = () => {
             <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
               <div className="relative">
                 <img 
-                  src={officeTimelapse?.url || ""} // Fallback image
+                  src={officeTimelapse?.url || "https://placehold.co/600x400/1f2937/ffffff?text=Video"}
                   alt="Büroreinigung Zeitraffer"
                   className="w-full h-64 object-cover"
                 />
@@ -212,7 +213,7 @@ const Galerie = () => {
             <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
               <div className="relative">
                 <img 
-                  src={familyMoveVideo?.url || ""} // Fallback image
+                  src={familyMoveVideo?.url || "https://placehold.co/600x400/1f2937/ffffff?text=Video"}
                   alt="Familienumzug dokumentiert"
                   className="w-full h-64 object-cover"
                 />
@@ -263,7 +264,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Vorher</p>
                       <img 
-                        src={officeBefore?.url || ""} // Fallback image
+                        src={officeBefore?.url || "https://placehold.co/400x300/e2e8f0/475569?text=Vorher"}
                         alt="Unordentliches Büro vor der Reinigung"
                         className="w-full h-32 object-cover rounded-lg"
                       />
@@ -271,7 +272,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Nachher</p>
                       <img 
-                        src={officeAfter?.url || ""} // Fallback image
+                        src={officeAfter?.url || "https://placehold.co/400x300/e2e8f0/475569?text=Nachher"}
                         alt="Perfekt gereinigtes Büro"
                         className="w-full h-32 object-cover rounded-lg"
                       />
@@ -292,7 +293,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Vorher</p>
                       <img 
-                        src={kitchenBefore?.url || ""} // Fallback image
+                        src={kitchenBefore?.url || "https://placehold.co/400x300/e2e8f0/475569?text=Vorher"}
                         alt="Verschmutzte Küche vor der Reinigung"
                         className="w-full h-32 object-cover rounded-lg"
                       />
@@ -300,7 +301,7 @@ const Galerie = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-600 mb-2">Nachher</p>
                       <img 
-                        src={kitchenAfter?.url || ""} // Fallback image
+                        src={kitchenAfter?.url || "https://placehold.co/400x300/e2e8f0/475569?text=Nachher"}
                         alt="Glänzende saubere Küche"
                         className="w-full h-32 object-cover rounded-lg"
                       />

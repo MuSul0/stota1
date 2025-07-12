@@ -9,10 +9,10 @@ import ParallaxSection from '@/components/ParallaxSection';
 import { useMedia } from '@/hooks/useMedia';
 
 const UeberUns = () => {
-  const { media: aboutUsMainImage, loading: loadingAboutUsMainImage, error: aboutUsMainError } = useMedia({ title: 'About Us Main Image', type: 'image' });
-  const { media: stottaMullerProfile, loading: loadingStottaMullerProfile, error: stottaMullerProfileError } = useMedia({ title: 'Stotta Müller Profile', type: 'image' });
-  const { media: mariaSchmidtProfile, loading: loadingMariaSchmidtProfile, error: mariaSchmidtProfileError } = useMedia({ title: 'Maria Schmidt Profile', type: 'image' });
-  const { media: thomasWeberProfile, loading: loadingThomasWeberProfile, error: thomasWeberProfileError } = useMedia({ title: 'Thomas Weber Profile', type: 'image' });
+  const { media: aboutUsMainImage, loading: loadingAboutUsMainImage, error: aboutUsMainError } = useMedia({ title: 'About Us Main Image' });
+  const { media: stottaMullerProfile, loading: loadingStottaMullerProfile, error: stottaMullerProfileError } = useMedia({ title: 'Stotta Müller Profile' });
+  const { media: mariaSchmidtProfile, loading: loadingMariaSchmidtProfile, error: mariaSchmidtProfileError } = useMedia({ title: 'Maria Schmidt Profile' });
+  const { media: thomasWeberProfile, loading: loadingThomasWeberProfile, error: thomasWeberProfileError } = useMedia({ title: 'Thomas Weber Profile' });
 
   const values = [
     {
@@ -119,7 +119,7 @@ const UeberUns = () => {
                 className="relative rounded-3xl overflow-hidden shadow-2xl"
               >
                 <img 
-                  src={aboutUsMainImage?.url || ""} // Fallback image
+                  src={aboutUsMainImage?.url || "https://placehold.co/600x400/dbeafe/2563eb?text=Über+Uns"}
                   alt="Stotta Müller vor seinem ersten Transporter im Jahr 2014"
                   className="w-full h-96 object-cover rounded-3xl"
                 />
@@ -231,7 +231,7 @@ const UeberUns = () => {
                 <CardContent className="p-8">
                   <div className="relative mb-6">
                     <img 
-                      src={stottaMullerProfile?.url || ""} // Fallback image
+                      src={stottaMullerProfile?.url || "https://placehold.co/128x128/e0e7ff/4338ca?text=SM"}
                       alt="Stotta Müller - Geschäftsführer"
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
@@ -258,7 +258,7 @@ const UeberUns = () => {
                 <CardContent className="p-8">
                   <div className="relative mb-6">
                     <img 
-                      src={mariaSchmidtProfile?.url || ""} // Fallback image
+                      src={mariaSchmidtProfile?.url || "https://placehold.co/128x128/dcfce7/16a34a?text=MS"}
                       alt="Maria Schmidt - Teamleiterin"
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
@@ -285,7 +285,7 @@ const UeberUns = () => {
                 <CardContent className="p-8">
                   <div className="relative mb-6">
                     <img 
-                      src={thomasWeberProfile?.url || ""} // Fallback image
+                      src={thomasWeberProfile?.url || "https://placehold.co/128x128/ffedd5/f97316?text=TW"}
                       alt="Thomas Weber - Transport Spezialist"
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />

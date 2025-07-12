@@ -14,8 +14,8 @@ import { useMedia } from '@/hooks/useMedia';
 const Index = () => {
   const servicesRef = useRef<HTMLDivElement>(null);
 
-  const { media: referralProgramImage, loading: loadingReferralProgramImage, error: referralError } = useMedia({ title: 'Referral Program Teaser', type: 'image' });
-  const { media: aboutUsImage, loading: loadingAboutUsImage, error: aboutUsError } = useMedia({ title: 'About Us Teaser', type: 'image' });
+  const { media: referralProgramImage, loading: loadingReferralProgramImage, error: referralError } = useMedia({ title: 'Referral Program Teaser' });
+  const { media: aboutUsImage, loading: loadingAboutUsImage, error: aboutUsError } = useMedia({ title: 'About Us Teaser' });
 
   const serviceCategories = [
     {
@@ -298,7 +298,7 @@ const Index = () => {
               className="relative rounded-3xl overflow-hidden shadow-xl"
             >
               <img 
-                src={referralProgramImage?.url || ""} // Fallback image
+                src={referralProgramImage?.url || "https://placehold.co/600x400/e9d5ff/8b5cf6?text=Empfehlung"}
                 alt="Freunde teilen eine Empfehlung"
                 className="w-full h-96 object-cover"
               />
@@ -399,7 +399,7 @@ const Index = () => {
                 className="relative rounded-3xl overflow-hidden shadow-2xl"
               >
                 <img 
-                  src={aboutUsImage?.url || ""} // Fallback image
+                  src={aboutUsImage?.url || "https://placehold.co/600x400/dbeafe/2563eb?text=Über+Uns"}
                   alt="Stotta Müller vor seinem ersten Transporter im Jahr 2014"
                   className="w-full h-96 object-cover rounded-3xl"
                 />
