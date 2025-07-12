@@ -9,7 +9,7 @@ import { useMedia } from '@/hooks/useMedia'; // Import the new hook
 
 const Galerie = () => {
   const [activeFilter, setActiveFilter] = useState('Alle');
-  const { media: allMedia, loading: loadingMedia, error: mediaError } = useMedia({ fetchAll: true });
+  const { media: allMedia, loading: loadingMedia, error: mediaError } = useMedia();
 
   // Transform fetched media into the structure expected by the component
   const projects = useMemo(() => {

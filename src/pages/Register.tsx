@@ -163,11 +163,7 @@ const Register = () => {
                 required
               />
               <Label htmlFor="agreeTerms" className="text-gray-700 text-sm select-none">
-                Ich stimme den{' '}
-                <Link to="/nutzungsbedingungen" className="text-blue-600 hover:underline">
-                  Nutzungsbedingungen
-                </Link>{' '}
-                und der{' '}
+                Ich stimme den Nutzungsbedingungen und der{' '}
                 <Link to="/datenschutz" className="text-blue-600 hover:underline">
                   Datenschutzerklärung
                 </Link>{' '}

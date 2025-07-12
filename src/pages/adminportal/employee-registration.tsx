@@ -21,8 +21,9 @@ interface Employee {
 export default function EmployeeRegistration() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [loadingState, setLoadingState] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [loading, setLoading] = useState(false);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const subscriptionRef = useRef<any>(null);
 
@@ -75,154 +76,107 @@ export default function EmployeeRegistration() {
   };
 
   const handleRegister = async () => {
-    if (!email || !password || !name) {
+    if (!email || !password || !firstName || !lastName) {
       toast.error("Bitte alle Felder ausfüllen");
       return;
     }
 
-    setLoadingState(true);
+    setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.admin.createUser({
-        email,
-        password,
-        user_metadata: { role: "mitarbeiter" },
-        email_confirm: true,
+      const { error } = await supabase.functions.invoke("admin-create-employee", {
+        body: { email, password, firstName, lastName },
       });
 
-      if (error) {
-        toast.error("Fehler bei der Registrierung: " + error.message);
-        setLoadingState(false);
-        return;
-      }
-
-      const { error: profileError } = await supabase.from("profiles").insert({
-        id: data.user.id,
-        email,
-        first_name: name,
-        role: "mitarbeiter",
-        created_at: new Date().toISOString(),
-      });
-
-      if (profileError) {
-        toast.error("Fehler beim Anlegen des Profils");
-        setLoadingState(false);
-        return;
-      }
+      if (error) throw error;
 
       toast.success("Mitarbeiter erfolgreich registriert");
       setEmail("");
       setPassword("");
-      setName("");
+      setFirstName("");
+      setLastName("");
       fetchEmployees();
     } catch (error) {
-      toast.error("Unbekannter Fehler bei der Registrierung");
+      toast.error("Fehler bei der Registrierung: " + (error as Error).message);
       console.error(error);
     } finally {
-      setLoadingState(false);
+      setLoading(false);
     }
   };
 
-  if (loadingState) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-grow container mx-auto px-6 py-12 max-w-4xl space-y-8">
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <UserPlus className="w-6 h-6 text-blue-600" />
-          Mitarbeiter registrieren
-        </h1>
+    <div className="space-y-8">
+      <h1 className="text-3xl font-bold text-white flex items-center gap-2">
+        <UserPlus className="w-8 h-8 text-blue-400" />
+        Mitarbeiter registrieren
+      </h1>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Neuen Mitarbeiter registrieren</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleRegister();
-              }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-4"
-            >
-              <div>
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Max Mustermann"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="email">E-Mail</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="max@beispiel.de"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="password">Passwort</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Mindestens 6 Zeichen"
-                  required
-                />
-              </div>
-              <div className="md:col-span-3 flex justify-end">
-                <Button type="submit" disabled={loadingState} className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-                  {loadingState ? "Registriere..." : "Mitarbeiter registrieren"}
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+      <Card className="bg-gray-700 text-white shadow-lg">
+        <CardHeader>
+          <CardTitle>Neuen Mitarbeiter anlegen</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleRegister();
+            }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
+            <div className="space-y-2">
+              <Label htmlFor="firstName">Vorname</Label>
+              <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="lastName">Nachname</Label>
+              <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">E-Mail</Label>
+              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Passwort</Label>
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            </div>
+            <div className="md:col-span-2 flex justify-end">
+              <Button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-700">
+                {loading ? <Loader2 className="animate-spin" /> : "Mitarbeiter registrieren"}
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Aktuelle Mitarbeiter</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0 overflow-x-auto">
-            {employees.length === 0 ? (
-              <p className="p-4 text-gray-600">Keine Mitarbeiter gefunden.</p>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>E-Mail</TableHead>
-                    <TableHead>Registriert am</TableHead>
+      <Card className="bg-gray-700 text-white shadow-lg">
+        <CardHeader>
+          <CardTitle>Aktuelle Mitarbeiter</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0 overflow-x-auto">
+          {employees.length === 0 ? (
+            <p className="p-4 text-gray-400">Keine Mitarbeiter gefunden.</p>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow className="border-gray-600">
+                  <TableHead className="text-white">Name</TableHead>
+                  <TableHead className="text-white">E-Mail</TableHead>
+                  <TableHead className="text-white">Registriert am</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {employees.map((emp) => (
+                  <TableRow key={emp.id} className="border-gray-600">
+                    <TableCell>{emp.first_name || "Unbekannt"}</TableCell>
+                    <TableCell>{emp.email}</TableCell>
+                    <TableCell>{new Date(emp.created_at).toLocaleDateString()}</TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {employees.map((emp) => (
-                    <TableRow key={emp.id}>
-                      <TableCell>{emp.first_name || "Unbekannt"}</TableCell>
-                      <TableCell>{emp.email}</TableCell>
-                      <TableCell>{new Date(emp.created_at).toLocaleDateString()}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </CardContent>
-        </Card>
-      </main>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

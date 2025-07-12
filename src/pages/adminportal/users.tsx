@@ -40,65 +40,30 @@ export default function AdminUsers() {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
-      const { data: profileData, error: profileError } = await supabase
-        .from("profiles")
-        .select("*");
-
-      if (authError || profileError) throw authError || profileError;
-
-      // Combine auth and profile data
-      const combinedUsers = authData.users.map((authUser) => {
-        const profile = profileData.find((p) => p.id === authUser.id) || {};
-        return {
-          id: authUser.id,
-          email: authUser.email || "",
-          role: profile.role || "user",
-          created_at: authUser.created_at,
-          last_sign_in_at: authUser.last_sign_in_at,
-          is_active: authUser.last_sign_in_at !== null,
-        };
-      });
-
-      setUsers(combinedUsers);
-      setFilteredUsers(combinedUsers);
+      const { data, error } = await supabase.functions.invoke("admin-list-users");
+      if (error) throw error;
+      
+      setUsers(data);
+      setFilteredUsers(data);
     } catch (error) {
-      toast.error("Fehler beim Laden der Benutzer");
+      toast.error("Fehler beim Laden der Benutzer: " + (error as Error).message);
       console.error(error);
     } finally {
       setLoading(false);
     }
   };
 
-  const updateUserRole = async (userId: string, newRole: string) => {
+  const updateUser = async (userId: string, payload: { role?: string; isActive?: boolean }) => {
     try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({ role: newRole })
-        .eq("id", userId);
-
-      if (error) throw error;
-
-      toast.success("Benutzerrolle aktualisiert");
-      fetchUsers();
-    } catch (error) {
-      toast.error("Fehler beim Aktualisieren der Rolle");
-      console.error(error);
-    }
-  };
-
-  const toggleUserStatus = async (userId: string, currentStatus: boolean) => {
-    try {
-      const { error } = await supabase.auth.admin.updateUserById(userId, {
-        user_metadata: { is_active: !currentStatus },
+      const { error } = await supabase.functions.invoke("admin-update-user", {
+        body: { userId, ...payload },
       });
-
       if (error) throw error;
-
-      toast.success(`Benutzer ${currentStatus ? "deaktiviert" : "aktiviert"}`);
+      
+      toast.success("Benutzer erfolgreich aktualisiert");
       fetchUsers();
     } catch (error) {
-      toast.error("Fehler beim Ändern des Status");
+      toast.error("Fehler beim Aktualisieren des Benutzers: " + (error as Error).message);
       console.error(error);
     }
   };
@@ -114,13 +79,13 @@ export default function AdminUsers() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h1 className="text-3xl font-bold">Benutzerverwaltung</h1>
+        <h1 className="text-3xl font-bold text-white">Benutzerverwaltung</h1>
         <div className="flex w-full md:w-auto gap-2">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               placeholder="Benutzer suchen..."
-              className="pl-10"
+              className="pl-10 bg-gray-800 text-white border-gray-600"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -128,39 +93,38 @@ export default function AdminUsers() {
         </div>
       </div>
 
-      <Card>
+      <Card className="bg-gray-700 text-white shadow-lg">
         <CardHeader>
           <CardTitle>Alle Benutzer</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>E-Mail</TableHead>
-                <TableHead>Rolle</TableHead>
-                <TableHead>Registriert am</TableHead>
-                <TableHead>Letzte Anmeldung</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Aktionen</TableHead>
+              <TableRow className="border-gray-600">
+                <TableHead className="text-white">E-Mail</TableHead>
+                <TableHead className="text-white">Rolle</TableHead>
+                <TableHead className="text-white">Registriert am</TableHead>
+                <TableHead className="text-white">Letzte Anmeldung</TableHead>
+                <TableHead className="text-white">Status</TableHead>
+                <TableHead className="text-right text-white">Aktionen</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredUsers.map((user) => (
-                <TableRow key={user.id}>
+                <TableRow key={user.id} className="border-gray-600">
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
                     <Select
                       value={user.role}
-                      onValueChange={(value) => updateUserRole(user.id, value)}
+                      onValueChange={(value) => updateUser(user.id, { role: value })}
                     >
-                      <SelectTrigger className="w-[140px]">
+                      <SelectTrigger className="w-[140px] bg-gray-800 border-gray-600">
                         <SelectValue placeholder="Rolle" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="admin">Admin</SelectItem>
                         <SelectItem value="mitarbeiter">Mitarbeiter</SelectItem>
                         <SelectItem value="kunde">Kunde</SelectItem>
-                        <SelectItem value="user">Benutzer</SelectItem>
                       </SelectContent>
                     </Select>
                   </TableCell>
@@ -171,15 +135,15 @@ export default function AdminUsers() {
                       : "Nie"}
                   </TableCell>
                   <TableCell>
-                    <Badge variant={user.is_active ? "default" : "secondary"}>
-                      {user.is_active ? "Aktiv" : "Inaktiv"}
+                    <Badge variant={user.is_active ? "default" : "destructive"}>
+                      {user.is_active ? "Aktiv" : "Deaktiviert"}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right space-x-2">
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => toggleUserStatus(user.id, user.is_active)}
+                      onClick={() => updateUser(user.id, { isActive: !user.is_active })}
                     >
                       {user.is_active ? "Deaktivieren" : "Aktivieren"}
                     </Button>
