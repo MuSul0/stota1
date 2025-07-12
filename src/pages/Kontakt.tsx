@@ -36,11 +36,12 @@ const Kontakt = () => {
     setLoading(true);
 
     try {
+      const name = `${formData.firstName.trim()} ${formData.lastName.trim()}`;
       const { data, error } = await supabase
         .from('contact_requests')
         .insert([
           {
-            name: `${formData.firstName.trim()} ${formData.lastName.trim()}`, // Kombiniere Vor- und Nachname
+            name: name,
             email: formData.email.trim(),
             phone: formData.phone.trim(),
             service: formData.service.trim(),
@@ -51,6 +52,32 @@ const Kontakt = () => {
       if (error) {
         throw error;
       }
+
+      // E-Mail-Benachrichtigung zur Warteschlange hinzufügen
+      const emailSubject = `Neue Kontaktanfrage von ${name}`;
+      const emailText = `
+        Eine neue Kontaktanfrage wurde über die Webseite gesendet.
+
+        Details:
+        Name: ${name}
+        E-Mail: ${formData.email.trim()}
+        Telefon: ${formData.phone.trim()}
+        Leistung: ${formData.service.trim()}
+        Nachricht:
+        ${formData.message.trim()}
+      `;
+
+      const { error: emailError } = await supabase.from('email_queue').insert({
+        to_email: 'kontakt@info-stota.de',
+        subject: emailSubject,
+        text: emailText,
+      });
+
+      if (emailError) {
+        console.error('Fehler beim Eintragen der E-Mail-Benachrichtigung:', emailError);
+        toast.warning('Ihre Anfrage wurde gespeichert, aber die Benachrichtigung konnte nicht sofort versendet werden.');
+      }
+
 
       toast.success("Ihre Nachricht wurde erfolgreich gesendet!", {
         description: "Wir melden uns schnellstmöglich bei Ihnen zurück.",

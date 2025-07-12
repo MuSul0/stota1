@@ -41,6 +41,34 @@ export const ReferralForm = () => {
 
       if (error) throw error;
 
+      // E-Mail-Benachrichtigung zur Warteschlange hinzufügen
+      const emailSubject = `Neue Empfehlung von ${formData.referrer_name || 'Anonym'}`;
+      const emailText = `
+        Eine neue Empfehlung wurde über die Webseite gesendet.
+
+        Empfehlender:
+        Name: ${formData.referrer_name || 'Anonym'}
+        E-Mail: ${formData.referrer_email || 'Nicht angegeben'}
+
+        Empfohlener Kontakt:
+        Name: ${formData.referred_name}
+        E-Mail: ${formData.referred_email}
+
+        Nachricht:
+        ${formData.message || 'Keine Nachricht hinterlassen.'}
+      `;
+
+      const { error: emailError } = await supabase.from('email_queue').insert({
+        to_email: 'kontakt@info-stota.de',
+        subject: emailSubject,
+        text: emailText,
+      });
+
+      if (emailError) {
+        console.error('Fehler beim Eintragen der E-Mail-Benachrichtigung für die Empfehlung:', emailError);
+        toast.warning('Ihre Empfehlung wurde gespeichert, aber die Benachrichtigung konnte nicht sofort versendet werden.');
+      }
+
       toast.success('Vielen Dank für Ihre Empfehlung!', {
         description: 'Wir werden uns umgehend mit Ihrem Kontakt in Verbindung setzen.',
       });
