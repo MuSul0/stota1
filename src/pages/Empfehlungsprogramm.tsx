@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { UserPlus, Gift, CheckCircle, DollarSign, Users, MessageSquare } from 'lucide-react';
-import { useMedia } from '@/hooks/useMedia';
+// import { useMedia } from '@/hooks/useMedia'; // Nicht mehr benötigt
 
 const Empfehlungsprogramm = () => {
-  const { media: heroBackground, loading: loadingHeroBackground } = useMedia({ title: 'Empfehlungsprogramm Hero Background' });
+  // const { media: heroBackground, loading: loadingHeroBackground } = useMedia({ title: 'Empfehlungsprogramm Hero Background' }); // Nicht mehr benötigt
 
   const howItWorksSteps = [
     {
@@ -53,7 +53,7 @@ const Empfehlungsprogramm = () => {
       {/* Hero Section */}
       <section 
         className="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden"
-        style={{ backgroundImage: `url(${heroBackground?.url || 'https://placehold.co/1920x600/4f46e5/ffffff?text=Empfehlungsprogramm'})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+        // style={{ backgroundImage: `url(${heroBackground?.url || 'https://placehold.co/1920x600/4f46e5/ffffff?text=Empfehlungsprogramm'})`, backgroundSize: 'cover', backgroundPosition: 'center' }} // Hintergrundbild entfernt
       >
         <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="container mx-auto px-4 relative z-10">
