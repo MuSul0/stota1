@@ -5,11 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { UserPlus, Gift, CheckCircle, DollarSign, Users, MessageSquare } from 'lucide-react';
-// import { useMedia } from '@/hooks/useMedia'; // Nicht mehr benötigt
+import { ReferralForm } from '@/components/ReferralForm';
 
 const Empfehlungsprogramm = () => {
-  // const { media: heroBackground, loading: loadingHeroBackground } = useMedia({ title: 'Empfehlungsprogramm Hero Background' }); // Nicht mehr benötigt
-
   const howItWorksSteps = [
     {
       icon: UserPlus,
@@ -53,7 +51,6 @@ const Empfehlungsprogramm = () => {
       {/* Hero Section */}
       <section 
         className="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden"
-        // style={{ backgroundImage: `url(${heroBackground?.url || 'https://placehold.co/1920x600/4f46e5/ffffff?text=Empfehlungsprogramm'})`, backgroundSize: 'cover', backgroundPosition: 'center' }} // Hintergrundbild entfernt
       >
         <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="container mx-auto px-4 relative z-10">
@@ -83,6 +80,21 @@ const Empfehlungsprogramm = () => {
               Teilen Sie Ihre positiven Erfahrungen mit Stotta Transport und profitieren Sie gemeinsam mit Ihren Freunden!
             </motion.p>
           </div>
+        </div>
+      </section>
+
+      {/* Referral Form Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <motion.div
+            className="max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.8 }}
+          >
+            <ReferralForm />
+          </motion.div>
         </div>
       </section>
 
@@ -197,112 +209,6 @@ const Empfehlungsprogramm = () => {
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* FAQ Section (Placeholder) */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <motion.div 
-              className="inline-block bg-purple-100 text-purple-600 px-4 py-2 rounded-full text-sm font-medium mb-4"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.6 }}
-            >
-              ❓ Fragen & Antworten
-            </motion.div>
-            <motion.h2 
-              className="text-4xl font-bold mb-6 text-gray-800"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              Häufig gestellte Fragen
-            </motion.h2>
-            <motion.p 
-              className="text-xl text-gray-600 max-w-2xl mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              Hier finden Sie Antworten auf die wichtigsten Fragen zu unserem Empfehlungsprogramm.
-            </motion.p>
-          </div>
-
-          <div className="max-w-3xl mx-auto space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Wie kann ich jemanden empfehlen?</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-700">
-                  Ganz einfach! Ihr empfohlener Kontakt muss bei seiner Anfrage oder Buchung lediglich Ihren Namen als Empfehlungsgeber angeben. Alternativ können Sie uns auch vorab informieren.
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Wann erhalte ich meine Belohnung?</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-700">
-                  Die Belohnung wird ausgezahlt oder gutgeschrieben, sobald der von Ihnen empfohlene Service vollständig abgeschlossen und bezahlt wurde.
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Gibt es Einschränkungen?</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-700">
-                  Das Empfehlungsprogramm gilt für Neukunden. Die genauen Bedingungen der Prämie können variieren und werden Ihnen bei der Empfehlung mitgeteilt.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-blue-600 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <motion.h2 
-            className="text-3xl md:text-4xl font-bold mb-4"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.6 }}
-          >
-            Bereit zum Empfehlen?
-          </motion.h2>
-          <motion.p 
-            className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            Kontaktieren Sie uns noch heute, um mehr über unser Empfehlungsprogramm zu erfahren oder direkt loszulegen!
-          </motion.p>
-          <motion.div 
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
-            <Button size="lg" className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors" asChild>
-              <Link to="/kontakt">Jetzt Kontakt aufnehmen</Link>
-            </Button>
-            <Button size="lg" variant="outline" className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors" asChild>
-              <a href="tel:+49123456789">Sofort anrufen</a>
-            </Button>
-          </motion.div>
         </div>
       </section>
 
