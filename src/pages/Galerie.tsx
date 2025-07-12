@@ -1,71 +1,9 @@
-import { useState, useMemo } from 'react';
-import { Play, Eye, Filter } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { useMedia } from '@/hooks/useMedia';
-import { useAllMedia } from '@/hooks/useAllMedia'; // Import the new hook
+import { Link } from 'react-router-dom';
 
 const Galerie = () => {
-  const [activeFilter, setActiveFilter] = useState('Alle');
-  const { media: allMedia, loading: loadingMedia, error: mediaError } = useAllMedia();
-
-  // Transform fetched media into the structure expected by the component
-  const projects = useMemo(() => {
-    if (!allMedia || !Array.isArray(allMedia)) return [];
-    return allMedia.map(item => {
-      let category = 'Sonstiges'; // Default category
-      if (item.title.toLowerCase().includes('reinigung')) {
-        category = 'Reinigung';
-      } else if (item.title.toLowerCase().includes('umzug')) {
-        category = 'Umzug';
-      } else if (item.title.toLowerCase().includes('transport')) {
-        category = 'Transport';
-      }
-      return {
-        title: item.title,
-        category: category,
-        description: item.description || item.title,
-        imageUrl: item.url,
-        type: item.type,
-        id: item.id, // Keep ID for key
-      };
-    });
-  }, [allMedia]);
-
-  const categories = ['Alle', 'Reinigung', 'Transport', 'Umzug', 'Sonstiges'];
-
-  const filteredProjects = activeFilter === 'Alle' 
-    ? projects 
-    : projects.filter(project => project.category === activeFilter);
-
-  // Fetch specific images for Before/After and Video sections
-  const { media: officeBefore, loading: loadingOfficeBefore } = useMedia({ title: 'Office Cleaning Before' });
-  const { media: officeAfter, loading: loadingOfficeAfter } = useMedia({ title: 'Office Cleaning After' });
-  const { media: kitchenBefore, loading: loadingKitchenBefore } = useMedia({ title: 'Kitchen Cleaning Before' });
-  const { media: kitchenAfter, loading: loadingKitchenAfter } = useMedia({ title: 'Kitchen Cleaning After' });
-  const { media: officeTimelapse, loading: loadingOfficeTimelapse } = useMedia({ title: 'Office Cleaning Timelapse' });
-  const { media: familyMoveVideo, loading: loadingFamilyMoveVideo } = useMedia({ title: 'Family Move Documented' });
-
-
-  if (loadingMedia || loadingOfficeBefore || loadingOfficeAfter || loadingKitchenBefore || loadingKitchenAfter || loadingOfficeTimelapse || loadingFamilyMoveVideo) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <p className="text-gray-600 text-lg">Lade Galerie...</p>
-      </div>
-    );
-  }
-
-  if (mediaError) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <p className="text-red-600 text-lg">Fehler beim Laden der Galerie: {mediaError}</p>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen">
       <Header />
@@ -87,230 +25,13 @@ const Galerie = () => {
         </div>
       </section>
 
-      {/* Filter Section */}
-      <section className="py-8 bg-white shadow-sm sticky top-0 z-40">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-4">
-            <div className="flex items-center space-x-2 mr-4">
-              <Filter className="h-5 w-5 text-gray-600" />
-              <span className="text-gray-600 font-medium">Filter:</span>
-            </div>
-            {categories.map((category) => (
-              <Button
-                key={category}
-                variant={activeFilter === category ? "default" : "outline"}
-                onClick={() => setActiveFilter(category)}
-                className={`transition-all duration-200 ${
-                  activeFilter === category 
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white' 
-                    : 'hover:bg-blue-50'
-                }`}
-              >
-                {category}
-              </Button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Gallery Section */}
+      {/* Placeholder for new content */}
       <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProjects.map((project) => (
-              <Card key={project.id} className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
-                <div className="relative overflow-hidden">
-                  <img 
-                    src={project.imageUrl}
-                    alt={project.title}
-                    className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  
-                  {/* Category Badge */}
-                  <Badge 
-                    className={`absolute top-4 left-4 ${
-                      project.category === 'Reinigung' ? 'bg-green-500' :
-                      project.category === 'Transport' ? 'bg-blue-500' :
-                      project.category === 'Umzug' ? 'bg-orange-500' :
-                      'bg-gray-500' // Default for 'Sonstiges'
-                    } text-white`}
-                  >
-                    {project.category}
-                  </Badge>
-
-                  {/* Type Icon */}
-                  <div className="absolute top-4 right-4">
-                    {project.type === 'video' ? (
-                      <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
-                        <Play className="h-5 w-5 text-white ml-0.5" />
-                      </div>
-                    ) : (
-                      <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                        <Eye className="h-5 w-5 text-white" />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Hover Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <Button className="bg-white/90 text-gray-800 hover:bg-white">
-                      {project.type === 'video' ? 'Video ansehen' : 'Bild vergrößern'}
-                    </Button>
-                  </div>
-                </div>
-                
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-bold mb-2 text-gray-800">{project.title}</h3>
-                  <p className="text-gray-600">{project.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Videos Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <div className="inline-block bg-red-100 text-red-600 px-4 py-2 rounded-full text-sm font-medium mb-4">
-              🎥 Video-Galerie
-            </div>
-            <h2 className="text-4xl font-bold mb-6 text-gray-800">Stotta Transport in Aktion</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Sehen Sie uns bei der Arbeit und überzeugen Sie sich von unserer Professionalität
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
-              <div className="relative">
-                <img 
-                  src={officeTimelapse?.url || "https://placehold.co/600x400/1f2937/ffffff?text=Video"}
-                  alt="Büroreinigung Zeitraffer"
-                  className="w-full h-64 object-cover"
-                />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                  <div className="text-center text-white">
-                    <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4 hover:scale-110 transition-transform duration-200">
-                      <Play className="h-8 w-8 text-white ml-1" />
-                    </div>
-                    <p className="font-medium">Büroreinigung im Zeitraffer</p>
-                    <p className="text-sm opacity-90">2:30 Min</p>
-                  </div>
-                </div>
-              </div>
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-2">Professionelle Büroreinigung</h3>
-                <p className="text-gray-600">
-                  Sehen Sie, wie unser Team ein 300m² Büro in nur 3 Stunden 
-                  perfekt reinigt und dabei höchste Qualitätsstandards einhält.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
-              <div className="relative">
-                <img 
-                  src={familyMoveVideo?.url || "https://placehold.co/600x400/1f2937/ffffff?text=Video"}
-                  alt="Familienumzug dokumentiert"
-                  className="w-full h-64 object-cover"
-                />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                  <div className="text-center text-white">
-                    <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4 hover:scale-110 transition-transform duration-200">
-                      <Play className="h-8 w-8 text-white ml-1" />
-                    </div>
-                    <p className="font-medium">Familienumzug dokumentiert</p>
-                    <p className="text-sm opacity-90">4:15 Min</p>
-                  </div>
-                </div>
-              </div>
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-2">Kompletter Umzugsservice</h3>
-                <p className="text-gray-600">
-                  Von der Planung bis zum letzten Karton – ein kompletter 
-                  Familienumzug mit Verpackung, Transport und Möbelmontage.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Before/After Section */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <div className="inline-block bg-green-100 text-green-600 px-4 py-2 rounded-full text-sm font-medium mb-4">
-              ⚡ Vorher & Nachher
-            </div>
-            <h2 className="text-4xl font-bold mb-6 text-gray-800">Der Unterschied, den wir machen</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Sehen Sie selbst, wie professionelle Arbeit Räume verwandelt
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
-              <CardContent className="p-0">
-                <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white p-4">
-                  <h3 className="text-xl font-bold">Büroreinigung</h3>
-                  <p className="text-blue-100">Transformation eines Arbeitsplatzes</p>
-                </div>
-                <div className="p-6">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600 mb-2">Vorher</p>
-                      <img 
-                        src={officeBefore?.url || "https://placehold.co/400x300/e2e8f0/475569?text=Vorher"}
-                        alt="Unordentliches Büro vor der Reinigung"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-600 mb-2">Nachher</p>
-                      <img 
-                        src={officeAfter?.url || "https://placehold.co/400x300/e2e8f0/475569?text=Nachher"}
-                        alt="Perfekt gereinigtes Büro"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300">
-              <CardContent className="p-0">
-                <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white p-4">
-                  <h3 className="text-xl font-bold">Wohnungsreinigung</h3>
-                  <p className="text-green-100">Küche nach Grundreinigung</p>
-                </div>
-                <div className="p-6">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600 mb-2">Vorher</p>
-                      <img 
-                        src={kitchenBefore?.url || "https://placehold.co/400x300/e2e8f0/475569?text=Vorher"}
-                        alt="Verschmutzte Küche vor der Reinigung"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-600 mb-2">Nachher</p>
-                      <img 
-                        src={kitchenAfter?.url || "https://placehold.co/400x300/e2e8f0/475569?text=Nachher"}
-                        alt="Glänzende saubere Küche"
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">Galerie im Aufbau</h2>
+          <p className="text-xl text-gray-600">
+            Wir überarbeiten unsere Galerie, um Ihnen bald neue und aufregende Einblicke in unsere Arbeit zu geben.
+          </p>
         </div>
       </section>
 
@@ -325,7 +46,7 @@ const Galerie = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-8 py-4" asChild>
-              <a href="/kontakt">Projekt anfragen</a>
+              <Link to="/kontakt">Projekt anfragen</Link>
             </Button>
             <Button size="lg" variant="outline" className="text-white border-white/30 bg-white/10 backdrop-blur-sm hover:bg-white hover:text-gray-900 px-8 py-4" asChild>
               <a href="tel:+49123456789">Sofort anrufen</a>
