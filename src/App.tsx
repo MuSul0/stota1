@@ -36,7 +36,7 @@ import AdminUsers from '@/pages/adminportal/users';
 import AdminInvoices from '@/pages/adminportal/invoices';
 import AdminSettings from '@/pages/adminportal/settings';
 import AdminServices from '@/pages/adminportal/services';
-import MediaManager from '@/pages/adminportal/media-manager';
+import Seiteninhalte from '@/pages/adminportal/seiteninhalte';
 import Notifications from '@/pages/adminportal/notifications';
 import Reports from '@/pages/adminportal/reports';
 import EmployeeRegistration from '@/pages/adminportal/employee-registration';
@@ -100,7 +100,7 @@ function App() {
                 <Route path="invoices" element={<AdminInvoices />} />
                 <Route path="settings" element={<AdminSettings />} />
                 <Route path="services" element={<AdminServices />} />
-                <Route path="media-manager" element={<MediaManager />} />
+                <Route path="seiteninhalte" element={<Seiteninhalte />} />
                 <Route path="notifications" element={<Notifications />} />
                 <Route path="reports" element={<Reports />} />
               </Route>
