@@ -23,7 +23,7 @@ const Galerie = () => {
 
   // Transform fetched media into the structure expected by the component
   const projects = useMemo(() => {
-    if (!allMedia || !ArrayisArray(allMedia)) return [];
+    if (!allMedia || !Array.isArray(allMedia)) return [];
     return allMedia.map(item => {
       let category = 'Sonstiges'; // Default category
       if (item.title.toLowerCase().includes('reinigung')) {
