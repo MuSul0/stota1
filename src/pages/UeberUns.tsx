@@ -1,4 +1,4 @@
-import { Heart, Shield, Clock, Award, Users, Target, Lightbulb, Handshake } from 'lucide-react';
+import { Heart, Shield, Clock, Award, Users, Target, Lightbulb, Handshake, Star, Briefcase, UserCheck } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -58,10 +58,10 @@ const UeberUns = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="py-24 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden">
+      <section className="py-28 bg-gradient-to-r from-gray-900 to-gray-800 text-white relative overflow-hidden">
         <div className="container mx-auto px-6 max-w-5xl text-center">
           <motion.h1 
-            className="text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg"
+            className="text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg tracking-tight"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -69,7 +69,7 @@ const UeberUns = () => {
             Über Stotta Transport
           </motion.h1>
           <motion.p 
-            className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed"
+            className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed text-gray-300"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
@@ -82,7 +82,7 @@ const UeberUns = () => {
 
       {/* Story Section */}
       <ParallaxSection speed={0.05}>
-        <section className="py-20 bg-white rounded-3xl shadow-lg mx-6 md:mx-12 lg:mx-24">
+        <section className="py-20 bg-white rounded-3xl shadow-lg mx-6 md:mx-12 lg:mx-24 -mt-20 relative z-10">
           <div className="container mx-auto px-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <motion.div
@@ -236,7 +236,7 @@ const UeberUns = () => {
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
                     <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                      <Users className="h-5 w-5 text-white" />
+                      <Briefcase className="h-5 w-5 text-white" />
                     </div>
                   </div>
                   <h3 className="text-xl font-bold mb-2 text-gray-900">Stotta Müller</h3>
@@ -263,7 +263,7 @@ const UeberUns = () => {
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
                     <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
-                      <Award className="h-5 w-5 text-white" />
+                      <UserCheck className="h-5 w-5 text-white" />
                     </div>
                   </div>
                   <h3 className="text-xl font-bold mb-2 text-gray-900">Maria Schmidt</h3>
@@ -290,7 +290,7 @@ const UeberUns = () => {
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
                     <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center">
-                      <Target className="h-5 w-5 text-white" />
+                      <Truck className="h-5 w-5 text-white" />
                     </div>
                   </div>
                   <h3 className="text-xl font-bold mb-2 text-gray-900">Thomas Weber</h3>
@@ -302,6 +302,44 @@ const UeberUns = () => {
               </Card>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-24 bg-gradient-to-r from-blue-800 to-purple-800 text-white">
+        <div className="container mx-auto px-6 max-w-4xl text-center">
+          <motion.h2 
+            className="text-4xl md:text-5xl font-extrabold mb-6"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            Werden Sie Teil unserer Erfolgsgeschichte!
+          </motion.h2>
+          <motion.p 
+            className="text-xl md:text-2xl mb-10 max-w-3xl mx-auto text-blue-100"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+          >
+            Wir freuen uns darauf, Sie kennenzulernen und Ihr nächstes Projekt zu einem vollen Erfolg zu machen.
+          </motion.p>
+          <motion.div 
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.4 }}
+          >
+            <Button size="lg" className="bg-white text-blue-700 hover:bg-gray-200 rounded-full px-10 py-6 shadow-xl font-semibold text-lg" asChild>
+              <Link to="/kontakt">Jetzt Kontakt aufnehmen</Link>
+            </Button>
+            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10 rounded-full px-10 py-6 shadow-xl font-semibold text-lg" asChild>
+              <a href="tel:+49123456789">Direkt anrufen</a>
+            </Button>
+          </motion.div>
         </div>
       </section>
 
