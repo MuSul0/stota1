@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Play, Eye, Filter } from 'lucide-react';
+import { Filter } from 'lucide-react'; // Play and Eye icons are no longer needed
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
@@ -13,13 +13,13 @@ const Galerie = () => {
   const [activeFilter, setActiveFilter] = useState('Alle');
   const { media: allMedia, loading: loadingMedia, error: mediaError } = useMedia();
 
-  // Fetch specific images for Before/After and Video sections
-  const { media: officeBefore, loading: loadingOfficeBefore } = useMedia({ title: 'Office Cleaning Before', type: 'image' });
-  const { media: officeAfter, loading: loadingOfficeAfter } = useMedia({ title: 'Office Cleaning After', type: 'image' });
-  const { media: kitchenBefore, loading: loadingKitchenBefore } = useMedia({ title: 'Kitchen Cleaning Before', type: 'image' });
-  const { media: kitchenAfter, loading: loadingKitchenAfter } = useMedia({ title: 'Kitchen Cleaning After', type: 'image' });
-  const { media: officeTimelapse, loading: loadingOfficeTimelapse } = useMedia({ title: 'Office Cleaning Timelapse', type: 'video' });
-  const { media: familyMoveVideo, loading: loadingFamilyMoveVideo } = useMedia({ title: 'Family Move Documented', type: 'video' });
+  // Specific media items are no longer fetched as images are removed
+  // const { media: officeBefore, loading: loadingOfficeBefore } = useMedia({ title: 'Office Cleaning Before', type: 'image' });
+  // const { media: officeAfter, loading: loadingOfficeAfter } = useMedia({ title: 'Office Cleaning After', type: 'image' });
+  // const { media: kitchenBefore, loading: loadingKitchenBefore } = useMedia({ title: 'Kitchen Cleaning Before', type: 'image' });
+  // const { media: kitchenAfter, loading: loadingKitchenAfter } = useMedia({ title: 'Kitchen Cleaning After', type: 'image' });
+  // const { media: officeTimelapse, loading: loadingOfficeTimelapse } = useMedia({ title: 'Office Cleaning Timelapse', type: 'video' });
+  // const { media: familyMoveVideo, loading: loadingFamilyMoveVideo } = useMedia({ title: 'Family Move Documented', type: 'video' });
 
   // Transform fetched media into the structure expected by the component
   const projects = useMemo(() => {
@@ -37,7 +37,7 @@ const Galerie = () => {
         title: item.title,
         category: category,
         description: item.title, // Using title as description for simplicity
-        imageUrl: item.url,
+        // imageUrl: item.url, // Image URL no longer needed for display
         type: item.type,
         id: item.id, // Keep ID for key
       };
@@ -50,7 +50,7 @@ const Galerie = () => {
     ? projects 
     : projects.filter(project => project.category === activeFilter);
 
-  if (loadingMedia || loadingOfficeBefore || loadingOfficeAfter || loadingKitchenBefore || loadingKitchenAfter || loadingOfficeTimelapse || loadingFamilyMoveVideo) {
+  if (loadingMedia) { // Only check for allMedia loading
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <p className="text-gray-600 text-lg">Lade Galerie...</p>
@@ -136,18 +136,11 @@ const Galerie = () => {
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
               >
-                <Card className="overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group">
-                  <div className="relative overflow-hidden">
-                    <img 
-                      src={project.imageUrl || "https://via.placeholder.com/400x250?text=Bild+nicht+gefunden"} // Fallback image
-                      alt={project.title}
-                      className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    
-                    {/* Category Badge */}
+                <Card className="rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                  <CardContent className="p-6">
+                    {/* Category Badge - moved to top of card content */}
                     <Badge 
-                      className={`absolute top-4 left-4 ${
+                      className={`mb-4 ${
                         project.category === 'Reinigung' ? 'bg-green-500' :
                         project.category === 'Transport' ? 'bg-blue-500' :
                         project.category === 'Umzug' ? 'bg-orange-500' :
@@ -156,29 +149,6 @@ const Galerie = () => {
                     >
                       {project.category}
                     </Badge>
-
-                    {/* Type Icon */}
-                    <div className="absolute top-4 right-4">
-                      {project.type === 'video' ? (
-                        <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
-                          <Play className="h-5 w-5 text-white ml-0.5" />
-                        </div>
-                      ) : (
-                        <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                          <Eye className="h-5 w-5 text-white" />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Hover Overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <Button className="bg-white/90 text-gray-800 hover:bg-white">
-                        {project.type === 'video' ? 'Video ansehen' : 'Bild vergrößern'}
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <CardContent className="p-6">
                     <h3 className="text-xl font-bold mb-2 text-gray-800">{project.title}</h3>
                     <p className="text-gray-600">{project.description}</p>
                   </CardContent>
@@ -229,23 +199,7 @@ const Galerie = () => {
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <Card className="overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div className="relative">
-                  <img 
-                    src={officeTimelapse?.url || "https://via.placeholder.com/400x250?text=Video+Vorschau"} // Fallback image
-                    alt="Büroreinigung Zeitraffer"
-                    className="w-full h-64 object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                    <div className="text-center text-white">
-                      <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4 hover:scale-110 transition-transform duration-200">
-                        <Play className="h-8 w-8 text-white ml-1" />
-                      </div>
-                      <p className="font-medium">Büroreinigung im Zeitraffer</p>
-                      <p className="text-sm opacity-90">2:30 Min</p>
-                    </div>
-                  </div>
-                </div>
+              <Card className="rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <CardContent className="p-6">
                   <h3 className="text-xl font-bold mb-2">Professionelle Büroreinigung</h3>
                   <p className="text-gray-600">
@@ -262,23 +216,7 @@ const Galerie = () => {
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <Card className="overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div className="relative">
-                  <img 
-                    src={familyMoveVideo?.url || "https://via.placeholder.com/400x250?text=Video+Vorschau"} // Fallback image
-                    alt="Familienumzug dokumentiert"
-                    className="w-full h-64 object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                    <div className="text-center text-white">
-                      <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4 hover:scale-110 transition-transform duration-200">
-                        <Play className="h-8 w-8 text-white ml-1" />
-                      </div>
-                      <p className="font-medium">Familienumzug dokumentiert</p>
-                      <p className="text-sm opacity-90">4:15 Min</p>
-                    </div>
-                  </div>
-                </div>
+              <Card className="rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <CardContent className="p-6">
                   <h3 className="text-xl font-bold mb-2">Kompletter Umzugsservice</h3>
                   <p className="text-gray-600">
@@ -332,31 +270,14 @@ const Galerie = () => {
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <Card className="overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <Card className="rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <CardContent className="p-0">
                   <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white p-4">
                     <h3 className="text-xl font-bold">Büroreinigung</h3>
                     <p className="text-blue-100">Transformation eines Arbeitsplatzes</p>
                   </div>
                   <div className="p-6">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600 mb-2">Vorher</p>
-                        <img 
-                          src={officeBefore?.url || "https://via.placeholder.com/200x150?text=Vorher"} // Fallback image
-                          alt="Unordentliches Büro vor der Reinigung"
-                          className="w-full h-32 object-cover rounded-lg"
-                        />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-600 mb-2">Nachher</p>
-                        <img 
-                          src={officeAfter?.url || "https://via.placeholder.com/200x150?text=Nachher"} // Fallback image
-                          alt="Perfekt gereinigtes Büro"
-                          className="w-full h-32 object-cover rounded-lg"
-                        />
-                      </div>
-                    </div>
+                    <p className="text-gray-700">Hier würden die Vorher-Nachher-Bilder des Büros stehen.</p>
                   </div>
                 </CardContent>
               </Card>
@@ -368,31 +289,14 @@ const Galerie = () => {
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <Card className="overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <Card className="rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <CardContent className="p-0">
                   <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white p-4">
                     <h3 className="text-xl font-bold">Wohnungsreinigung</h3>
                     <p className="text-green-100">Küche nach Grundreinigung</p>
                   </div>
                   <div className="p-6">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600 mb-2">Vorher</p>
-                        <img 
-                          src={kitchenBefore?.url || "https://via.placeholder.com/200x150?text=Vorher"} // Fallback image
-                          alt="Verschmutzte Küche vor der Reinigung"
-                          className="w-full h-32 object-cover rounded-lg"
-                        />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-600 mb-2">Nachher</p>
-                        <img 
-                          src={kitchenAfter?.url || "https://via.placeholder.com/200x150?text=Nachher"} // Fallback image
-                          alt="Glänzende saubere Küche"
-                          className="w-full h-32 object-cover rounded-lg"
-                        />
-                      </div>
-                    </div>
+                    <p className="text-gray-700">Hier würden die Vorher-Nachher-Bilder der Küche stehen.</p>
                   </div>
                 </CardContent>
               </Card>
