@@ -13,48 +13,7 @@ const GartenLandschaftsbau = () => {
   const gardenServices = [
     {
       icon: Leaf,
-      title: 'Gartenpflege<think>Deciding which files are relevant...
-
-{
-  "complexity": "low",
-  "relevantFiles": [
-    "src/pages/Kontakt.tsx",
-    "src/pages/Impressum.tsx",
-    "src/pages/Datenschutz.tsx",
-    "src/pages/adminportal/settings.tsx",
-    "src/components/Footer.tsx",
-    "src/components/Logo.tsx",
-    "src/pages/Bewertungen.tsx",
-    "src/pages/Empfehlungsprogramm.tsx",
-    "src/pages/UeberUns.tsx",
-    "src/pages/Leistungen/Reinigung.tsx",
-    "src/pages/Leistungen/GartenLandschaftsbau.tsx",
-    "src/pages/Leistungen/Transporte.tsx",
-    "src/pages/Leistungen/Entsorgung.tsx",
-    "src/pages/Index.tsx",
-    "src/pages/Login.tsx",
-    "src/pages/Register.tsx",
-    "src/components/Header.tsx",
-    "supabase/functions/send-welcome-email/index.ts",
-    "supabase/functions/process-email-queue/index.ts",
-    "supabase/functions/create-admin-user/index.ts",
-    "supabase/functions/create-or-update-admin-user/index.ts",
-    "supabase/functions/admin-create-employee/index.ts",
-    "scripts/createOrUpdateAdminUser.ts",
-    "email-templates/reauthentication.html",
-    "email-templates/change-email-address.html",
-    "email-templates/magic-link.html",
-    "email-templates/reset-password.html",
-    "email-templates/invite-user.html",
-    "email-templates/confirm-signup.html",
-    "android/app/src/main/res/values/strings.xml",
-    "android/app/src/main/java/com/example/nikolai/MainActivity.java",
-    "android/app/src/main/AndroidManifest.xml",
-    "ios/App/App/Info.plist",
-    "capacitor.config.ts",
-    "index.html"
-  ]
-}</think><dyad-codebase-context files="src/pages/Kontakt.tsx,src/pages/Impressum.tsx,src/pages/Datenschutz.tsx,src/pages/adminportal/settings.tsx,src/components/Footer.tsx,src/components/Logo.tsx,src/pages/Bewertungen.tsx,src/pages/Empfehlungsprogramm.tsx,src/pages/UeberUns.tsx,src/pages/Leistungen/Reinigung.tsx,src/pages/Leistungen/GartenLandschaftsbau.tsx,src/pages/Leistungen/Transporte.tsx,src/pages/Leistungen/Entsorgung.tsx,src/pages/Index.tsx,src/pages/Login.tsx,src/pages/Register.tsx,src/components/Header.tsx,supabase/functions/send-welcome-email/index.ts,supabase/functions/process-email-queue/index.ts,supabase/functions/create-admin-user/index.ts,supabase/functions/create-or-update-admin-user/index.ts,supabase/functions/admin-create-employee/index.ts,scripts/createOrUpdateAdminUser.ts,email-templates/reauthentication.html,email-templates/change-email-address.html,email-templates/magic-link.html,email-templates/reset-password.html,email-templates/invite-user.html,email-templates/confirm-signup.html,android/app/src/main/res/values/strings.xml,android/app/src/main/java/com/example/nikolai/MainActivity.java,android/app/src/main/AndroidManifest.xml,ios/App/App/Info.plist,capacitor.config.ts,index.html">Complexity: low</dyad-codebase-context>',
+      title: 'Gartenpflege',
       description: 'Regelmäßige und professionelle Pflege Ihres Gartens, damit er das ganze Jahr über in voller Pracht erstrahlt.',
       features: ['Saisonale Pflege', 'Beetpflege', 'Düngung', 'Pflanzenschutz']
     },
