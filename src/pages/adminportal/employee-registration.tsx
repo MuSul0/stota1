@@ -136,19 +136,19 @@ export default function EmployeeRegistration() {
           >
             <div className="space-y-2">
               <Label htmlFor="firstName">Vorname</Label>
-              <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+              <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} required className="text-black" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="lastName">Nachname</Label>
-              <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+              <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} required className="text-black" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">E-Mail</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="text-black" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Passwort</Label>
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="text-black" />
             </div>
             <div className="md:col-span-2 flex justify-end">
               <Button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-700">
