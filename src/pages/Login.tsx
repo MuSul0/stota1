@@ -10,51 +10,34 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Loader2 } from 'lucide-react';
 import PasswordReset from '@/components/PasswordReset';
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { useSession } from '@/components/SessionProvider';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { session, user, loading: sessionLoading } = useSession();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [isResetOpen, setIsResetOpen] = useState(false);
 
+  // Leitet den Benutzer weiter, wenn er bereits angemeldet ist
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        await handlePostLoginNavigation(session.user.id);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const handlePostLoginNavigation = async (userId: string) => {
-    try {
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', userId)
-        .single();
-
-      if (error) throw error;
-
-      switch (profile.role) {
-        case 'kunde':
-          navigate('/kundenportal', { replace: true });
+    if (!sessionLoading && session) {
+      switch (user?.role) {
+        case 'admin':
+          navigate('/adminportal', { replace: true });
           break;
         case 'mitarbeiter':
           navigate('/mitarbeiterportal', { replace: true });
           break;
-        case 'admin':
-          navigate('/adminportal', { replace: true });
+        case 'kunde':
+          navigate('/kundenportal', { replace: true });
           break;
         default:
           navigate('/', { replace: true });
       }
-    } catch (error) {
-      toast.error('Fehler beim Laden der Benutzerdaten');
-      await supabase.auth.signOut();
     }
-  };
+  }, [session, user, sessionLoading, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,13 +46,23 @@ const Login = () => {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
-      // Navigation wird durch onAuthStateChange gehandelt
-    } catch (error) {
+      // Die Weiterleitung wird jetzt zentral vom SessionProvider gehandhabt
+      toast.success('Anmeldung erfolgreich! Sie werden weitergeleitet...');
+    } catch (error: any) {
       toast.error('Anmeldung fehlgeschlagen: ' + error.message);
     } finally {
       setLoading(false);
     }
   };
+
+  // Zeigt einen Lade-Spinner an, während die Sitzung geprüft wird
+  if (sessionLoading || session) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-blue-600 to-purple-700">
+        <Loader2 className="h-16 w-16 animate-spin text-white" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-tr from-blue-600 to-purple-700 px-4">
