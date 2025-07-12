@@ -67,7 +67,7 @@ export default function AdminAnalytics() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-white">Analytics</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold text-white">Analytics</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <Card className="bg-gray-700 text-white">
@@ -104,26 +104,28 @@ export default function AdminAnalytics() {
           <CardTitle>Letzte Besucher</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-gray-600/50 border-gray-600">
-                <TableHead className="text-white">Datum</TableHead>
-                <TableHead className="text-white">IP Addresse</TableHead>
-                <TableHead className="text-white">Standort</TableHead>
-                <TableHead className="text-white">User Agent</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {visitors.map((visitor) => (
-                <TableRow key={visitor.id} className="hover:bg-gray-600/50 border-gray-600">
-                  <TableCell>{new Date(visitor.visited_at).toLocaleString()}</TableCell>
-                  <TableCell>{visitor.ip_address}</TableCell>
-                  <TableCell>{visitor.city}, {visitor.country}</TableCell>
-                  <TableCell className="truncate max-w-xs">{visitor.user_agent}</TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-gray-600/50 border-gray-600">
+                  <TableHead className="text-white">Datum</TableHead>
+                  <TableHead className="text-white">IP Addresse</TableHead>
+                  <TableHead className="text-white">Standort</TableHead>
+                  <TableHead className="text-white">User Agent</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {visitors.map((visitor) => (
+                  <TableRow key={visitor.id} className="hover:bg-gray-600/50 border-gray-600">
+                    <TableCell>{new Date(visitor.visited_at).toLocaleString()}</TableCell>
+                    <TableCell>{visitor.ip_address}</TableCell>
+                    <TableCell>{visitor.city}, {visitor.country}</TableCell>
+                    <TableCell className="truncate max-w-xs">{visitor.user_agent}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

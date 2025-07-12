@@ -59,36 +59,38 @@ export default function AdminLeads() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-white">CRM Leads (Kontaktanfragen)</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold text-white">CRM Leads (Kontaktanfragen)</h1>
       <Card className="bg-gray-700 text-white">
         <CardHeader>
           <CardTitle>Eingegangene Kontaktanfragen</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-gray-600/50 border-gray-600">
-                <TableHead className="text-white">Datum</TableHead>
-                <TableHead className="text-white">Name</TableHead>
-                <TableHead className="text-white">E-Mail</TableHead>
-                <TableHead className="text-white">Telefon</TableHead>
-                <TableHead className="text-white">Service</TableHead>
-                <TableHead className="text-white">Nachricht</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {leads.map((lead) => (
-                <TableRow key={lead.id} className="hover:bg-gray-600/50 border-gray-600">
-                  <TableCell>{new Date(lead.created_at).toLocaleString()}</TableCell>
-                  <TableCell>{lead.name}</TableCell>
-                  <TableCell>{lead.email}</TableCell>
-                  <TableCell>{lead.phone || '-'}</TableCell>
-                  <TableCell>{lead.service || '-'}</TableCell>
-                  <TableCell className="truncate max-w-sm">{lead.message}</TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-gray-600/50 border-gray-600">
+                  <TableHead className="text-white">Datum</TableHead>
+                  <TableHead className="text-white">Name</TableHead>
+                  <TableHead className="text-white">E-Mail</TableHead>
+                  <TableHead className="text-white">Telefon</TableHead>
+                  <TableHead className="text-white">Service</TableHead>
+                  <TableHead className="text-white">Nachricht</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {leads.map((lead) => (
+                  <TableRow key={lead.id} className="hover:bg-gray-600/50 border-gray-600">
+                    <TableCell>{new Date(lead.created_at).toLocaleString()}</TableCell>
+                    <TableCell>{lead.name}</TableCell>
+                    <TableCell>{lead.email}</TableCell>
+                    <TableCell>{lead.phone || '-'}</TableCell>
+                    <TableCell>{lead.service || '-'}</TableCell>
+                    <TableCell className="truncate max-w-sm">{lead.message}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

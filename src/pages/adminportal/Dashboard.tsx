@@ -89,7 +89,7 @@ export default function AdminDashboard() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
-      <h1 className="text-4xl font-extrabold mb-10 text-white text-center">Admin Dashboard</h1>
+      <h1 className="text-3xl sm:text-4xl font-extrabold mb-10 text-white text-center">Admin Dashboard</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {cards.map(({ title, description, icon: Icon, buttonText, buttonAction, gradientFrom, gradientTo }) => (
           <motion.div

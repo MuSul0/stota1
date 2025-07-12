@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Outlet, useNavigate, NavLink } from "react-router-dom";
 import { LogOut, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,7 @@ const NewAdminLayout = () => {
   const navigate = useNavigate();
   const { session, user, loading } = useSession();
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!loading) {
       if (!session || user?.role !== 'admin') {
         navigate('/login', { replace: true });
@@ -54,37 +54,39 @@ const NewAdminLayout = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 text-gray-100">
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 border-b border-gray-700">
+      <header className="flex items-center justify-between gap-4 px-4 sm:px-6 py-4 border-b border-gray-700">
         <div className="text-xl font-bold select-none">Admin</div>
-        <nav className="flex space-x-4 overflow-x-auto">
-          {navItems.map(({ to, label }) => (
-            <NavLink
-              key={to}
-              to={to}
-              className={({ isActive }) =>
-                `whitespace-nowrap px-3 py-2 rounded-md font-medium transition-colors ${
-                  isActive
-                    ? "bg-blue-600 text-white shadow-lg"
-                    : "text-gray-300 hover:bg-gray-700 hover:text-white"
-                }`
-              }
-            >
-              {label}
-            </NavLink>
-          ))}
-        </nav>
+        <div className="flex-1 min-w-0 mx-4">
+          <nav className="flex space-x-4 overflow-x-auto pb-2 -mb-2">
+            {navItems.map(({ to, label }) => (
+              <NavLink
+                key={to}
+                to={to}
+                className={({ isActive }) =>
+                  `whitespace-nowrap px-3 py-2 rounded-md font-medium transition-colors ${
+                    isActive
+                      ? "bg-blue-600 text-white shadow-lg"
+                      : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                  }`
+                }
+              >
+                {label}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
         <Button
           variant="destructive"
           onClick={handleLogout}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 flex-shrink-0"
         >
           <LogOut className="w-5 h-5" />
-          Abmelden
+          <span className="hidden sm:inline">Abmelden</span>
         </Button>
       </header>
 
       {/* Main Content */}
-      <main className="flex-grow overflow-auto p-6 bg-gray-800">
+      <main className="flex-grow overflow-auto p-4 sm:p-6 bg-gray-800">
         <Outlet />
       </main>
     </div>

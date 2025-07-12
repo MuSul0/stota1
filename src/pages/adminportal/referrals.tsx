@@ -88,53 +88,55 @@ export default function AdminReferrals() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-white">Empfehlungen</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold text-white">Empfehlungen</h1>
       <Card className="bg-gray-700 text-white">
         <CardHeader>
           <CardTitle>Empfehlungsprogramm-Übersicht</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-gray-600/50 border-gray-600">
-                <TableHead className="text-white">Datum</TableHead>
-                <TableHead className="text-white">Empfohlen von</TableHead>
-                <TableHead className="text-white">Empfohlene Person</TableHead>
-                <TableHead className="text-white">Status</TableHead>
-                <TableHead className="text-right text-white">Aktion</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {referrals.map((referral) => (
-                <TableRow key={referral.id} className="hover:bg-gray-600/50 border-gray-600">
-                  <TableCell>{new Date(referral.created_at).toLocaleDateString()}</TableCell>
-                  <TableCell>
-                    <div>{referral.referrer_name}</div>
-                    <div className="text-xs text-gray-400">{referral.referrer_email}</div>
-                  </TableCell>
-                  <TableCell>
-                    <div>{referral.referred_name}</div>
-                    <div className="text-xs text-gray-400">{referral.referred_email}</div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={getStatusVariant(referral.status)}>{referral.status}</Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Select onValueChange={(value) => handleStatusChange(referral.id, value)} defaultValue={referral.status}>
-                      <SelectTrigger className="w-[120px] bg-gray-800 border-gray-600 text-white">
-                        <SelectValue placeholder="Status ändern" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="approved">Approved</SelectItem>
-                        <SelectItem value="rejected">Rejected</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-gray-600/50 border-gray-600">
+                  <TableHead className="text-white">Datum</TableHead>
+                  <TableHead className="text-white">Empfohlen von</TableHead>
+                  <TableHead className="text-white">Empfohlene Person</TableHead>
+                  <TableHead className="text-white">Status</TableHead>
+                  <TableHead className="text-right text-white">Aktion</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {referrals.map((referral) => (
+                  <TableRow key={referral.id} className="hover:bg-gray-600/50 border-gray-600">
+                    <TableCell>{new Date(referral.created_at).toLocaleDateString()}</TableCell>
+                    <TableCell>
+                      <div>{referral.referrer_name}</div>
+                      <div className="text-xs text-gray-400">{referral.referrer_email}</div>
+                    </TableCell>
+                    <TableCell>
+                      <div>{referral.referred_name}</div>
+                      <div className="text-xs text-gray-400">{referral.referred_email}</div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={getStatusVariant(referral.status)}>{referral.status}</Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Select onValueChange={(value) => handleStatusChange(referral.id, value)} defaultValue={referral.status}>
+                        <SelectTrigger className="w-[120px] bg-gray-800 border-gray-600 text-white">
+                          <SelectValue placeholder="Status ändern" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pending">Pending</SelectItem>
+                          <SelectItem value="approved">Approved</SelectItem>
+                          <SelectItem value="rejected">Rejected</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>
