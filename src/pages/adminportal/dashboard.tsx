@@ -1,132 +1,145 @@
-"use client";
+import React from 'react';
+import { useSession } from '@/components/SessionProvider';
+import { useNavigate } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { BarChart2, Users, Settings, FileText, Layers, Bell, Download } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-import React, { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { RefreshCw, Users, FileText, Bell, BarChart2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+export default function AdminDashboard() {
+  const { session, user, loading } = useSession();
+  const navigate = useNavigate();
 
-interface Stats {
-  users: number;
-  invoicesOpen: number;
-  notificationsUnread: number;
-  servicesActive: number;
-  lastUpdated: string;
-}
-
-const AdminDashboard = () => {
-  const [stats, setStats] = useState<Stats>({
-    users: 0,
-    invoicesOpen: 0,
-    notificationsUnread: 0,
-    servicesActive: 0,
-    lastUpdated: "",
-  });
-  const [loading, setLoading] = useState(true);
-
-  const fetchStats = async () => {
-    setLoading(true);
-    try {
-      const [{ count: usersCount }, { count: invoicesCount }, { count: notificationsCount }, { count: servicesCount }] = await Promise.all([
-        supabase.from("profiles").select("*", { count: "exact", head: true }),
-        supabase.from("invoices").select("*", { count: "exact", head: true }).eq("status", "offen"),
-        supabase.from("messages").select("*", { count: "exact", head: true }).eq("status", "ungelesen"),
-        supabase.from("services").select("*", { count: "exact", head: true }).eq("is_active", true),
-      ]);
-
-      setStats({
-        users: usersCount || 0,
-        invoicesOpen: invoicesCount || 0,
-        notificationsUnread: notificationsCount || 0,
-        servicesActive: servicesCount || 0,
-        lastUpdated: new Date().toLocaleTimeString(),
-      });
-    } catch (error) {
-      toast.error("Fehler beim Laden der Statistiken");
-      console.error(error);
-    } finally {
-      setLoading(false);
+  React.useEffect(() => {
+    if (!loading) {
+      if (!session || user?.role !== 'admin') {
+        navigate('/login');
+      }
     }
-  };
+  }, [session, user, loading, navigate]);
 
-  useEffect(() => {
-    fetchStats();
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <p className="text-gray-600 text-lg">Lade Admin-Dashboard...</p>
+      </div>
+    );
+  }
 
-    // Optional: alle 30 Sekunden aktualisieren
-    const interval = setInterval(() => {
-      fetchStats();
-    }, 30000);
+  if (!session || user?.role !== 'admin') {
+    return null;
+  }
 
-    return () => clearInterval(interval);
-  }, []);
+  const cards = [
+    {
+      title: 'Benutzerverwaltung',
+      description: 'Verwalten Sie Benutzerkonten und Rollen',
+      icon: Users,
+      buttonText: 'Benutzer anzeigen',
+      buttonAction: () => navigate('/adminportal/users'),
+      gradientFrom: 'from-blue-600',
+      gradientTo: 'to-purple-600',
+    },
+    {
+      title: 'Statistiken',
+      description: 'Unternehmensstatistiken und Berichte',
+      icon: BarChart2,
+      buttonText: 'Statistiken anzeigen',
+      buttonAction: () => navigate('/adminportal/dashboard'),
+      gradientFrom: 'from-green-600',
+      gradientTo: 'to-emerald-600',
+    },
+    {
+      title: 'Rechnungen',
+      description: 'Rechnungen verwalten und einsehen',
+      icon: FileText,
+      buttonText: 'Rechnungen verwalten',
+      buttonAction: () => navigate('/adminportal/invoices'),
+      gradientFrom: 'from-purple-600',
+      gradientTo: 'to-indigo-600',
+    },
+    {
+      title: 'Einstellungen',
+      description: 'System- und Anwendungseinstellungen',
+      icon: Settings,
+      buttonText: 'Einstellungen konfigurieren',
+      buttonAction: () => navigate('/adminportal/settings'),
+      gradientFrom: 'from-orange-500',
+      gradientTo: 'to-yellow-500',
+    },
+    {
+      title: 'Services',
+      description: 'Leistungen verwalten',
+      icon: Layers,
+      buttonText: 'Services verwalten',
+      buttonAction: () => navigate('/adminportal/services'),
+      gradientFrom: 'from-pink-600',
+      gradientTo: 'to-red-600',
+    },
+    {
+      title: 'Medien',
+      description: 'Bilder und Videos verwalten',
+      icon: Bell,
+      buttonText: 'Medien verwalten',
+      buttonAction: () => navigate('/adminportal/media-manager'),
+      gradientFrom: 'from-yellow-600',
+      gradientTo: 'to-orange-600',
+    },
+    {
+      title: 'Benachrichtigungen',
+      description: 'Kundenanfragen und Nachrichten',
+      icon: Bell,
+      buttonText: 'Benachrichtigungen ansehen',
+      buttonAction: () => navigate('/adminportal/notifications'),
+      gradientFrom: 'from-cyan-600',
+      gradientTo: 'to-blue-600',
+    },
+    {
+      title: 'Berichte',
+      description: 'Daten exportieren und auswerten',
+      icon: Download,
+      buttonText: 'Berichte exportieren',
+      buttonAction: () => navigate('/adminportal/reports'),
+      gradientFrom: 'from-teal-600',
+      gradientTo: 'to-green-600',
+    },
+  ];
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-white">Admin Dashboard</h1>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={fetchStats}
-          disabled={loading}
-          className="flex items-center gap-2"
-        >
-          <RefreshCw className="w-4 h-4" />
-          {loading ? "Lädt..." : "Aktualisieren"}
-        </Button>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        <Card className="bg-gray-700 text-white shadow-lg">
-          <CardHeader className="flex items-center gap-2">
-            <Users className="w-6 h-6 text-blue-400" />
-            <CardTitle>Benutzer</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-extrabold">{stats.users}</div>
-            <p className="text-gray-300">Gesamtanzahl registrierter Benutzer</p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gray-700 text-white shadow-lg">
-          <CardHeader className="flex items-center gap-2">
-            <FileText className="w-6 h-6 text-yellow-400" />
-            <CardTitle>Offene Rechnungen</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-extrabold">{stats.invoicesOpen}</div>
-            <p className="text-gray-300">Rechnungen, die noch offen sind</p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gray-700 text-white shadow-lg">
-          <CardHeader className="flex items-center gap-2">
-            <Bell className="w-6 h-6 text-red-400" />
-            <CardTitle>Ungelesene Nachrichten</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-extrabold">{stats.notificationsUnread}</div>
-            <p className="text-gray-300">Neue Kundenanfragen und Nachrichten</p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gray-700 text-white shadow-lg">
-          <CardHeader className="flex items-center gap-2">
-            <BarChart2 className="w-6 h-6 text-green-400" />
-            <CardTitle>Aktive Services</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-extrabold">{stats.servicesActive}</div>
-            <p className="text-gray-300">Services, die aktuell aktiv sind</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <p className="text-gray-400 text-sm text-right">Letzte Aktualisierung: {stats.lastUpdated}</p>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <motion.main 
+        className="flex-grow container mx-auto px-4 py-12"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <h1 className="text-4xl font-extrabold mb-10 text-gray-900 text-center">Adminportal</h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {cards.map(({ title, description, icon: Icon, buttonText, buttonAction, gradientFrom, gradientTo }) => (
+            <motion.div 
+              key={title}
+              whileHover={{ scale: 1.05, boxShadow: '0 10px 20px rgba(0,0,0,0.12)' }}
+              className="rounded-xl bg-white shadow-md hover:shadow-xl transition-shadow duration-300"
+            >
+              <Card className="h-full flex flex-col justify-between border-0 shadow-none">
+                <CardContent className="flex flex-col items-center text-center p-8">
+                  <div className={`w-16 h-16 mb-6 rounded-full bg-gradient-to-br ${gradientFrom} ${gradientTo} flex items-center justify-center text-white shadow-lg`}>
+                    <Icon className="w-8 h-8" />
+                  </div>
+                  <CardTitle className="text-2xl font-semibold mb-2 text-gray-900">{title}</CardTitle>
+                  <p className="text-gray-600 mb-6">{description}</p>
+                  <Button 
+                    className={`w-full bg-gradient-to-r ${gradientFrom} ${gradientTo} hover:from-opacity-90 hover:to-opacity-90 text-white`}
+                    onClick={buttonAction}
+                  >
+                    {buttonText}
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </motion.main>
     </div>
   );
-};
-
-export default AdminDashboard;
+}
