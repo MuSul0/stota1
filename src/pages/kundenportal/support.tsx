@@ -10,7 +10,7 @@ export default function Support() {
 
   useEffect(() => {
     if (!loading) {
-      if (!session || user?.role !== 'kunde') {
+      if (!session || !['kunde', 'user'].includes(user?.role || '')) {
         navigate('/login');
       }
     }
@@ -24,7 +24,7 @@ export default function Support() {
     );
   }
 
-  if (!session || user?.role !== 'kunde') {
+  if (!session || !['kunde', 'user'].includes(user?.role || '')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <p className="text-red-600 text-lg">Zugriff verweigert. Bitte als Kunde anmelden.</p>

@@ -10,13 +10,9 @@ export default function KundenDashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('[KundenDashboard] Aktueller Zustand: session:', session, 'user:', user, 'loading:', loading);
     if (!loading) {
-      if (!session || user?.role !== 'kunde') {
-        console.log('[KundenDashboard] Weiterleitung zu /login. Grund: Sitzung fehlt oder Rolle ist nicht "kunde". Aktuelle Benutzerrolle:', user?.role);
+      if (!session || !['kunde', 'user'].includes(user?.role || '')) {
         navigate('/login');
-      } else {
-        console.log('[KundenDashboard] Zugriff erlaubt. Benutzerrolle ist "kunde".');
       }
     }
   }, [session, user, loading, navigate]);
