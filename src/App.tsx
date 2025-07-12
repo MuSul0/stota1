@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SessionProvider from '@/components/SessionProvider';
-import ProtectedRoute from '@/components/ProtectedRoute'; // Importieren
+import ProtectedRoute from '@/components/ProtectedRoute';
 import { Toaster } from '@/components/ui/sonner';
 
 // Seiten importieren
@@ -22,8 +22,8 @@ import MitarbeiterDashboard from '@/pages/mitarbeiterportal/index';
 
 function App() {
   return (
-    <SessionProvider>
-      <Router>
+    <Router> {/* Der Router muss zuerst kommen */}
+      <SessionProvider> {/* SessionProvider ist jetzt innerhalb des Routers */}
         <Routes>
           {/* Öffentliche Routen */}
           <Route path="/" element={<Index />} />
@@ -53,9 +53,9 @@ function App() {
           {/* Fallback-Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </Router>
+      </SessionProvider>
       <Toaster />
-    </SessionProvider>
+    </Router>
   );
 }
 
