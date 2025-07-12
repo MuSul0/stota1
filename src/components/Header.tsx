@@ -4,9 +4,11 @@ import { Menu, X } from 'lucide-react';
 import Logo from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import LoginButton from '@/components/LoginButton';
+import { useSession } from '@/components/SessionProvider'; // Importiere useSession
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { session, user } = useSession(); // Nutze den useSession Hook
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -20,6 +22,29 @@ const Header = () => {
     { name: 'Empfehlungsprogramm', path: '/empfehlungsprogramm' },
     { name: 'Kontakt', path: '/kontakt' }
   ];
+
+  // Bestimme den Text und Pfad basierend auf der Benutzerrolle
+  let dashboardLink = null;
+  if (session && user) {
+    let dashboardPath = '/kundenportal'; // Standard für Kunden
+    let dashboardText = 'Kundenportal';
+
+    if (user.role === 'admin') {
+      dashboardPath = '/adminportal';
+      dashboardText = 'Adminportal';
+    } else if (user.role === 'mitarbeiter') {
+      dashboardPath = '/mitarbeiterportal';
+      dashboardText = 'Mitarbeiterportal';
+    }
+
+    dashboardLink = (
+      <Button asChild variant="outline" className="text-gray-800 border-gray-300 hover:bg-gray-100">
+        <Link to={dashboardPath}>
+          {dashboardText}
+        </Link>
+      </Button>
+    );
+  }
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -39,7 +64,8 @@ const Header = () => {
               </Link>
             ))}
             <div className="flex items-center gap-2">
-              <LoginButton />
+              {dashboardLink} {/* Rollenbasierter Link */}
+              <LoginButton /> {/* Login/Logout Button */}
               <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
                 <Link to="/kontakt">Jetzt anfragen</Link>
               </Button>
@@ -69,6 +95,21 @@ const Header = () => {
               </Link>
             ))}
             <div className="flex flex-col gap-2 mt-4 items-start">
+              {session && user && (
+                <Button asChild variant="outline" className="w-fit text-gray-800 border-gray-300 hover:bg-gray-100">
+                  <Link to={
+                    user.role === 'admin' ? '/adminportal' :
+                    user.role === 'mitarbeiter' ? '/mitarbeiterportal' :
+                    '/kundenportal'
+                  } onClick={() => setIsMenuOpen(false)}>
+                    {
+                      user.role === 'admin' ? 'Adminportal' :
+                      user.role === 'mitarbeiter' ? 'Mitarbeiterportal' :
+                      'Kundenportal'
+                    }
+                  </Link>
+                </Button>
+              )}
               <div onClick={() => setIsMenuOpen(false)}>
                 <LoginButton />
               </div>
