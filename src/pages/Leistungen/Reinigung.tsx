@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Sparkles, Home, Briefcase, Building, Car, Paintbrush, CheckCircle } from 'lucide-react';
-import { useMedia } from '@/hooks/useMedia';
+// import { useMedia } from '@/hooks/useMedia'; // Nicht mehr benötigt
 
 const Reinigung = () => {
-  const { media: heroBackground, loading: loadingHeroBackground } = useMedia({ title: 'Reinigung Hero Background' });
+  // const { media: heroBackground, loading: loadingHeroBackground } = useMedia({ title: 'Reinigung Hero Background' }); // Nicht mehr benötigt
 
   const cleaningServices = [
     {
@@ -62,7 +62,7 @@ const Reinigung = () => {
       {/* Hero Section */}
       <section 
         className="py-20 bg-gradient-to-r from-purple-700 to-indigo-900 text-white relative overflow-hidden"
-        style={{ backgroundImage: `url(${heroBackground?.url || 'https://placehold.co/1920x600/6b46c1/ffffff?text=Reinigung'})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+        // style={{ backgroundImage: `url(${heroBackground?.url || 'https://placehold.co/1920x600/6b46c1/ffffff?text=Reinigung'})`, backgroundSize: 'cover', backgroundPosition: 'center' }} // Entfernt
       >
         <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="container mx-auto px-4 relative z-10 text-center">

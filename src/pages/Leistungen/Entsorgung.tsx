@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Trash2, Sofa, Zap, Leaf, Wrench, PackageX, CheckCircle } from 'lucide-react';
-import { useMedia } from '@/hooks/useMedia';
+// import { useMedia } from '@/hooks/useMedia'; // Nicht mehr benötigt
 
 const Entsorgung = () => {
-  const { media: heroBackground, loading: loadingHeroBackground } = useMedia({ title: 'Entsorgung Hero Background' });
+  // const { media: heroBackground, loading: loadingHeroBackground } = useMedia({ title: 'Entsorgung Hero Background' }); // Nicht mehr benötigt
 
   const disposalServices = [
     {
@@ -50,7 +50,7 @@ const Entsorgung = () => {
       {/* Hero Section */}
       <section 
         className="py-20 bg-gradient-to-r from-green-700 to-green-900 text-white relative overflow-hidden"
-        style={{ backgroundImage: `url(${heroBackground?.url || 'https://placehold.co/1920x600/16a34a/ffffff?text=Entsorgung'})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+        // style={{ backgroundImage: `url(${heroBackground?.url || 'https://placehold.co/1920x600/16a34a/ffffff?text=Entsorgung'})`, backgroundSize: 'cover', backgroundPosition: 'center' }} // Entfernt
       >
         <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="container mx-auto px-4 relative z-10 text-center">
