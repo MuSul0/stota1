@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 const LoginButton = () => {
-  const { session, refreshSession } = useSession(); // refreshSession hinzugefügt
+  const { session, refreshSession } = useSession();
 
   const handleLogout = async () => {
     console.log("Attempting logout. Current session state in LoginButton:", session);
@@ -32,7 +32,6 @@ const LoginButton = () => {
         Abmelden
       </Button>
     );
-  );
   }
 
   return (
