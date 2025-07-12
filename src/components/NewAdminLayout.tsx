@@ -9,12 +9,15 @@ import { useSession } from "@/components/SessionProvider";
 
 const navItems = [
   { to: "dashboard", label: "Dashboard" },
+  { to: "analytics", label: "Analytics" },
   { to: "users", label: "Benutzer" },
   { to: "employee-registration", label: "Mitarbeiter registrieren" },
   { to: "services", label: "Services" },
   { to: "seiteninhalte", label: "Seiteninhalte" },
   { to: "invoices", label: "Rechnungen" },
   { to: "notifications", label: "Benachrichtigungen" },
+  { to: "leads", label: "Leads" },
+  { to: "referrals", label: "Empfehlungen" },
   { to: "reports", label: "Berichte" },
   { to: "settings", label: "Einstellungen" },
 ];

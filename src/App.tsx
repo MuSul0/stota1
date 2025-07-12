@@ -40,6 +40,9 @@ import Seiteninhalte from '@/pages/adminportal/seiteninhalte';
 import Notifications from '@/pages/adminportal/notifications';
 import Reports from '@/pages/adminportal/reports';
 import EmployeeRegistration from '@/pages/adminportal/employee-registration';
+import AdminAnalytics from '@/pages/adminportal/analytics';
+import AdminReferrals from '@/pages/adminportal/referrals';
+import AdminLeads from '@/pages/adminportal/leads';
 
 // Neue Leistungs-Unterseiten
 import Transporte from '@/pages/Leistungen/Transporte';
@@ -95,6 +98,7 @@ function App() {
               <Route path="/adminportal" element={<NewAdminLayout />}>
                 <Route index element={<AdminDashboard />} />
                 <Route path="dashboard" element={<AdminDashboard />} />
+                <Route path="analytics" element={<AdminAnalytics />} />
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="employee-registration" element={<EmployeeRegistration />} />
                 <Route path="invoices" element={<AdminInvoices />} />
@@ -102,6 +106,8 @@ function App() {
                 <Route path="services" element={<AdminServices />} />
                 <Route path="seiteninhalte" element={<Seiteninhalte />} />
                 <Route path="notifications" element={<Notifications />} />
+                <Route path="leads" element={<AdminLeads />} />
+                <Route path="referrals" element={<AdminReferrals />} />
                 <Route path="reports" element={<Reports />} />
               </Route>
 
