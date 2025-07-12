@@ -47,7 +47,6 @@ const Login = () => {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
       // Die Weiterleitung wird jetzt zentral vom SessionProvider gehandhabt
-      toast.success('Anmeldung erfolgreich! Sie werden weitergeleitet...');
     } catch (error: any) {
       toast.error('Anmeldung fehlgeschlagen: ' + error.message);
     } finally {
