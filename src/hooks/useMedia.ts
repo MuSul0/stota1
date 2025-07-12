@@ -1,80 +1,63 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
 
-export interface MediaItem {
+interface MediaItem {
   id: string;
-  type: string;
-  url: string;
   title: string;
+  url: string;
+  type: string;
   created_at: string;
 }
 
-interface UseMediaOptions {
-  title?: string; // Fetch a specific media item by title
-  type?: string;  // Filter by type (e.g., 'image', 'video')
+interface UseMediaProps {
+  title?: string;
+  type?: string;
+  id?: string;
 }
 
-export function useMedia(options: UseMediaOptions = {}) {
-  const [mediaData, setMediaData] = useState<MediaItem[] | null>(null);
+export const useMedia = (props?: UseMediaProps) => {
+  const [media, setMedia] = useState<MediaItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const queryKey = useMemo(() => JSON.stringify(options), [options]);
-
   useEffect(() => {
-    const fetchMediaItems = async () => {
+    const fetchMedia = async () => {
       setLoading(true);
       setError(null);
       try {
         let query = supabase.from('media').select('*');
 
-        if (options.title) {
-          query = query.eq('title', options.title);
-        }
-        if (options.type) {
-          query = query.eq('type', options.type);
-        }
-
-        const { data, error: fetchError } = await query;
-
-        if (fetchError) {
-          throw fetchError;
+        if (props?.id) {
+          query = query.eq('id', props.id);
+        } else if (props?.title) {
+          query = query.eq('title', props.title);
+        } else if (props?.type) {
+          query = query.eq('type', props.type);
         }
 
-        setMediaData(data as MediaItem[]);
+        const { data, error } = await query.single();
+
+        if (error) {
+          if (error.code === 'PGRST116' && (props?.title || props?.id)) { // No rows found for single()
+            setMedia(null);
+            setError(`Keine Medien gefunden für ${props.title || props.id}`);
+          } else {
+            throw error;
+          }
+        } else {
+          setMedia(data as MediaItem);
+        }
       } catch (err: any) {
-        console.error('Error fetching media:', err.message);
-        setError(err.message);
-        toast.error('Fehler beim Laden der Medien: ' + err.message);
+        console.error("Fehler beim Laden der Medien:", err);
+        setError(err.message || 'Ein unbekannter Fehler ist aufgetreten.');
+        setMedia(null); // Ensure media is null on error
       } finally {
         setLoading(false);
       }
     };
 
-    fetchMediaItems();
+    fetchMedia();
+  }, [props?.title, props?.type, props?.id]);
 
-    // Setup real-time subscription for relevant changes
-    const channel = supabase
-      .channel(`public:media:${queryKey}`) // Unique channel name based on query
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'media' }, (payload) => {
-        // Re-fetch data on any change to the media table
-        fetchMediaItems();
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [queryKey]); // Re-run effect if options change
-
-  // Return single item if title was requested, otherwise array
-  const resultMedia = useMemo(() => {
-    if (options.title) {
-      return mediaData?.[0] || null; // Return the first item if title was specified
-    }
-    return mediaData; // Return array otherwise
-  }, [mediaData, options.title]);
-
-  return { media: resultMedia, loading, error };
-}
+  return { media, loading, error };
+};
