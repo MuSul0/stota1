@@ -13,8 +13,8 @@ import { toast } from 'sonner';
 
 export default function AdminSettings() {
   const [settings, setSettings] = useState({
-    companyName: 'Nikolai Transport',
-    contactEmail: 'info@nikolai-transport.de',
+    companyName: 'Stota Transport',
+    contactEmail: 'kontakt@info-stota.de',
     phoneNumber: '+49 123 456 789',
     address: 'Musterstraße 123, 12345 Musterstadt',
     maintenanceMode: false,
@@ -309,12 +309,6 @@ export default function AdminSettings() {
                           <SelectItem value="video">Video</SelectItem>
                         </SelectContent>
                       </Select>
-                      
-                      <Input
-                        placeholder="Titel"
-                        value={newMedia.title}
-                        onChange={(e) => setNewMedia(prev => ({ ...prev, title: e.target.value }))}
-                      />
                       
                       <Input
                         type="file"

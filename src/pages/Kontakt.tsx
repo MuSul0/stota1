@@ -270,7 +270,7 @@ const Kontakt = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">E-Mail</h3>
-                      <p className="text-gray-700">info@stotta-transport.de</p>
+                      <p className="text-gray-700">kontakt@info-stota.de</p>
                       <p className="text-sm text-gray-500">Antwort innerhalb von 24h</p>
                     </div>
                   </div>

@@ -68,13 +68,13 @@ const Datenschutz = () => {
                 <h3 className="font-semibold">Hinweis zur verantwortlichen Stelle</h3>
                 <p>Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:</p>
                 <div className="bg-gray-50 p-4 rounded">
-                  <p>Stotta Transport<br />
-                  Stotta Müller<br />
+                  <p>Stota Transport<br />
+                  Stota Müller<br />
                   Schalker Str. 143<br />
                   45881 Gelsenkirchen</p>
                   <p className="mt-2">
                   Telefon: +49 123 456 789<br />
-                  E-Mail: info@stotta-transport.de</p>
+                  E-Mail: kontakt@info-stota.de</p>
                 </div>
               </CardContent>
             </Card>
@@ -168,7 +168,7 @@ const Datenschutz = () => {
                 Bei Fragen zum Datenschutz können Sie sich jederzeit an uns wenden:
               </p>
               <p className="mt-2">
-                <strong>E-Mail:</strong> datenschutz@stotta-transport.de<br />
+                <strong>E-Mail:</strong> datenschutz@info-stota.de<br />
                 <strong>Telefon:</strong> +49 123 456 789
               </p>
             </div>

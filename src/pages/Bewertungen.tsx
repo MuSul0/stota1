@@ -15,7 +15,7 @@ const Bewertungen = () => {
       location: 'München',
       service: 'Haushaltsreinigung',
       rating: 5,
-      text: 'Stotta und sein Team sind einfach fantastisch! Seit 2 Jahren reinigen sie wöchentlich unsere Wohnung und wir sind jedes Mal begeistert. Zuverlässig, gründlich und sehr freundlich. Kann ich nur weiterempfehlen!',
+      text: 'Stota und sein Team sind einfach fantastisch! Seit 2 Jahren reinigen sie wöchentlich unsere Wohnung und wir sind jedes Mal begeistert. Zuverlässig, gründlich und sehr freundlich. Kann ich nur weiterempfehlen!',
       initials: 'MS',
       date: 'vor 1 Woche'
     },
@@ -24,7 +24,7 @@ const Bewertungen = () => {
       location: 'Augsburg',
       service: 'Umzugshilfe',
       rating: 5,
-      text: 'Unser Umzug war dank Stotta Transport stressfrei und perfekt organisiert. Das Team war pünktlich, professionell und sehr vorsichtig mit unseren Möbeln. Sogar die Möbelmontage wurde perfekt erledigt. Top Service!',
+      text: 'Unser Umzug war dank Stota Transport stressfrei und perfekt organisiert. Das Team war pünktlich, professionell und sehr vorsichtig mit unseren Möbeln. Sogar die Möbelmontage wurde perfekt erledigt. Top Service!',
       initials: 'TW',
       date: 'vor 2 Wochen'
     },
@@ -33,7 +33,7 @@ const Bewertungen = () => {
       location: 'München',
       service: 'Praxisreinigung',
       rating: 5,
-      text: 'Als Zahnärztin sind Sauberkeit und Hygiene für mich essentiell. Stotta Transport reinigt unsere Praxis seit über einem Jahr und erfüllt alle Hygienestandards perfekt. Sehr zuverlässig und diskret.',
+      text: 'Als Zahnärztin sind Sauberkeit und Hygiene für mich essentiell. Stota Transport reinigt unsere Praxis seit über einem Jahr und erfüllt alle Hygienestandards perfekt. Sehr zuverlässig und diskret.',
       initials: 'AM',
       date: 'vor 3 Wochen'
     },
@@ -42,7 +42,7 @@ const Bewertungen = () => {
       location: 'Nürnberg',
       service: 'Transport',
       rating: 5,
-      text: 'Musste kurzfristig ein Klavier transportieren lassen. Stotta hat das super schnell und professionell organisiert. Das Klavier kam ohne einen Kratzer an. Faire Preise und excellenter Service!',
+      text: 'Musste kurzfristig ein Klavier transportieren lassen. Stota hat das super schnell und professionell organisiert. Das Klavier kam ohne einen Kratzer an. Faire Preise und excellenter Service!',
       initials: 'SR',
       date: 'vor 1 Monat'
     },
@@ -60,7 +60,7 @@ const Bewertungen = () => {
       location: 'Ingolstadt',
       service: 'Büroreinigung',
       rating: 5,
-      text: 'Unser Büro wird seit 6 Monaten von Stotta Transport gereinigt. Immer pünktlich, immer gründlich. Die Mitarbeiter sind sehr freundlich und arbeiten auch außerhalb der Geschäftszeiten. Sehr empfehlenswert!',
+      text: 'Unser Büro wird seit 6 Monaten von Stota Transport gereinigt. Immer pünktlich, immer gründlich. Die Mitarbeiter sind sehr freundlich und arbeiten auch außerhalb der Geschäftszeiten. Sehr empfehlenswert!',
       initials: 'MK',
       date: 'vor 6 Wochen'
     }
@@ -253,7 +253,7 @@ const Bewertungen = () => {
                   </div>
                   <p className="text-sm text-gray-500">4.9/5 Sterne (89 Bewertungen)</p>
                   <Button variant="outline" className="mt-4 text-blue-600 border-blue-600 hover:bg-blue-50" asChild>
-                    <a href="https://www.google.com/search?q=Stotta+Transport+reviews" target="_blank" rel="noopener noreferrer">
+                    <a href="https://www.google.com/search?q=Stota+Transport+reviews" target="_blank" rel="noopener noreferrer">
                       Jetzt bewerten
                     </a>
                   </Button>
@@ -281,7 +281,7 @@ const Bewertungen = () => {
                   </div>
                   <p className="text-sm text-gray-500">4.8/5 Sterne (23 Bewertungen)</p>
                   <Button variant="outline" className="mt-4 text-green-600 border-green-600 hover:bg-green-50" asChild>
-                    <a href="https://www.trustpilot.com/review/stotta-transport.de" target="_blank" rel="noopener noreferrer">
+                    <a href="https://www.trustpilot.com/review/stota-transport.de" target="_blank" rel="noopener noreferrer">
                       Jetzt bewerten
                     </a>
                   </Button>
@@ -309,7 +309,7 @@ const Bewertungen = () => {
                   </div>
                   <p className="text-sm text-gray-500">5.0/5 Sterne (15 Bewertungen)</p>
                   <Button variant="outline" className="mt-4 text-yellow-600 border-yellow-600 hover:bg-yellow-50" asChild>
-                    <a href="https://www.facebook.com/stottatransport" target="_blank" rel="noopener noreferrer">
+                    <a href="https://www.facebook.com/stotatransport" target="_blank" rel="noopener noreferrer">
                       Jetzt bewerten
                     </a>
                   </Button>

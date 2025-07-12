@@ -18,8 +18,8 @@ const Impressum = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <h3 className="font-semibold mb-2">Stotta Transport</h3>
-                  <p>Inhaber: Stotta Müller</p>
+                  <h3 className="font-semibold mb-2">Stota Transport</h3>
+                  <p>Inhaber: Stota Müller</p>
                   <p>Schalker Str. 143</p>
                   <p>45881 Gelsenkirchen</p>
                   <p>Deutschland</p>
@@ -33,8 +33,8 @@ const Impressum = () => {
               </CardHeader>
               <CardContent className="space-y-2">
                 <p><strong>Telefon:</strong> +49 123 456 789</p>
-                <p><strong>E-Mail:</strong> info@stotta-transport.de</p>
-                <p><strong>Website:</strong> www.stotta-transport.de</p>
+                <p><strong>E-Mail:</strong> kontakt@info-stota.de</p>
+                <p><strong>Website:</strong> www.stota-transport.de</p>
               </CardContent>
             </Card>
 
@@ -141,7 +141,7 @@ const Impressum = () => {
                 <p>
                   Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch 
                   gestattet. Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden 
-                  die Urheberrechte Dritter beachtet. Insbesondere werden Inhalte Dritter als solche 
+                  die Urheberrechte Dritter als solche 
                   gekennzeichnet.
                 </p>
               </CardContent>

@@ -46,7 +46,7 @@ serve(async (req) => {
       try {
         // E-Mail mit Resend senden
         const { data, error: resendError } = await resend.emails.send({
-          from: 'Benachrichtigung <noreply@stota.de>', // WICHTIG: Sie müssen die Domain 'stota.de' bei Resend verifizieren!
+          from: 'Benachrichtigung <noreply@info-stota.de>', // WICHTIG: Sie müssen die Domain 'info-stota.de' bei Resend verifizieren!
           to: emailEntry.to_email,
           subject: emailEntry.subject,
           text: emailEntry.text,

@@ -12,7 +12,7 @@ const Empfehlungsprogramm = () => {
     {
       icon: UserPlus,
       title: '1. Empfehlen Sie uns weiter',
-      description: 'Erzählen Sie Freunden, Familie oder Geschäftspartnern von Stotta Transport und unseren erstklassigen Dienstleistungen.'
+      description: 'Erzählen Sie Freunden, Familie oder Geschäftspartnern von Stota Transport und unseren erstklassigen Dienstleistungen.'
     },
     {
       icon: CheckCircle,
@@ -35,7 +35,7 @@ const Empfehlungsprogramm = () => {
     {
       icon: Users,
       title: 'Für Ihre Freunde: Startvorteil',
-      description: 'Ihre Freunde profitieren von einem exklusiven Rabatt auf ihren ersten Service bei Stotta Transport.'
+      description: 'Ihre Freunde profitieren von einem exklusiven Rabatt auf ihren ersten Service bei Stota Transport.'
     },
     {
       icon: MessageSquare,
@@ -77,7 +77,7 @@ const Empfehlungsprogramm = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
             >
-              Teilen Sie Ihre positiven Erfahrungen mit Stotta Transport und profitieren Sie gemeinsam mit Ihren Freunden!
+              Teilen Sie Ihre positiven Erfahrungen mit Stota Transport und profitieren Sie gemeinsam mit Ihren Freunden!
             </motion.p>
           </div>
         </div>

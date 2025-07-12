@@ -17,7 +17,7 @@ const Logo = () => {
           className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-blue-500 group-hover:from-purple-800 group-hover:to-blue-600 transition-colors"
           whileHover={{ scale: 1.05 }}
         >
-          Stotta
+          Stota
         </motion.h1>
         <motion.p 
           className="text-xs font-semibold text-gray-500 group-hover:text-gray-700 transition-colors"

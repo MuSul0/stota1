@@ -18,14 +18,14 @@ serve(async (req) => {
     let text = ''
 
     if (role === 'kunde') {
-      subject = 'Willkommen als Kunde bei Stotta Transport'
-      text = `Sehr geehrter Kunde,\n\nherzlich willkommen bei Stotta Transport!\n\nIhr Konto wurde erfolgreich erstellt.\n\nMit freundlichen Grüßen\nIhr Stotta Transport Team`
+      subject = 'Willkommen als Kunde bei Stota Transport'
+      text = `Sehr geehrter Kunde,\n\nherzlich willkommen bei Stota Transport!\n\nIhr Konto wurde erfolgreich erstellt.\n\nMit freundlichen Grüßen\nIhr Stota Transport Team`
     } else if (role === 'mitarbeiter') {
-      subject = 'Willkommen als Mitarbeiter bei Stotta Transport'
-      text = `Hallo Kollege,\n\nherzlich willkommen im Team von Stotta Transport!\n\nIhr Mitarbeiterkonto wurde erfolgreich erstellt.\n\nMit freundlichen Grüßen\nIhre Geschäftsleitung`
+      subject = 'Willkommen als Mitarbeiter bei Stota Transport'
+      text = `Hallo Kollege,\n\nherzlich willkommen im Team von Stota Transport!\n\nIhr Mitarbeiterkonto wurde erfolgreich erstellt.\n\nMit freundlichen Grüßen\nIhre Geschäftsleitung`
     } else if (role === 'admin') {
-      subject = 'Willkommen als Administrator bei Stotta Transport'
-      text = `Sehr geehrte/r Administrator/in,\n\nherzlich willkommen im Admin-Bereich von Stotta Transport!\n\nIhr Administratorkonto wurde erfolgreich erstellt.\n\nMit freundlichen Grüßen\nDas Systemteam`
+      subject = 'Willkommen als Administrator bei Stota Transport'
+      text = `Sehr geehrte/r Administrator/in,\n\nherzlich willkommen im Admin-Bereich von Stota Transport!\n\nIhr Administratorkonto wurde erfolgreich erstellt.\n\nMit freundlichen Grüßen\nDas Systemteam`
     }
 
     const supabase = createClient(

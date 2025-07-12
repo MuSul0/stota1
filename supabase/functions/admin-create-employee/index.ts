@@ -54,8 +54,8 @@ serve(async (req) => {
     }
 
     // 4. Benutzerdefinierte Willkommens-E-Mail in die Warteschlange stellen
-    const welcomeSubject = 'Willkommen als Mitarbeiter bei Stotta Transport';
-    const welcomeText = `Hallo ${firstName},\n\nherzlich willkommen im Team von Stotta Transport!\n\nIhr Mitarbeiterkonto wurde erfolgreich erstellt. Sie können sich nach Bestätigung Ihrer E-Mail-Adresse anmelden.\n\nMit freundlichen Grüßen\nIhre Geschäftsleitung`;
+    const welcomeSubject = 'Willkommen als Mitarbeiter bei Stota Transport';
+    const welcomeText = `Hallo ${firstName},\n\nherzlich willkommen im Team von Stota Transport!\n\nIhr Mitarbeiterkonto wurde erfolgreich erstellt. Sie können sich nach Bestätigung Ihrer E-Mail-Adresse anmelden.\n\nMit freundlichen Grüßen\nIhre Geschäftsleitung`;
 
     const { error: emailError } = await supabaseAdmin
       .from('email_queue')

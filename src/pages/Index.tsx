@@ -110,7 +110,7 @@ const Index = () => {
       name: 'Maria Schneider',
       location: 'München',
       rating: 5,
-      text: 'Stotta Transport hat unseren Umzug perfekt organisiert. Alles verlief reibungslos und die Mitarbeiter waren äußerst professionell.',
+      text: 'Stota Transport hat unseren Umzug perfekt organisiert. Alles verlief reibungslos und die Mitarbeiter waren äußerst professionell.',
       initials: 'MS'
     },
     {
@@ -231,7 +231,7 @@ const Index = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              Ihre Vorteile bei Stotta Transport
+              Ihre Vorteile bei Stota Transport
             </motion.h2>
             <motion.p 
               className="text-lg text-gray-600 max-w-3xl mx-auto"
@@ -400,11 +400,11 @@ const Index = () => {
               >
                 <img 
                   src={aboutUsImage?.url || "https://placehold.co/600x400/dbeafe/2563eb?text=Über+Uns"}
-                  alt="Stotta Müller vor seinem ersten Transporter im Jahr 2014"
+                  alt="Stota Müller vor seinem ersten Transporter im Jahr 2014"
                   className="w-full h-96 object-cover rounded-3xl"
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 rounded-b-3xl">
-                  <p className="text-white font-medium">Stotta Müller, 2014</p>
+                  <p className="text-white font-medium">Stota Müller, 2014</p>
                   <p className="text-white/80 text-sm">Der Anfang einer Erfolgsgeschichte</p>
                 </div>
               </motion.div>
