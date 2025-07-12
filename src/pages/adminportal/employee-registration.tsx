@@ -84,13 +84,24 @@ export default function EmployeeRegistration() {
     setLoading(true);
 
     try {
-      const { error } = await supabase.functions.invoke("admin-create-employee", {
+      const { data, error } = await supabase.functions.invoke("admin-create-employee", {
         body: { email, password, firstName, lastName },
       });
 
-      if (error) throw error;
+      if (error) {
+        // Versucht, eine spezifischere Fehlermeldung aus der Antwort der Funktion zu extrahieren
+        const functionError = (error as any).context?.error;
+        if (typeof functionError === 'string') {
+          throw new Error(functionError);
+        }
+        throw error;
+      }
 
-      toast.success("Mitarbeiter erfolgreich registriert");
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      toast.success("Mitarbeiter erfolgreich registriert und Willkommens-E-Mail versandt.");
       setEmail("");
       setPassword("");
       setFirstName("");

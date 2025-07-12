@@ -12,31 +12,68 @@ serve(async (req) => {
   }
 
   try {
+    // 1. Request-Body validieren und Supabase Admin-Client initialisieren
     const { email, password, firstName, lastName } = await req.json();
-    const supabase = createClient(
+    if (!email || !password || !firstName || !lastName) {
+      return new Response(JSON.stringify({ error: "Alle Felder sind erforderlich." }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Admin-Check
-    const { data: { user } } = await supabase.auth.getUser(req.headers.get('Authorization')?.replace('Bearer ', ''));
-    if (!user) throw new Error("User not found");
-    const { data: profile, error: profileError } = await supabase.from('profiles').select('role').eq('id', user.id).single();
-    if (profileError || profile?.role !== 'admin') {
-      return new Response(JSON.stringify({ error: "Permission denied" }), { status: 403, headers: corsHeaders });
+    // 2. Anfragenden Benutzer authentifizieren und auf Admin-Rolle prüfen
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "Autorisierung fehlt." }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: userError } = await supabaseAdmin.auth.getUser(token);
+
+    if (userError || !user) {
+      return new Response(JSON.stringify({ error: "Authentifizierung fehlgeschlagen: " + (userError?.message || 'Benutzer nicht gefunden') }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const { data, error } = await supabase.auth.admin.createUser({
+    const { data: profile, error: profileError } = await supabaseAdmin.from('profiles').select('role').eq('id', user.id).single();
+
+    if (profileError || profile?.role !== 'admin') {
+      return new Response(JSON.stringify({ error: "Zugriff verweigert. Admin-Rolle erforderlich." }), { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    // 3. Neuen Mitarbeiter-Benutzer erstellen
+    const { data: newUserData, error: createUserError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
       user_metadata: { role: "mitarbeiter", first_name: firstName, last_name: lastName },
       email_confirm: true,
     });
 
-    if (error) throw error;
+    if (createUserError) {
+      return new Response(JSON.stringify({ error: "Benutzer konnte nicht erstellt werden: " + createUserError.message }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
 
-    return new Response(JSON.stringify({ success: true, user: data.user }), { status: 200, headers: corsHeaders });
+    // 4. Benutzerdefinierte Willkommens-E-Mail in die Warteschlange stellen
+    const welcomeSubject = 'Willkommen als Mitarbeiter bei Stotta Transport';
+    const welcomeText = `Hallo ${firstName},\n\nherzlich willkommen im Team von Stotta Transport!\n\nIhr Mitarbeiterkonto wurde erfolgreich erstellt. Sie können sich nach Bestätigung Ihrer E-Mail-Adresse anmelden.\n\nMit freundlichen Grüßen\nIhre Geschäftsleitung`;
+
+    const { error: emailError } = await supabaseAdmin
+      .from('email_queue')
+      .insert([{
+        to_email: email,
+        subject: welcomeSubject,
+        text: welcomeText,
+        status: 'pending'
+      }]);
+
+    if (emailError) {
+      console.error('Fehler beim Einreihen der Willkommens-E-Mail:', emailError.message);
+    }
+
+    // 5. Erfolgsantwort zurückgeben
+    return new Response(JSON.stringify({ success: true, user: newUserData.user }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  
   } catch (error) {
-    return new Response(JSON.stringify({ error: (error as Error).message }), { status: 500, headers: corsHeaders });
+    return new Response(JSON.stringify({ error: (error as Error).message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });
