@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { motion } from 'framer-motion';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface Auftrag {
   id: string;
@@ -77,6 +78,20 @@ export default function Auftraege() {
     subscriptionRef.current = channel;
   };
 
+  const handleStatusChange = async (auftragId: string, newStatus: string) => {
+    const { error } = await supabase
+      .from('tasks')
+      .update({ status: newStatus })
+      .eq('id', auftragId);
+
+    if (error) {
+      toast.error('Fehler beim Aktualisieren des Status.');
+      console.error(error);
+    } else {
+      toast.success('Status erfolgreich aktualisiert.');
+    }
+  };
+
   if (loading || loadingData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -123,17 +138,19 @@ export default function Auftraege() {
                       <TableCell>{auftrag.title}</TableCell>
                       <TableCell className="max-w-lg truncate">{auftrag.description}</TableCell>
                       <TableCell>
-                        <span
-                          className={`px-2 py-1 rounded-full text-sm font-semibold ${
-                            auftrag.status === 'abgeschlossen'
-                              ? 'bg-green-100 text-green-800'
-                              : auftrag.status === 'in_bearbeitung'
-                              ? 'bg-yellow-100 text-yellow-800'
-                              : 'bg-gray-100 text-gray-800'
-                          }`}
+                        <Select
+                          value={auftrag.status}
+                          onValueChange={(newStatus) => handleStatusChange(auftrag.id, newStatus)}
                         >
-                          {auftrag.status.replace('_', ' ')}
-                        </span>
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Status ändern" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="offen">Offen</SelectItem>
+                            <SelectItem value="in_bearbeitung">In Bearbeitung</SelectItem>
+                            <SelectItem value="abgeschlossen">Abgeschlossen</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </TableCell>
                       <TableCell>{new Date(auftrag.created_at).toLocaleDateString()}</TableCell>
                     </TableRow>

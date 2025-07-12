@@ -9,6 +9,8 @@ import { toast } from 'sonner';
 import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { motion } from 'framer-motion';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Trash2 } from 'lucide-react';
 
 interface WorkTime {
   id: string;
@@ -106,6 +108,16 @@ export default function Arbeitszeiten() {
     }
   };
 
+  const handleDeleteWorkTime = async (workTimeId: string) => {
+    const { error } = await supabase.from('work_times').delete().eq('id', workTimeId);
+    if (error) {
+        toast.error('Fehler beim Löschen der Arbeitszeit.');
+        console.error(error);
+    } else {
+        toast.success('Arbeitszeit erfolgreich gelöscht.');
+    }
+  };
+
   if (loading || loadingData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -115,7 +127,6 @@ export default function Arbeitszeiten() {
   }
 
   if (!session || user?.role !== 'mitarbeiter') {
-    // Während Navigation läuft, nichts rendern
     return null;
   }
 
@@ -186,6 +197,7 @@ export default function Arbeitszeiten() {
                     <TableHead>Endzeit</TableHead>
                     <TableHead>Dauer</TableHead>
                     <TableHead>Erfasst am</TableHead>
+                    <TableHead className="text-right">Aktion</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -199,6 +211,29 @@ export default function Arbeitszeiten() {
                         <TableCell>{end ? end.toLocaleString() : '-'}</TableCell>
                         <TableCell>{duration}</TableCell>
                         <TableCell>{new Date(wt.created_at).toLocaleString()}</TableCell>
+                        <TableCell className="text-right">
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <Trash2 className="h-4 w-4 text-red-500" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Sind Sie sicher?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Diese Aktion kann nicht rückgängig gemacht werden. Dadurch wird der Arbeitszeiteintrag dauerhaft gelöscht.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleDeleteWorkTime(wt.id)}>
+                                  Löschen
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </TableCell>
                       </TableRow>
                     );
                   })}

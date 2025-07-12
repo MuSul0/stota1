@@ -26,8 +26,8 @@ import KundenNachrichten from '@/pages/kundenportal/nachrichten';
 import KundenEinstellungen from '@/pages/kundenportal/einstellungen';
 import KundenSupport from '@/pages/kundenportal/support';
 import Mitarbeiterportal from '@/pages/mitarbeiterportal/index'; // Korrekter Import
-import Arbeitszeiten from '@/pages/mitarbeiterportal/arbeitszeiten';
-import Auftraege from '@/pages/mitarbeiterportal/auftraege';
+import MitarbeiterArbeitszeiten from '@/pages/mitarbeiterportal/arbeitszeiten';
+import MitarbeiterAuftraege from '@/pages/mitarbeiterportal/auftraege';
 import Fahrzeuge from '@/pages/mitarbeiterportal/fahrzeuge';
 import Team from '@/pages/mitarbeiterportal/team';
 import NewAdminLayout from '@/components/NewAdminLayout';
@@ -43,6 +43,8 @@ import EmployeeRegistration from '@/pages/adminportal/employee-registration';
 import AdminAnalytics from '@/pages/adminportal/analytics';
 import AdminReferrals from '@/pages/adminportal/referrals';
 import AdminLeads from '@/pages/adminportal/leads';
+import AdminAuftragsverwaltung from '@/pages/adminportal/auftragsverwaltung';
+import AdminArbeitszeiten from '@/pages/adminportal/arbeitszeiten';
 
 // Neue Leistungs-Unterseiten
 import Transporte from '@/pages/Leistungen/Transporte';
@@ -89,8 +91,8 @@ function App() {
 
               {/* Mitarbeiterportal */}
               <Route path="/mitarbeiterportal" element={<Mitarbeiterportal />} />
-              <Route path="/mitarbeiterportal/arbeitszeiten" element={<Arbeitszeiten />} />
-              <Route path="/mitarbeiterportal/auftraege" element={<Auftraege />} />
+              <Route path="/mitarbeiterportal/arbeitszeiten" element={<MitarbeiterArbeitszeiten />} />
+              <Route path="/mitarbeiterportal/auftraege" element={<MitarbeiterAuftraege />} />
               <Route path="/mitarbeiterportal/fahrzeuge" element={<Fahrzeuge />} />
               <Route path="/mitarbeiterportal/team" element={<Team />} />
 
@@ -101,6 +103,8 @@ function App() {
                 <Route path="analytics" element={<AdminAnalytics />} />
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="employee-registration" element={<EmployeeRegistration />} />
+                <Route path="auftragsverwaltung" element={<AdminAuftragsverwaltung />} />
+                <Route path="arbeitszeiten" element={<AdminArbeitszeiten />} />
                 <Route path="invoices" element={<AdminInvoices />} />
                 <Route path="settings" element={<AdminSettings />} />
                 <Route path="services" element={<AdminServices />} />

@@ -12,6 +12,8 @@ const navItems = [
   { to: "analytics", label: "Analytics" },
   { to: "users", label: "Benutzer" },
   { to: "employee-registration", label: "Mitarbeiter registrieren" },
+  { to: "auftragsverwaltung", label: "Aufträge" },
+  { to: "arbeitszeiten", label: "Arbeitszeiten" },
   { to: "services", label: "Services" },
   { to: "seiteninhalte", label: "Seiteninhalte" },
   { to: "invoices", label: "Rechnungen" },
