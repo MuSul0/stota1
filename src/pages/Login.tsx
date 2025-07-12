@@ -72,13 +72,13 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-tr from-blue-600 to-purple-700 px-4">
-      <Card className="max-w-md w-full p-8 rounded-2xl shadow-2xl bg-white/90 backdrop-blur-md border border-white/30">
+    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-slate-50 to-gray-200 dark:from-slate-900 dark:to-slate-800 px-4">
+      <Card className="max-w-md w-full p-8 rounded-2xl shadow-2xl bg-white/90 dark:bg-slate-950/90 backdrop-blur-md border border-white/30 dark:border-slate-800">
         <CardHeader className="flex flex-col items-center space-y-6">
           <Logo />
           <div className="text-center">
-            <CardTitle className="text-3xl font-extrabold text-gray-900">Willkommen zurück</CardTitle>
-            <CardDescription className="text-gray-600">
+            <CardTitle className="text-3xl font-extrabold text-gray-900 dark:text-gray-50">Willkommen zurück</CardTitle>
+            <CardDescription className="text-gray-600 dark:text-gray-400">
               Melden Sie sich mit Ihrer E-Mail und Ihrem Passwort an, um fortzufahren.
             </CardDescription>
           </div>
@@ -114,7 +114,7 @@ const Login = () => {
             <div className="flex justify-between items-center">
               <Dialog open={isResetOpen} onOpenChange={setIsResetOpen}>
                 <DialogTrigger asChild>
-                  <Button variant="link" size="sm" className="p-0 text-blue-600 hover:underline">
+                  <Button variant="link" size="sm" className="p-0 text-primary hover:underline">
                     Passwort vergessen?
                   </Button>
                 </DialogTrigger>
@@ -128,17 +128,17 @@ const Login = () => {
                   <PasswordReset onClose={() => setIsResetOpen(false)} />
                 </DialogContent>
               </Dialog>
-              <Link to="/register" className="text-sm text-blue-600 hover:underline font-medium">
+              <Link to="/register" className="text-sm text-primary hover:underline font-medium">
                 Neu hier? Registrieren
               </Link>
             </div>
-            <Button type="submit" className="w-full py-3 text-lg font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg shadow-lg transition-all duration-300" disabled={loading}>
+            <Button type="submit" className="w-full py-3 text-lg font-semibold bg-gradient-to-r from-blue-600 to-accent hover:from-blue-700 hover:to-purple-700 text-white rounded-lg shadow-lg transition-all duration-300" disabled={loading}>
               {loading ? <Loader2 className="animate-spin mx-auto" /> : 'Anmelden'}
             </Button>
           </form>
         </CardContent>
       </Card>
-      <p className="mt-6 text-center text-gray-200 select-none text-sm">
+      <p className="mt-6 text-center text-gray-500 dark:text-gray-400 select-none text-sm">
         © 2024 Stotta Transport. Alle Rechte vorbehalten.
       </p>
     </div>

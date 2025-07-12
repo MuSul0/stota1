@@ -71,7 +71,7 @@ const Kontakt = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-accent text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('')] bg-cover bg-center opacity-20"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
@@ -192,7 +192,7 @@ const Kontakt = () => {
                       />
                     </div>
 
-                    <Button type="submit" size="lg" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white" disabled={loading}>
+                    <Button type="submit" size="lg" className="w-full bg-gradient-to-r from-blue-600 to-accent hover:from-blue-700 hover:to-purple-700 text-white font-semibold" disabled={loading}>
                       <Send className="mr-2 h-4 w-4" />
                       {loading ? 'Senden...' : 'Nachricht senden'}
                     </Button>
@@ -223,7 +223,7 @@ const Kontakt = () => {
                 <CardContent className="space-y-6">
                   <div className="flex items-start space-x-4">
                     <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Phone className="h-5 w-5 text-blue-600" />
+                      <Phone className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Telefon</h3>
@@ -234,7 +234,7 @@ const Kontakt = () => {
 
                   <div className="flex items-start space-x-4">
                     <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Mail className="h-5 w-5 text-blue-600" />
+                      <Mail className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">E-Mail</h3>
@@ -245,7 +245,7 @@ const Kontakt = () => {
 
                   <div className="flex items-start space-x-4">
                     <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <MapPin className="h-5 w-5 text-blue-600" />
+                      <MapPin className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Adresse</h3>
@@ -259,7 +259,7 @@ const Kontakt = () => {
 
                   <div className="flex items-start space-x-4">
                     <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Clock className="h-5 w-5 text-blue-600" />
+                      <Clock className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Öffnungszeiten</h3>

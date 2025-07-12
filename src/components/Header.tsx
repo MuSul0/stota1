@@ -33,14 +33,14 @@ const Header = () => {
               <Link 
                 key={link.path} 
                 to={link.path}
-                className="text-gray-800 hover:text-blue-600 transition-colors font-medium"
+                className="text-gray-800 hover:text-primary transition-colors font-medium"
               >
                 {link.name}
               </Link>
             ))}
             <div className="flex items-center gap-2">
               <LoginButton />
-              <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+              <Button asChild className="bg-gradient-to-r from-blue-600 to-accent hover:from-blue-700 hover:to-purple-700 text-white font-semibold">
                 <Link to="/kontakt">Jetzt anfragen</Link>
               </Button>
             </div>
@@ -62,7 +62,7 @@ const Header = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className="block py-2 text-gray-800 hover:text-blue-600 transition-colors font-medium"
+                className="block py-2 text-gray-800 hover:text-primary transition-colors font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {link.name}
@@ -70,7 +70,7 @@ const Header = () => {
             ))}
             <div className="flex flex-col gap-2 mt-4">
               <LoginButton onClick={() => setIsMenuOpen(false)} />
-              <Button asChild className="w-fit bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+              <Button asChild className="w-fit bg-gradient-to-r from-blue-600 to-accent hover:from-blue-700 hover:to-purple-700 text-white font-semibold">
                 <Link to="/kontakt" onClick={() => setIsMenuOpen(false)}>
                   Jetzt anfragen
                 </Link>

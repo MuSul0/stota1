@@ -169,7 +169,7 @@ const Index = () => {
                       </div>
                       <h3 className="text-2xl font-bold mb-3 text-gray-900">{category.title}</h3>
                       <p className="text-gray-700 flex-grow mb-6">{category.description}</p>
-                      <Button asChild variant="link" className="p-0 text-blue-600 font-semibold hover:text-blue-800 self-start">
+                      <Button asChild variant="link" className="p-0 text-primary font-semibold hover:text-blue-800 self-start">
                         <Link to={category.link}>Mehr erfahren &rarr;</Link>
                       </Button>
                     </CardContent>
@@ -194,7 +194,7 @@ const Index = () => {
                   className="flex flex-col items-center"
                 >
                   <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-4">
-                    <stat.icon className="h-8 w-8 text-blue-300" />
+                    <stat.icon className="h-8 w-8 text-primary" />
                   </div>
                   <div className="text-4xl font-extrabold mb-1">{stat.value}</div>
                   <div className="text-lg text-gray-300">{stat.label}</div>
@@ -239,7 +239,7 @@ const Index = () => {
                   className="text-center p-6"
                 >
                   <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-6 mx-auto">
-                    <advantage.icon className="h-10 w-10 text-blue-600" />
+                    <advantage.icon className="h-10 w-10 text-primary" />
                   </div>
                   <h3 className="text-xl font-bold mb-2 text-gray-900">{advantage.title}</h3>
                   <p className="text-gray-700">{advantage.description}</p>
@@ -286,7 +286,7 @@ const Index = () => {
                     className="relative p-6 bg-white rounded-xl shadow-md border border-gray-100"
                   >
                     <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-6">
-                      <step.icon className="h-8 w-8 text-purple-600" />
+                      <step.icon className="h-8 w-8 text-accent" />
                     </div>
                     <h3 className="text-xl font-bold mb-2 text-gray-900">{step.title}</h3>
                     <p className="text-gray-700">{step.description}</p>
@@ -336,7 +336,7 @@ const Index = () => {
                       <p className="text-gray-700 italic text-lg leading-relaxed flex-grow">"{testimonial.text}"</p>
                       <div className="flex items-center mt-6 pt-6 border-t border-gray-200">
                         <Avatar className="mr-4 w-12 h-12">
-                          <AvatarFallback className="bg-blue-100 text-blue-600 text-xl font-bold">
+                          <AvatarFallback className="bg-blue-100 text-primary text-xl font-bold">
                             {testimonial.initials}
                           </AvatarFallback>
                         </Avatar>
@@ -354,7 +354,7 @@ const Index = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-24 bg-gradient-to-r from-blue-700 to-purple-700 text-white">
+        <section className="py-24 bg-gradient-to-r from-blue-600 to-accent text-white">
           <div className="container mx-auto px-6 max-w-4xl text-center">
             <motion.h2 
               className="text-4xl md:text-5xl font-extrabold mb-6"
@@ -381,7 +381,7 @@ const Index = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.4 }}
             >
-              <Button size="lg" className="bg-white text-blue-700 hover:bg-gray-200 rounded-full px-10 py-6 shadow-xl font-semibold text-lg" asChild>
+              <Button size="lg" className="bg-white text-primary hover:bg-gray-200 rounded-full px-10 py-6 shadow-xl font-semibold text-lg" asChild>
                 <Link to="/kontakt">Kostenlos anfragen</Link>
               </Button>
               <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10 rounded-full px-10 py-6 shadow-xl font-semibold text-lg" asChild>
