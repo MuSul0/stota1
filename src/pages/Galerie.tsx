@@ -48,7 +48,7 @@ const Galerie = () => {
             <Button size="lg" className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-8 py-4" asChild>
               <Link to="/kontakt">Projekt anfragen</Link>
             </Button>
-            <Button size="lg" className="bg-blue-700 text-white border-white/30 hover:bg-white hover:text-gray-900 px-8 py-4" asChild>
+            <Button size="lg" className="bg-indigo-600 text-white border-white hover:bg-white hover:text-indigo-600 px-8 py-4" asChild>
               <a href="tel:+49123456789">Sofort anrufen</a>
             </Button>
           </div>

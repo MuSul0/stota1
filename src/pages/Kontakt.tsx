@@ -289,6 +289,9 @@ const Kontakt = () => {
                       WhatsApp Chat starten
                     </a>
                   </Button>
+                  <Button asChild className="w-full bg-blue-600 hover:bg-blue-700 text-white mt-4">
+                    <a href="tel:+49123456789">Sofort anrufen</a>
+                  </Button>
                 </CardContent>
               </Card>
 
