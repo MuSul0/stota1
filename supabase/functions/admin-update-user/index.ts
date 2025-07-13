@@ -27,8 +27,14 @@ serve(async (req) => {
     }
 
     if (role) {
-      const { error } = await supabase.from("profiles").update({ role }).eq("id", userId);
-      if (error) throw error;
+      const { error: profileUpdateError } = await supabase.from("profiles").update({ role }).eq("id", userId);
+      if (profileUpdateError) throw profileUpdateError;
+
+      // Also update the app_metadata in the auth schema
+      const { error: authError } = await supabase.auth.admin.updateUserById(userId, {
+        app_metadata: { role: role }
+      });
+      if (authError) throw authError;
     }
 
     if (typeof isActive === 'boolean') {

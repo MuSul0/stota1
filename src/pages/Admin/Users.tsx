@@ -54,7 +54,7 @@ export default function AdminUsers() {
           role: profile.role || 'user',
           created_at: authUser.created_at,
           last_sign_in_at: authUser.last_sign_in_at,
-          is_active: authUser.last_sign_in_at !== null
+          is_active: authUser.banned_until === null || new Date(authUser.banned_until) < new Date()
         };
       });
 
@@ -70,33 +70,36 @@ export default function AdminUsers() {
 
   const updateUserRole = async (userId: string, newRole: string) => {
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ role: newRole })
-        .eq('id', userId);
-      
+      const { data, error } = await supabase.functions.invoke('admin-update-user', {
+        body: { userId, role: newRole }
+      });
+
       if (error) throw error;
+      if (data.error) throw new Error(data.error);
       
-      toast.success('Benutzerrolle aktualisiert');
+      toast.success('Benutzerrolle aktualisiert', {
+        description: 'Der Benutzer muss sich neu anmelden, damit die Änderungen wirksam werden.',
+      });
       fetchUsers();
-    } catch (error) {
-      toast.error('Fehler beim Aktualisieren der Rolle');
+    } catch (error: any) {
+      toast.error('Fehler beim Aktualisieren der Rolle', { description: error.message });
       console.error(error);
     }
   };
 
   const toggleUserStatus = async (userId: string, currentStatus: boolean) => {
     try {
-      const { error } = await supabase.auth.admin.updateUserById(userId, {
-        user_metadata: { is_active: !currentStatus }
+      const { data, error } = await supabase.functions.invoke('admin-update-user', {
+        body: { userId, isActive: !currentStatus }
       });
 
       if (error) throw error;
+      if (data.error) throw new Error(data.error);
       
       toast.success(`Benutzer ${currentStatus ? 'deaktiviert' : 'aktiviert'}`);
       fetchUsers();
-    } catch (error) {
-      toast.error('Fehler beim Ändern des Status');
+    } catch (error: any) {
+      toast.error('Fehler beim Ändern des Status', { description: error.message });
       console.error(error);
     }
   };
@@ -173,6 +176,7 @@ export default function AdminUsers() {
                       variant="outline"
                       onClick={() => toggleUserStatus(user.id, user.is_active)}
                     >
+                      {user.is_active ? <UserX className="h-4 w-4 mr-2" /> : <UserCheck className="h-4 w-4 mr-2" />}
                       {user.is_active ? 'Deaktivieren' : 'Aktivieren'}
                     </Button>
                     <Select
@@ -184,6 +188,7 @@ export default function AdminUsers() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="admin">Admin</SelectItem>
+                        <SelectItem value="mitarbeiter">Mitarbeiter</SelectItem>
                         <SelectItem value="user">Benutzer</SelectItem>
                       </SelectContent>
                     </Select>
