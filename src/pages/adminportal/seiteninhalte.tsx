@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Loader2, Edit, FileText, Clock, CheckCircle, TrendingUp, ChevronDown, ChevronRight, Upload, Trash2 } from 'lucide-react';
+import { Loader2, Edit, FileText, Clock, CheckCircle, TrendingUp, ChevronDown, ChevronRight, Upload, Trash2, Eye } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -31,16 +31,49 @@ interface MediaItem {
   created_at: string;
 }
 
-// Einfache MediaUpload Komponente direkt in der Datei
-const SimpleMediaUpload = ({ title, description, type, pageContext }: {
+// Erweiterte MediaUpload Komponente mit Echtzeit-Anzeige
+const SmartMediaUpload = ({ title, description, type, pageContext, onMediaUpdate }: {
   title: string;
   description: string;
   type: 'image' | 'video';
   pageContext: string;
+  onMediaUpdate?: () => void;
 }) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [currentMedia, setCurrentMedia] = useState<{ url: string; id: string } | null>(null);
+  const [currentMedia, setCurrentMedia] = useState<MediaItem | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Lade aktuelles Bild beim Komponenten-Mount
+  useEffect(() => {
+    loadCurrentMedia();
+  }, [title, pageContext]);
+
+  const loadCurrentMedia = async () => {
+    try {
+      setLoading(true);
+      const searchTitle = `${pageContext}-${title}`;
+      
+      const { data, error } = await supabase
+        .from('media')
+        .select('*')
+        .eq('page_context', pageContext)
+        .ilike('title', `%${title}%`)
+        .eq('type', type)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (error) {
+        console.error('Error loading media:', error);
+      } else if (data && data.length > 0) {
+        setCurrentMedia(data[0]);
+      }
+    } catch (error) {
+      console.error('Error loading media:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -56,6 +89,11 @@ const SimpleMediaUpload = ({ title, description, type, pageContext }: {
 
     setUploading(true);
     try {
+      // Lösche vorhandenes Bild falls vorhanden
+      if (currentMedia) {
+        await handleDelete(false); // Lösche ohne Toast
+      }
+
       const fileExt = file.name.split('.').pop();
       const fileName = `${pageContext}-${title.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}.${fileExt}`;
       const filePath = `${type}s/${fileName}`;
@@ -67,23 +105,64 @@ const SimpleMediaUpload = ({ title, description, type, pageContext }: {
       const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(filePath);
 
       // Save to database
-      const { error: dbError } = await supabase.from('media').insert({
+      const { data: newMedia, error: dbError } = await supabase.from('media').insert({
         type: type,
         url: publicUrl,
         title: `${pageContext}-${title}`,
         description: description,
         page_context: pageContext,
-      });
+      }).select().single();
 
       if (dbError) throw dbError;
 
-      toast.success('Datei erfolgreich hochgeladen!');
+      toast.success('Bild erfolgreich hochgeladen und wird jetzt auf der Website angezeigt!');
       setFile(null);
-      setCurrentMedia({ url: publicUrl, id: 'new' });
+      setCurrentMedia(newMedia);
+      
+      // Trigger parent update if callback provided
+      if (onMediaUpdate) {
+        onMediaUpdate();
+      }
     } catch (error: any) {
       toast.error('Fehler beim Hochladen: ' + error.message);
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleDelete = async (showToast = true) => {
+    if (!currentMedia) return;
+
+    try {
+      // Delete from storage
+      const urlParts = currentMedia.url.split('/');
+      const fileName = urlParts[urlParts.length - 1];
+      const filePath = `${type}s/${fileName}`;
+      
+      await supabase.storage.from('media').remove([filePath]);
+
+      // Delete from database
+      const { error } = await supabase.from('media').delete().eq('id', currentMedia.id);
+      if (error) throw error;
+
+      if (showToast) {
+        toast.success('Bild erfolgreich gelöscht!');
+      }
+      setCurrentMedia(null);
+      
+      if (onMediaUpdate) {
+        onMediaUpdate();
+      }
+    } catch (error: any) {
+      if (showToast) {
+        toast.error('Fehler beim Löschen: ' + error.message);
+      }
+    }
+  };
+
+  const openImageInNewTab = () => {
+    if (currentMedia) {
+      window.open(currentMedia.url, '_blank');
     }
   };
 
@@ -92,7 +171,15 @@ const SimpleMediaUpload = ({ title, description, type, pageContext }: {
       <div className="flex-shrink-0 w-full md:w-1/3">
         <h3 className="font-semibold text-lg text-white">{title}</h3>
         <p className="text-sm text-gray-300">{description}</p>
+        {currentMedia && (
+          <div className="mt-2">
+            <Badge variant="outline" className="text-green-400 border-green-400">
+              Aktiv auf Website
+            </Badge>
+          </div>
+        )}
       </div>
+      
       <div className="flex-grow flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 w-full">
         <div className="flex-grow w-full">
           <Input
@@ -109,19 +196,52 @@ const SimpleMediaUpload = ({ title, description, type, pageContext }: {
             className="bg-blue-600 hover:bg-blue-700 text-white"
           >
             <Upload className="h-4 w-4 mr-2" />
-            {uploading ? 'Lädt hoch...' : 'Hochladen'}
+            {uploading ? 'Lädt hoch...' : currentMedia ? 'Ersetzen' : 'Hochladen'}
           </Button>
+          {currentMedia && (
+            <Button
+              onClick={() => handleDelete(true)}
+              variant="destructive"
+              size="sm"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </div>
-      {currentMedia && (
-        <div className="flex-shrink-0 w-full md:w-1/4 flex items-center justify-center p-2 border border-gray-600 rounded-md bg-gray-800">
-          {type === 'image' ? (
-            <img src={currentMedia.url} alt={title} className="max-h-24 object-contain rounded" />
-          ) : (
-            <div className="flex flex-col items-center text-gray-400">
-              <span className="text-xs mt-1">Video vorhanden</span>
-            </div>
-          )}
+      
+      {loading ? (
+        <div className="flex-shrink-0 w-full md:w-1/4 flex items-center justify-center p-4 border border-gray-600 rounded-md bg-gray-800">
+          <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
+        </div>
+      ) : currentMedia ? (
+        <div className="flex-shrink-0 w-full md:w-1/4 relative group">
+          <div className="flex items-center justify-center p-2 border border-gray-600 rounded-md bg-gray-800">
+            {type === 'image' ? (
+              <img 
+                src={currentMedia.url} 
+                alt={title} 
+                className="max-h-24 object-contain rounded cursor-pointer" 
+                onClick={openImageInNewTab}
+              />
+            ) : (
+              <div className="flex flex-col items-center text-gray-400">
+                <span className="text-xs mt-1">Video aktiv</span>
+              </div>
+            )}
+          </div>
+          <Button
+            onClick={openImageInNewTab}
+            size="sm"
+            variant="secondary"
+            className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <Eye className="h-3 w-3" />
+          </Button>
+        </div>
+      ) : (
+        <div className="flex-shrink-0 w-full md:w-1/4 flex items-center justify-center p-4 border border-gray-600 rounded-md bg-gray-800">
+          <span className="text-gray-400 text-sm">Kein Bild</span>
         </div>
       )}
     </div>
@@ -135,6 +255,7 @@ export default function AdminSeiteninhalte() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedMeta, setSelectedMeta] = useState<SeoMetadata | null>(null);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     fetchMetadata();
@@ -206,6 +327,10 @@ export default function AdminSeiteninhalte() {
 
   const toggleSection = (section: string) => {
     setExpandedSection(expandedSection === section ? null : section);
+  };
+
+  const handleMediaUpdate = () => {
+    setRefreshKey(prev => prev + 1);
   };
 
   if (loadingSeo) {
@@ -335,11 +460,12 @@ export default function AdminSeiteninhalte() {
               <CardHeader>
                 <CardTitle className="text-white">Bildinhalte der Seiten verwalten</CardTitle>
                 <CardDescription className="text-gray-400">
-                  Hier können Sie die Bilder für spezifische Bereiche Ihrer Webseite in Echtzeit ändern.
+                  Hier können Sie die Bilder für spezifische Bereiche Ihrer Webseite in Echtzeit ändern. 
+                  Änderungen werden sofort auf der Website sichtbar.
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                <div className="space-y-4" key={refreshKey}>
                   {/* Startseite */}
                   <div className="border border-gray-700 rounded-lg">
                     <button
@@ -355,35 +481,40 @@ export default function AdminSeiteninhalte() {
                     </button>
                     {expandedSection === 'startseite' && (
                       <div className="p-4 space-y-4 bg-gray-900/50 border-t border-gray-700">
-                        <SimpleMediaUpload 
+                        <SmartMediaUpload 
                           title="Hero Bild" 
                           description="Das große Hauptbild ganz oben auf der Startseite." 
                           type="image" 
-                          pageContext="startseite" 
+                          pageContext="startseite"
+                          onMediaUpdate={handleMediaUpdate}
                         />
-                        <SimpleMediaUpload 
+                        <SmartMediaUpload 
                           title="Vorschau Transporte" 
                           description="Bild für die Transport-Dienstleistung auf der Startseite." 
                           type="image" 
-                          pageContext="startseite" 
+                          pageContext="startseite"
+                          onMediaUpdate={handleMediaUpdate}
                         />
-                        <SimpleMediaUpload 
+                        <SmartMediaUpload 
                           title="Vorschau Reinigung" 
                           description="Bild für die Reinigungs-Dienstleistung auf der Startseite." 
                           type="image" 
-                          pageContext="startseite" 
+                          pageContext="startseite"
+                          onMediaUpdate={handleMediaUpdate}
                         />
-                        <SimpleMediaUpload 
+                        <SmartMediaUpload 
                           title="Vorschau Gartenbau" 
                           description="Bild für die Gartenbau-Dienstleistung auf der Startseite." 
                           type="image" 
-                          pageContext="startseite" 
+                          pageContext="startseite"
+                          onMediaUpdate={handleMediaUpdate}
                         />
-                        <SimpleMediaUpload 
+                        <SmartMediaUpload 
                           title="Vorschau Entsorgung" 
                           description="Bild für die Entsorgungs-Dienstleistung auf der Startseite." 
                           type="image" 
-                          pageContext="startseite" 
+                          pageContext="startseite"
+                          onMediaUpdate={handleMediaUpdate}
                         />
                       </div>
                     )}
@@ -404,29 +535,33 @@ export default function AdminSeiteninhalte() {
                     </button>
                     {expandedSection === 'leistungen' && (
                       <div className="p-4 space-y-4 bg-gray-900/50 border-t border-gray-700">
-                        <SimpleMediaUpload 
+                        <SmartMediaUpload 
                           title="Header-Bild Transporte" 
                           description="Das Titelbild für die Transport-Detailseite." 
                           type="image" 
-                          pageContext="leistungen" 
+                          pageContext="leistungen"
+                          onMediaUpdate={handleMediaUpdate}
                         />
-                        <SimpleMediaUpload 
+                        <SmartMediaUpload 
                           title="Header-Bild Reinigung" 
                           description="Das Titelbild für die Reinigungs-Detailseite." 
                           type="image" 
-                          pageContext="leistungen" 
+                          pageContext="leistungen"
+                          onMediaUpdate={handleMediaUpdate}
                         />
-                        <SimpleMediaUpload 
+                        <SmartMediaUpload 
                           title="Header-Bild Gartenbau" 
                           description="Das Titelbild für die Gartenbau-Detailseite." 
                           type="image" 
-                          pageContext="leistungen" 
+                          pageContext="leistungen"
+                          onMediaUpdate={handleMediaUpdate}
                         />
-                        <SimpleMediaUpload 
+                        <SmartMediaUpload 
                           title="Header-Bild Entsorgung" 
                           description="Das Titelbild für die Entsorgungs-Detailseite." 
                           type="image" 
-                          pageContext="leistungen" 
+                          pageContext="leistungen"
+                          onMediaUpdate={handleMediaUpdate}
                         />
                       </div>
                     )}
@@ -447,11 +582,12 @@ export default function AdminSeiteninhalte() {
                     </button>
                     {expandedSection === 'ueber-uns' && (
                       <div className="p-4 space-y-4 bg-gray-900/50 border-t border-gray-700">
-                        <SimpleMediaUpload 
+                        <SmartMediaUpload 
                           title="Team Bild" 
                           description="Ein Bild des Teams oder des Gründers auf der 'Über Uns'-Seite." 
                           type="image" 
-                          pageContext="ueber-uns" 
+                          pageContext="ueber-uns"
+                          onMediaUpdate={handleMediaUpdate}
                         />
                       </div>
                     )}
@@ -472,11 +608,12 @@ export default function AdminSeiteninhalte() {
                     </button>
                     {expandedSection === 'empfehlungsprogramm' && (
                       <div className="p-4 space-y-4 bg-gray-900/50 border-t border-gray-700">
-                        <SimpleMediaUpload 
+                        <SmartMediaUpload 
                           title="Programm-Banner" 
                           description="Ein Werbebanner für das Empfehlungsprogramm." 
                           type="image" 
-                          pageContext="empfehlungsprogramm" 
+                          pageContext="empfehlungsprogramm"
+                          onMediaUpdate={handleMediaUpdate}
                         />
                       </div>
                     )}
@@ -497,11 +634,12 @@ export default function AdminSeiteninhalte() {
                     </button>
                     {expandedSection === 'kontakt' && (
                       <div className="p-4 space-y-4 bg-gray-900/50 border-t border-gray-700">
-                        <SimpleMediaUpload 
+                        <SmartMediaUpload 
                           title="Kontakt Header-Bild" 
                           description="Das Titelbild auf der Kontaktseite." 
                           type="image" 
-                          pageContext="kontakt" 
+                          pageContext="kontakt"
+                          onMediaUpdate={handleMediaUpdate}
                         />
                       </div>
                     )}
