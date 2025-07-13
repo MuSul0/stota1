@@ -3,8 +3,9 @@ import { useMemo } from 'react';
 
 // Helper function to generate the unique database title, must match the one in MediaUploadSlot
 const getUniqueDbTitle = (displayTitle: string, pageContext: string, mediaType: 'image' | 'video') => {
-  const sanitize = (name: string) =>
-    name
+  const sanitize = (name: string | null | undefined) => { // Erlaube null/undefined als Eingabe
+    const safeName = typeof name === 'string' ? name : ''; // Stelle sicher, dass es eine Zeichenkette ist
+    return safeName
       .toLowerCase()
       .replace(/ä/g, 'ae')
       .replace(/ö/g, 'oe')
@@ -14,6 +15,7 @@ const getUniqueDbTitle = (displayTitle: string, pageContext: string, mediaType: 
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
       .trim();
+  };
 
   const sanitizedPageContext = sanitize(pageContext);
   const sanitizedDisplayTitle = sanitize(displayTitle);
