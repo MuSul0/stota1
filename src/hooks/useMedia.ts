@@ -40,7 +40,6 @@ export const useMedia = (props?: UseMediaProps) => {
         if (error) {
           if (error.code === 'PGRST116' && (props?.title || props?.id)) { // No rows found for single()
             setMedia(null);
-            setError(`Keine Medien gefunden für ${props.title || props.id}`);
           } else {
             throw error;
           }
@@ -56,7 +55,29 @@ export const useMedia = (props?: UseMediaProps) => {
       }
     };
 
-    fetchMedia();
+    if (props?.title || props?.type || props?.id) {
+      fetchMedia();
+    } else {
+      setLoading(false);
+    }
+
+    const channelName = `media-single-changes-${props?.id || props?.title?.replace(/\s/g, '-') || props?.type}`;
+    const channel = supabase
+      .channel(channelName)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'media' },
+        () => {
+          if (props?.title || props?.type || props?.id) {
+            fetchMedia();
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [props?.title, props?.type, props?.id]);
 
   return { media, loading, error };

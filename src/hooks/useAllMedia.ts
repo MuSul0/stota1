@@ -40,6 +40,21 @@ export const useAllMedia = () => {
 
   useEffect(() => {
     fetchAllMedia();
+
+    const channel = supabase
+      .channel('media-all-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'media' },
+        () => {
+          fetchAllMedia();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return { media, loading, error, mutate: fetchAllMedia };
