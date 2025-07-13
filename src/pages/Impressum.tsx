@@ -20,7 +20,7 @@ const Impressum = () => {
                 <div>
                   <h3 className="font-semibold mb-2">Stota Transport</h3>
                   <p>Inhaber: Nicolae Bogdanel Turcitu</p>
-                  <p>Kurt-Schumacher-Str. 136</p>
+                  <p>Schalker Str. 143</p>
                   <p>45881 Gelsenkirchen</p>
                   <p>Deutschland</p>
                 </div>
@@ -34,7 +34,7 @@ const Impressum = () => {
               <CardContent className="space-y-2">
                 <p><strong>Telefon:</strong> +49 176 41171386</p>
                 <p><strong>E-Mail:</strong> kontakt@info-stota.de</p>
-                <p><strong>Website:</strong> www.stota-transport.de</p>
+                <p><strong>Website:</strong> www.stota.de</p>
               </CardContent>
             </Card>
 
