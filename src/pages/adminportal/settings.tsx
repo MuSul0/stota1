@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Trash2, Edit, Upload, Video } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAllMedia } from '@/hooks/useAllMedia'; // Import the useAllMedia hook
 
 export default function AdminSettings() {
   const [settings, setSettings] = useState({
@@ -26,11 +27,16 @@ export default function AdminSettings() {
     currency: 'EUR'
   });
 
-  const [media, setMedia] = useState<{
-    images: Array<{ id: string; url: string; title: string }>;
-    videos: Array<{ id: string; url: string; title: string }>;
-  }>({ images: [], videos: [] });
-  const [loadingData, setLoadingData] = useState(true);
+  // Use the useAllMedia hook to manage media state and fetching
+  const { media: allMediaItems, loading: loadingMediaItems, error: mediaError, mutate: refetchAllMedia } = useAllMedia();
+
+  // Derive images and videos from allMediaItems for rendering
+  const media = {
+    images: allMediaItems.filter(item => item.type === 'image').map(({ id, url, title }) => ({ id, url, title })),
+    videos: allMediaItems.filter(item => item.type === 'video').map(({ id, url, title }) => ({ id, url, title })),
+  };
+
+  const [loadingSettings, setLoadingSettings] = useState(true); // Renamed from loadingData for clarity
   const [uploading, setUploading] = useState(false);
   const [newMedia, setNewMedia] = useState({
     type: 'image',
@@ -46,11 +52,11 @@ export default function AdminSettings() {
 
   useEffect(() => {
     fetchSettings();
-    fetchMedia();
+    // fetchMedia() is now handled by useAllMedia hook
   }, []);
 
   const fetchSettings = async () => {
-    setLoadingData(true);
+    setLoadingSettings(true);
     try {
       const { data, error } = await supabase
         .from('settings')
@@ -84,23 +90,12 @@ export default function AdminSettings() {
       toast.error('Fehler beim Laden/Initialisieren der Einstellungen');
       console.error(error);
     } finally {
-      setLoadingData(false);
-    }
-  };
-
-  const fetchMedia = async () => {
-    try {
-      const { data: images } = await supabase.from('media').select('*').eq('type', 'image');
-      const { data: videos } = await supabase.from('media').select('*').eq('type', 'video');
-      setMedia({ images: images || [], videos: videos || [] });
-    } catch (error) {
-      toast.error('Fehler beim Laden der Medien');
-      console.error(error);
+      setLoadingSettings(false);
     }
   };
 
   const handleSave = async () => {
-    setLoadingData(true);
+    setLoadingSettings(true);
     try {
       const { error } = await supabase
         .from('settings')
@@ -111,7 +106,7 @@ export default function AdminSettings() {
       toast.error('Fehler beim Speichern der Einstellungen');
       console.error(error);
     } finally {
-      setLoadingData(false);
+      setLoadingSettings(false);
     }
   };
 
@@ -129,7 +124,7 @@ export default function AdminSettings() {
       if (dbError) throw dbError;
       toast.success('Medien erfolgreich hochgeladen');
       setNewMedia({ type: 'image', title: '', file: null });
-      fetchMedia();
+      refetchAllMedia(); // Use refetchAllMedia from the hook
     } catch (error) {
       toast.error('Fehler beim Hochladen der Medien');
       console.error(error);
@@ -144,7 +139,7 @@ export default function AdminSettings() {
       const { error } = await supabase.from('media').delete().eq('id', id);
       if (error) throw error;
       toast.success('Medium erfolgreich gelöscht');
-      fetchMedia();
+      refetchAllMedia(); // Use refetchAllMedia from the hook
     } catch (error) {
       toast.error('Fehler beim Löschen des Mediums');
       console.error(error);
@@ -197,7 +192,7 @@ export default function AdminSettings() {
       if (dbError) throw dbError;
 
       toast.success('Medium erfolgreich ersetzt');
-      fetchMedia();
+      refetchAllMedia(); // Use refetchAllMedia from the hook
       handleCancelEdit();
     } catch (error) {
       toast.error('Fehler beim Ersetzen des Mediums');
@@ -207,7 +202,7 @@ export default function AdminSettings() {
     }
   };
 
-  if (loadingData) {
+  if (loadingSettings || loadingMediaItems) { // Use both loading states
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <p className="text-gray-600 text-lg">Lade Einstellungen...</p>
@@ -339,7 +334,7 @@ export default function AdminSettings() {
       </Tabs>
 
       <div className="flex justify-end">
-        <Button onClick={handleSave} disabled={loadingData}>{loadingData ? 'Speichern...' : 'Einstellungen speichern'}</Button>
+        <Button onClick={handleSave} disabled={loadingSettings}>{loadingSettings ? 'Speichern...' : 'Einstellungen speichern'}</Button>
       </div>
 
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
