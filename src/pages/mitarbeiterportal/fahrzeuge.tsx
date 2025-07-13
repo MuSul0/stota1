@@ -24,6 +24,23 @@ export default function Fahrzeuge() {
   const [loadingData, setLoadingData] = useState(true);
   const subscriptionRef = useRef<any>(null);
 
+  useEffect(() => {
+    if (!loading) {
+      if (!session || user?.role !== 'mitarbeiter') {
+        navigate('/login');
+      } else {
+        fetchFahrzeuge();
+        setupRealtimeSubscription();
+      }
+    }
+    return () => {
+      if (subscriptionRef.current) {
+        supabase.removeChannel(subscriptionRef.current);
+        subscriptionRef.current = null;
+      }
+    };
+  }, [session, user, loading, navigate]);
+
   const fetchFahrzeuge = async () => {
     setLoadingData(true);
     const { data, error } = await supabase
@@ -40,30 +57,19 @@ export default function Fahrzeuge() {
     setLoadingData(false);
   };
 
-  useEffect(() => {
-    if (!loading) {
-      if (!session || user?.role !== 'mitarbeiter') {
-        navigate('/login');
-      } else {
-        fetchFahrzeuge();
-
-        // Realtime subscription logic moved directly into useEffect
-        const channel = supabase
-          .channel('public:vehicles')
-          .on('postgres_changes', { event: '*', schema: 'public', table: 'vehicles' }, () => {
-            fetchFahrzeuge();
-          })
-          .subscribe();
-        subscriptionRef.current = channel;
-      }
+  const setupRealtimeSubscription = () => {
+    if (subscriptionRef.current) {
+      supabase.removeChannel(subscriptionRef.current);
+      subscriptionRef.current = null;
     }
-    return () => {
-      if (subscriptionRef.current) {
-        supabase.removeChannel(subscriptionRef.current);
-        subscriptionRef.current = null;
-      }
-    };
-  }, [session, user, loading, navigate]);
+    const channel = supabase
+      .channel('public:vehicles')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'vehicles' }, () => {
+        fetchFahrzeuge();
+      })
+      .subscribe();
+    subscriptionRef.current = channel;
+  };
 
   const handleReserve = async (id: string, currentStatus: string) => {
     if (!user) {

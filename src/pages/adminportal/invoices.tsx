@@ -21,6 +21,18 @@ export default function AdminInvoices() {
   const [loadingData, setLoadingData] = useState(true);
   const subscriptionRef = useRef<any>(null);
 
+  useEffect(() => {
+    fetchInvoices();
+    setupRealtimeSubscription();
+    
+    return () => {
+      if (subscriptionRef.current) {
+        supabase.removeChannel(subscriptionRef.current);
+        subscriptionRef.current = null;
+      }
+    };
+  }, []);
+
   const fetchInvoices = async () => {
     setLoadingData(true);
     const { data, error } = await supabase
@@ -37,10 +49,11 @@ export default function AdminInvoices() {
     setLoadingData(false);
   };
 
-  useEffect(() => {
-    fetchInvoices();
-    
-    // Realtime subscription logic moved directly into useEffect
+  const setupRealtimeSubscription = () => {
+    if (subscriptionRef.current) {
+      supabase.removeChannel(subscriptionRef.current);
+      subscriptionRef.current = null;
+    }
     const channel = supabase
       .channel('public:invoices')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'invoices' }, () => {
@@ -48,14 +61,7 @@ export default function AdminInvoices() {
       })
       .subscribe();
     subscriptionRef.current = channel;
-    
-    return () => {
-      if (subscriptionRef.current) {
-        supabase.removeChannel(subscriptionRef.current);
-        subscriptionRef.current = null;
-      }
-    };
-  }, []);
+  };
 
   const markAsPaid = async (id: string) => {
     const { error } = await supabase

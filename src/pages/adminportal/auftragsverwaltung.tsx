@@ -68,7 +68,9 @@ export default function AdminAuftragsverwaltung() {
   useEffect(() => {
     fetchData();
 
-    // Realtime subscription logic moved directly into useEffect
+    if (subscriptionRef.current) {
+      supabase.removeChannel(subscriptionRef.current);
+    }
     const channel = supabase
       .channel('public:tasks')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, () => {
@@ -81,7 +83,6 @@ export default function AdminAuftragsverwaltung() {
     return () => {
       if (subscriptionRef.current) {
         supabase.removeChannel(subscriptionRef.current);
-        subscriptionRef.current = null;
       }
     };
   }, []);

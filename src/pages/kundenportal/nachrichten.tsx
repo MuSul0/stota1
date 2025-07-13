@@ -33,6 +33,24 @@ export default function Nachrichten() {
   // Ref für Supabase Subscription speichern
   const subscriptionRef = useRef<any>(null);
 
+  useEffect(() => {
+    if (!loading) {
+      if (!session || !['kunde', 'user'].includes(user?.role || '')) {
+        navigate('/login');
+      } else {
+        fetchNachrichten();
+        setupRealtimeSubscription();
+      }
+    }
+    // Cleanup on unmount
+    return () => {
+      if (subscriptionRef.current) {
+        supabase.removeChannel(subscriptionRef.current);
+        subscriptionRef.current = null;
+      }
+    };
+  }, [session, user, loading, navigate]);
+
   const fetchNachrichten = async () => {
     if (!user) return;
     setLoadingNachrichten(true);
@@ -51,38 +69,27 @@ export default function Nachrichten() {
     setLoadingNachrichten(false);
   };
 
-  useEffect(() => {
-    if (!loading) {
-      if (!session || !['kunde', 'user'].includes(user?.role || '')) {
-        navigate('/login');
-      } else {
-        fetchNachrichten();
-        
-        // Realtime subscription logic moved directly into useEffect
-        if (user) { // Ensure user is available for filter
-          const channel = supabase
-            .channel('public:messages')
-            .on(
-              'postgres_changes',
-              { event: '*', schema: 'public', table: 'messages', filter: `user_id=eq.${user.id}` },
-              (payload) => {
-                fetchNachrichten();
-              }
-            );
-
-          channel.subscribe();
-          subscriptionRef.current = channel;
-        }
-      }
+  const setupRealtimeSubscription = () => {
+    if (!user) return;
+    // Falls schon eine Subscription besteht, entfernen
+    if (subscriptionRef.current) {
+      supabase.removeChannel(subscriptionRef.current);
+      subscriptionRef.current = null;
     }
-    // Cleanup on unmount
-    return () => {
-      if (subscriptionRef.current) {
-        supabase.removeChannel(subscriptionRef.current);
-        subscriptionRef.current = null;
-      }
-    };
-  }, [session, user, loading, navigate]); // Added user to dependencies for filter changes
+
+    const channel = supabase
+      .channel('public:messages')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'messages', filter: `user_id=eq.${user.id}` },
+        (payload) => {
+          fetchNachrichten();
+        }
+      );
+
+    channel.subscribe();
+    subscriptionRef.current = channel;
+  };
 
   const handleSendMessage = async () => {
     if (!subject.trim() || !content.trim()) {

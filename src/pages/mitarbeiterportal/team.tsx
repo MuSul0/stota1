@@ -22,6 +22,23 @@ export default function Team() {
   const [loadingData, setLoadingData] = useState(true);
   const subscriptionRef = useRef<any>(null);
 
+  useEffect(() => {
+    if (!loading) {
+      if (!session || user?.role !== 'mitarbeiter') {
+        navigate('/login');
+      } else {
+        fetchTeam();
+        setupRealtimeSubscription();
+      }
+    }
+    return () => {
+      if (subscriptionRef.current) {
+        supabase.removeChannel(subscriptionRef.current);
+        subscriptionRef.current = null;
+      }
+    };
+  }, [session, user, loading, navigate]);
+
   const fetchTeam = async () => {
     setLoadingData(true);
     const { data, error } = await supabase
@@ -38,30 +55,19 @@ export default function Team() {
     setLoadingData(false);
   };
 
-  useEffect(() => {
-    if (!loading) {
-      if (!session || user?.role !== 'mitarbeiter') {
-        navigate('/login');
-      } else {
-        fetchTeam();
-        
-        // Realtime subscription logic moved directly into useEffect
-        const channel = supabase
-          .channel('public:team_members')
-          .on('postgres_changes', { event: '*', schema: 'public', table: 'team_members' }, () => {
-            fetchTeam();
-          })
-          .subscribe();
-        subscriptionRef.current = channel;
-      }
+  const setupRealtimeSubscription = () => {
+    if (subscriptionRef.current) {
+      supabase.removeChannel(subscriptionRef.current);
+      subscriptionRef.current = null;
     }
-    return () => {
-      if (subscriptionRef.current) {
-        supabase.removeChannel(subscriptionRef.current);
-        subscriptionRef.current = null;
-      }
-    };
-  }, [session, user, loading, navigate]);
+    const channel = supabase
+      .channel('public:team_members')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'team_members' }, () => {
+        fetchTeam();
+      })
+      .subscribe();
+    subscriptionRef.current = channel;
+  };
 
   if (loading || loadingData) {
     return (

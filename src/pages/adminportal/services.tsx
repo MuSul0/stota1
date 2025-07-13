@@ -29,6 +29,18 @@ export default function AdminServices() {
   const [loadingData, setLoadingData] = useState(true);
   const subscriptionRef = useRef<any>(null);
 
+  useEffect(() => {
+    fetchServices();
+    setupRealtimeSubscription();
+    
+    return () => {
+      if (subscriptionRef.current) {
+        supabase.removeChannel(subscriptionRef.current);
+        subscriptionRef.current = null;
+      }
+    };
+  }, []);
+
   const fetchServices = async () => {
     setLoadingData(true);
     try {
@@ -48,10 +60,11 @@ export default function AdminServices() {
     }
   };
 
-  useEffect(() => {
-    fetchServices();
-    
-    // Realtime subscription logic moved directly into useEffect
+  const setupRealtimeSubscription = () => {
+    if (subscriptionRef.current) {
+      supabase.removeChannel(subscriptionRef.current);
+      subscriptionRef.current = null;
+    }
     const channel = supabase
       .channel('public:services')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'services' }, () => {
@@ -59,14 +72,7 @@ export default function AdminServices() {
       })
       .subscribe();
     subscriptionRef.current = channel;
-    
-    return () => {
-      if (subscriptionRef.current) {
-        supabase.removeChannel(subscriptionRef.current);
-        subscriptionRef.current = null;
-      }
-    };
-  }, []);
+  };
 
   const handleAddService = () => {
     setEditingService({

@@ -1,50 +1,63 @@
-import { useMediaContext } from '@/contexts/MediaContext';
-import { useMemo } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
-// Helper function to generate the unique database title, must match the one in MediaUploadSlot
-const getUniqueDbTitle = (displayTitle: string, pageContext: string, mediaType: 'image' | 'video') => {
-  const sanitize = (name: string | null | undefined) => { // Erlaube null/undefined als Eingabe
-    const safeName = typeof name === 'string' ? name : ''; // Stelle sicher, dass es eine Zeichenkette ist
-    return safeName
-      .toLowerCase()
-      .replace(/ä/g, 'ae')
-      .replace(/ö/g, 'oe')
-      .replace(/ü/g, 'ue')
-      .replace(/ß/g, 'ss')
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim();
-  };
+interface MediaItem {
+  id: string;
+  title: string;
+  url: string;
+  type: string;
+  created_at: string;
+}
 
-  const sanitizedPageContext = sanitize(pageContext);
-  const sanitizedDisplayTitle = sanitize(displayTitle);
-  return `${sanitizedPageContext}-${sanitizedDisplayTitle}-${mediaType}`;
-};
+interface UseMediaProps {
+  title?: string;
+  type?: string;
+  id?: string;
+}
 
-/**
- * A hook to get a specific media item from the global media context.
- * It's fast, efficient, and provides real-time updates.
- *
- * @param pageContext The context of the page where the media is used (e.g., 'Startseite').
- * @param title The display title of the media (e.g., 'Hero Background').
- * @param type The type of media, 'image' or 'video'. Defaults to 'image'.
- * @returns An object containing the media item's URL, the loading state, and the full media item object.
- */
-export const useMedia = (pageContext: string, title: string, type: 'image' | 'video' = 'image') => {
-  const { media, loading } = useMediaContext();
+export const useMedia = (props?: UseMediaProps) => {
+  const [media, setMedia] = useState<MediaItem | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const mediaItem = useMemo(() => {
-    if (loading || !media) {
-      return null;
-    }
-    const expectedDbTitle = getUniqueDbTitle(title, pageContext, type);
-    return media.find(item => item.title === expectedDbTitle);
-  }, [media, loading, pageContext, title, type]);
+  useEffect(() => {
+    const fetchMedia = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        let query = supabase.from('media').select('*');
 
-  return {
-    url: mediaItem?.url || null,
-    loading,
-    item: mediaItem,
-  };
+        if (props?.id) {
+          query = query.eq('id', props.id);
+        } else if (props?.title) {
+          query = query.eq('title', props.title);
+        } else if (props?.type) {
+          query = query.eq('type', props.type);
+        }
+
+        const { data, error } = await query.single();
+
+        if (error) {
+          if (error.code === 'PGRST116' && (props?.title || props?.id)) { // No rows found for single()
+            setMedia(null);
+            setError(`Keine Medien gefunden für ${props.title || props.id}`);
+          } else {
+            throw error;
+          }
+        } else {
+          setMedia(data as MediaItem);
+        }
+      } catch (err: any) {
+        console.error("Fehler beim Laden der Medien:", err);
+        setError(err.message || 'Ein unbekannter Fehler ist aufgetreten.');
+        setMedia(null); // Ensure media is null on error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMedia();
+  }, [props?.title, props?.type, props?.id]);
+
+  return { media, loading, error };
 };
