@@ -216,214 +216,212 @@ export default function AdminSettings() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-grow container mx-auto px-6 py-12 max-w-7xl space-y-6">
-        <h1 className="text-3xl font-bold">Einstellungen</h1>
+    <main className="flex-grow container mx-auto px-6 py-12 max-w-7xl space-y-6">
+      <h1 className="text-3xl font-bold">Einstellungen</h1>
+      
+      <Tabs defaultValue="general">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="general">Allgemein</TabsTrigger>
+          <TabsTrigger value="appearance">Darstellung</TabsTrigger>
+          <TabsTrigger value="notifications">Benachrichtigungen</TabsTrigger>
+          <TabsTrigger value="system">System</TabsTrigger>
+          <TabsTrigger value="media">Medien</TabsTrigger>
+        </TabsList>
         
-        <Tabs defaultValue="general">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="general">Allgemein</TabsTrigger>
-            <TabsTrigger value="appearance">Darstellung</TabsTrigger>
-            <TabsTrigger value="notifications">Benachrichtigungen</TabsTrigger>
-            <TabsTrigger value="system">System</TabsTrigger>
-            <TabsTrigger value="media">Medien</TabsTrigger>
-          </TabsList>
-          
-          {/* Allgemeine Einstellungen */}
-          <TabsContent value="general">
-            <Card>
-              <CardHeader>
-                <CardTitle>Allgemeine Einstellungen</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="companyName">Firmenname</Label>
-                    <Input
-                      id="companyName"
-                      value={settings.companyName}
-                      onChange={(e) => setSettings(prev => ({ ...prev, companyName: e.target.value }))}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="contactEmail">Kontakt E-Mail</Label>
-                    <Input
-                      id="contactEmail"
-                      type="email"
-                      value={settings.contactEmail}
-                      onChange={(e) => setSettings(prev => ({ ...prev, contactEmail: e.target.value }))}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="phoneNumber">Telefonnummer</Label>
-                    <Input
-                      id="phoneNumber"
-                      value={settings.phoneNumber}
-                      onChange={(e) => setSettings(prev => ({ ...prev, phoneNumber: e.target.value }))}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="address">Adresse</Label>
-                    <Input
-                      id="address"
-                      value={settings.address}
-                      onChange={(e) => setSettings(prev => ({ ...prev, address: e.target.value }))}
-                    />
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <Checkbox
-                    id="maintenanceMode"
-                    checked={settings.maintenanceMode}
-                    onCheckedChange={(checked) => setSettings(prev => ({ ...prev, maintenanceMode: !!checked }))}
+        {/* Allgemeine Einstellungen */}
+        <TabsContent value="general">
+          <Card>
+            <CardHeader>
+              <CardTitle>Allgemeine Einstellungen</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="companyName">Firmenname</Label>
+                  <Input
+                    id="companyName"
+                    value={settings.companyName}
+                    onChange={(e) => setSettings(prev => ({ ...prev, companyName: e.target.value }))}
                   />
-                  <Label htmlFor="maintenanceMode">Wartungsmodus aktivieren</Label>
                 </div>
-                <Button onClick={handleSave} className="mt-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-                  Einstellungen speichern
-                </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
+                <div>
+                  <Label htmlFor="contactEmail">Kontakt E-Mail</Label>
+                  <Input
+                    id="contactEmail"
+                    type="email"
+                    value={settings.contactEmail}
+                    onChange={(e) => setSettings(prev => ({ ...prev, contactEmail: e.target.value }))}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="phoneNumber">Telefonnummer</Label>
+                  <Input
+                    id="phoneNumber"
+                    value={settings.phoneNumber}
+                    onChange={(e) => setSettings(prev => ({ ...prev, phoneNumber: e.target.value }))}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="address">Adresse</Label>
+                  <Input
+                    id="address"
+                    value={settings.address}
+                    onChange={(e) => setSettings(prev => ({ ...prev, address: e.target.value }))}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <Checkbox
+                  id="maintenanceMode"
+                  checked={settings.maintenanceMode}
+                  onCheckedChange={(checked) => setSettings(prev => ({ ...prev, maintenanceMode: !!checked }))}
+                />
+                <Label htmlFor="maintenanceMode">Wartungsmodus aktivieren</Label>
+              </div>
+              <Button onClick={handleSave} className="mt-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                Einstellungen speichern
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-          {/* Medienverwaltung */}
-          <TabsContent value="media">
-            <Card>
-              <CardHeader>
-                <CardTitle>Medienverwaltung</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="border rounded-lg p-4">
-                  <h3 className="font-medium mb-4">Neues Medium hochladen</h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-4">
-                      <Select 
-                        value={newMedia.type} 
-                        onValueChange={(value) => setNewMedia(prev => ({ ...prev, type: value }))}
-                      >
-                        <SelectTrigger className="w-[120px]">
-                          <SelectValue placeholder="Typ" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="image">Bild</SelectItem>
-                          <SelectItem value="video">Video</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      
-                      <Input
-                        type="file"
-                        accept={newMedia.type === 'image' ? 'image/*' : 'video/*'}
-                        onChange={(e) => setNewMedia(prev => ({ 
-                          ...prev, 
-                          file: e.target.files?.[0] || null 
-                        }))}
-                      />
-                      
-                      <Button 
-                        onClick={handleFileUpload}
-                        disabled={!newMedia.file || uploading}
-                      >
-                        <Upload className="h-4 w-4 mr-2" />
-                        {uploading ? 'Hochladen...' : 'Hochladen'}
-                      </Button>
-                    </div>
+        {/* Medienverwaltung */}
+        <TabsContent value="media">
+          <Card>
+            <CardHeader>
+              <CardTitle>Medienverwaltung</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="border rounded-lg p-4">
+                <h3 className="font-medium mb-4">Neues Medium hochladen</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <Select 
+                      value={newMedia.type} 
+                      onValueChange={(value) => setNewMedia(prev => ({ ...prev, type: value }))}
+                    >
+                      <SelectTrigger className="w-[120px]">
+                        <SelectValue placeholder="Typ" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="image">Bild</SelectItem>
+                        <SelectItem value="video">Video</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    
+                    <Input
+                      type="file"
+                      accept={newMedia.type === 'image' ? 'image/*' : 'video/*'}
+                      onChange={(e) => setNewMedia(prev => ({ 
+                        ...prev, 
+                        file: e.target.files?.[0] || null 
+                      }))}
+                    />
+                    
+                    <Button 
+                      onClick={handleFileUpload}
+                      disabled={!newMedia.file || uploading}
+                    >
+                      <Upload className="h-4 w-4 mr-2" />
+                      {uploading ? 'Hochladen...' : 'Hochladen'}
+                    </Button>
                   </div>
                 </div>
+              </div>
 
-                <div className="space-y-4">
-                  <h3 className="font-medium">Bilder</h3>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Vorschau</TableHead>
-                        <TableHead>Titel</TableHead>
-                        <TableHead>URL</TableHead>
-                        <TableHead className="text-right">Aktionen</TableHead>
+              <div className="space-y-4">
+                <h3 className="font-medium">Bilder</h3>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Vorschau</TableHead>
+                      <TableHead>Titel</TableHead>
+                      <TableHead>URL</TableHead>
+                      <TableHead className="text-right">Aktionen</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {media.images.map((item) => (
+                      <TableRow key={item.id}>
+                        <TableCell>
+                          <img 
+                            src={item.url} 
+                            alt={item.title} 
+                            className="h-12 w-12 object-cover rounded"
+                          />
+                        </TableCell>
+                        <TableCell>{item.title}</TableCell>
+                        <TableCell className="text-sm text-gray-500 truncate max-w-xs">
+                          {item.url}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button variant="ghost" size="sm" className="mr-2">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            variant="destructive" 
+                            size="sm"
+                            onClick={() => deleteMedia(item.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
                       </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {media.images.map((item) => (
-                        <TableRow key={item.id}>
-                          <TableCell>
-                            <img 
-                              src={item.url} 
-                              alt={item.title} 
-                              className="h-12 w-12 object-cover rounded"
-                            />
-                          </TableCell>
-                          <TableCell>{item.title}</TableCell>
-                          <TableCell className="text-sm text-gray-500 truncate max-w-xs">
-                            {item.url}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <Button variant="ghost" size="sm" className="mr-2">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button 
-                              variant="destructive" 
-                              size="sm"
-                              onClick={() => deleteMedia(item.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
 
-                <div className="space-y-4">
-                  <h3 className="font-medium">Videos</h3>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Vorschau</TableHead>
-                        <TableHead>Titel</TableHead>
-                        <TableHead>URL</TableHead>
-                        <TableHead className="text-right">Aktionen</TableHead>
+              <div className="space-y-4">
+                <h3 className="font-medium">Videos</h3>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Vorschau</TableHead>
+                      <TableHead>Titel</TableHead>
+                      <TableHead>URL</TableHead>
+                      <TableHead className="text-right">Aktionen</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {media.videos.map((item) => (
+                      <TableRow key={item.id}>
+                        <TableCell>
+                          <div className="h-12 w-12 bg-gray-100 flex items-center justify-center rounded">
+                            <Video className="h-6 w-6 text-gray-400" />
+                          </div>
+                        </TableCell>
+                        <TableCell>{item.title}</TableCell>
+                        <TableCell className="text-sm text-gray-500 truncate max-w-xs">
+                          {item.url}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button variant="ghost" size="sm" className="mr-2">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            variant="destructive" 
+                            size="sm"
+                            onClick={() => deleteMedia(item.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
                       </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {media.videos.map((item) => (
-                        <TableRow key={item.id}>
-                          <TableCell>
-                            <div className="h-12 w-12 bg-gray-100 flex items-center justify-center rounded">
-                              <Video className="h-6 w-6 text-gray-400" />
-                            </div>
-                          </TableCell>
-                          <TableCell>{item.title}</TableCell>
-                          <TableCell className="text-sm text-gray-500 truncate max-w-xs">
-                            {item.url}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <Button variant="ghost" size="sm" className="mr-2">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button 
-                              variant="destructive" 
-                              size="sm"
-                              onClick={() => deleteMedia(item.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
-        <div className="flex justify-end">
-          <Button onClick={handleSave} disabled={loadingData}>
-            {loadingData ? 'Speichern...' : 'Einstellungen speichern'}
-          </Button>
-        </div>
-      </main>
-    </div>
+      <div className="flex justify-end">
+        <Button onClick={handleSave} disabled={loadingData}>
+          {loadingData ? 'Speichern...' : 'Einstellungen speichern'}
+        </Button>
+      </div>
+    </main>
   );
 }

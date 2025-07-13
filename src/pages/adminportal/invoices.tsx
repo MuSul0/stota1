@@ -87,54 +87,52 @@ export default function AdminInvoices() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-grow container mx-auto px-6 py-12 max-w-7xl">
-        <h1 className="text-3xl font-bold mb-8">Rechnungen</h1>
+    <main className="flex-grow container mx-auto px-6 py-12 max-w-7xl">
+      <h1 className="text-3xl font-bold mb-8">Rechnungen</h1>
 
-        {invoices.length === 0 ? (
-          <p className="text-gray-600">Keine Rechnungen gefunden.</p>
-        ) : (
-          <Card>
-            <CardHeader>
-              <CardTitle>Rechnungsübersicht</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0 overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Kunde</TableHead>
-                    <TableHead>Betrag</TableHead>
-                    <TableHead>Fällig am</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Aktion</TableHead>
+      {invoices.length === 0 ? (
+        <p className="text-gray-600">Keine Rechnungen gefunden.</p>
+      ) : (
+        <Card>
+          <CardHeader>
+            <CardTitle>Rechnungsübersicht</CardTitle>
+          </CardHeader>
+          <CardContent className="p-0 overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Kunde</TableHead>
+                  <TableHead>Betrag</TableHead>
+                  <TableHead>Fällig am</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Aktion</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {invoices.map((invoice) => (
+                  <TableRow key={invoice.id}>
+                    <TableCell>{invoice.customer_email}</TableCell>
+                    <TableCell>{invoice.amount.toFixed(2)} €</TableCell>
+                    <TableCell>{new Date(invoice.due_date).toLocaleDateString()}</TableCell>
+                    <TableCell>
+                      <Badge variant={invoice.status === 'bezahlt' ? 'default' : 'destructive'}>
+                        {invoice.status === 'bezahlt' ? 'Bezahlt' : 'Offen'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {invoice.status === 'offen' && (
+                        <Button size="sm" onClick={() => markAsPaid(invoice.id)}>
+                          Als bezahlt markieren
+                        </Button>
+                      )}
+                    </TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {invoices.map((invoice) => (
-                    <TableRow key={invoice.id}>
-                      <TableCell>{invoice.customer_email}</TableCell>
-                      <TableCell>{invoice.amount.toFixed(2)} €</TableCell>
-                      <TableCell>{new Date(invoice.due_date).toLocaleDateString()}</TableCell>
-                      <TableCell>
-                        <Badge variant={invoice.status === 'bezahlt' ? 'default' : 'destructive'}>
-                          {invoice.status === 'bezahlt' ? 'Bezahlt' : 'Offen'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {invoice.status === 'offen' && (
-                          <Button size="sm" onClick={() => markAsPaid(invoice.id)}>
-                            Als bezahlt markieren
-                          </Button>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        )}
-      </main>
-    </div>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
+    </main>
   );
 }

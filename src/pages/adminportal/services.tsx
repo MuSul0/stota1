@@ -169,7 +169,7 @@ export default function AdminServices() {
   }
 
   return (
-    <div className="space-y-6 min-h-screen bg-gray-50 flex flex-col">
+    <div className="space-y-6">
       <main className="flex-grow container mx-auto px-6 py-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
           <h1 className="text-3xl font-bold">Services</h1>
