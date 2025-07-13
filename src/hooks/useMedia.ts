@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { RealtimeChannel } from '@supabase/supabase-js'; // Import RealtimeChannel type
 
 interface MediaItem {
   id: string;
@@ -21,6 +22,12 @@ export const useMedia = (props?: UseMediaProps) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!supabase) {
+      setError('Supabase client not initialized.');
+      setLoading(false);
+      return;
+    }
+
     const fetchMedia = async () => {
       setLoading(true);
       setError(null);
@@ -33,6 +40,11 @@ export const useMedia = (props?: UseMediaProps) => {
           query = query.eq('title', props.title);
         } else if (props?.type) {
           query = query.eq('type', props.type);
+        } else {
+          // If no specific props are provided, we can't fetch a single item.
+          setMedia(null);
+          setLoading(false);
+          return;
         }
 
         const { data, error } = await query.single();
@@ -55,28 +67,34 @@ export const useMedia = (props?: UseMediaProps) => {
       }
     };
 
+    let channel: RealtimeChannel | null = null;
     if (props?.title || props?.type || props?.id) {
       fetchMedia();
+      const channelName = `media-single-changes-${props.id || props.title?.replace(/\s/g, '-') || props.type}`;
+      
+      try {
+        channel = supabase
+          .channel(channelName)
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'media' },
+            () => {
+              fetchMedia();
+            }
+          )
+          .subscribe();
+      } catch (e: any) {
+        console.error("Error subscribing to Supabase channel in useMedia:", e);
+        setError(e.message || 'Failed to subscribe to real-time updates.');
+      }
     } else {
       setLoading(false);
     }
 
-    const channelName = `media-single-changes-${props?.id || props?.title?.replace(/\s/g, '-') || props?.type}`;
-    const channel = supabase
-      .channel(channelName)
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'media' },
-        () => {
-          if (props?.title || props?.type || props?.id) {
-            fetchMedia();
-          }
-        }
-      )
-      .subscribe();
-
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
   }, [props?.title, props?.type, props?.id]);
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { RealtimeChannel } from '@supabase/supabase-js'; // Import RealtimeChannel type
 
 interface MediaItem {
   id: string;
@@ -20,6 +21,9 @@ export const useAllMedia = () => {
     setLoading(true);
     setError(null);
     try {
+      if (!supabase) {
+        throw new Error('Supabase client is not initialized.');
+      }
       const { data, error } = await supabase
         .from('media')
         .select('*')
@@ -39,21 +43,35 @@ export const useAllMedia = () => {
   };
 
   useEffect(() => {
+    if (!supabase) {
+      setError('Supabase client not initialized.');
+      setLoading(false);
+      return;
+    }
+
     fetchAllMedia();
 
-    const channel = supabase
-      .channel('media-all-changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'media' },
-        () => {
-          fetchAllMedia();
-        }
-      )
-      .subscribe();
+    let channel: RealtimeChannel | null = null;
+    try {
+      channel = supabase
+        .channel('media-all-changes')
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'media' },
+          () => {
+            fetchAllMedia();
+          }
+        )
+        .subscribe();
+    } catch (e: any) {
+      console.error("Error subscribing to Supabase channel in useAllMedia:", e);
+      setError(e.message || 'Failed to subscribe to real-time updates.');
+    }
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
   }, []);
 
