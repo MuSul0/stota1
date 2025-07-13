@@ -2,30 +2,49 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Upload, Trash2, Video } from 'lucide-react';
+import { Upload, Trash2, FileImage, Video } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { MediaItem } from '@/hooks/useAllMedia';
-import { getUniqueDbTitle, sanitizeFilename } from '@/lib/mediaUtils';
+import { useAllMedia } from '@/hooks/useAllMedia';
 
 interface MediaUploadSlotProps {
-  title: string;
+  title: string; // This is the display title
   description: string;
   type: 'image' | 'video';
   pageContext: string;
-  allMediaItems: MediaItem[];
-  refetchAllMedia: () => void;
 }
 
-export const MediaUploadSlot: React.FC<MediaUploadSlotProps> = ({ title, description, type, pageContext, allMediaItems, refetchAllMedia }) => {
+export const MediaUploadSlot: React.FC<MediaUploadSlotProps> = ({ title, description, type, pageContext }) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [currentMedia, setCurrentMedia] = useState<{ url: string; id: string } | null>(null);
 
+  const { media: allMediaItems, mutate: refetchAllMedia } = useAllMedia();
+
+  const sanitizeFilename = (name: string) => {
+    return name
+      .toLowerCase()
+      .replace(/ä/g, 'ae')
+      .replace(/ö/g, 'oe')
+      .replace(/ü/g, 'ue')
+      .replace(/ß/g, 'ss')
+      .replace(/[^a-z0-9\s-]/g, '') // Remove non-alphanumeric characters except spaces and hyphens
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/-+/g, '-') // Replace multiple hyphens with a single hyphen
+      .trim();
+  };
+
+  // Function to generate a unique identifier for the database 'title' column
+  const getUniqueDbTitle = (displayTitle: string, pageCtx: string, mediaType: 'image' | 'video') => {
+    const sanitizedPageContext = sanitizeFilename(pageCtx);
+    const sanitizedDisplayTitle = sanitizeFilename(displayTitle);
+    return `${sanitizedPageContext}-${sanitizedDisplayTitle}-${mediaType}`;
+  };
+
   useEffect(() => {
     const expectedDbTitle = getUniqueDbTitle(title, pageContext, type);
     const mediaItem = allMediaItems.find(
-      (item) => item.title === expectedDbTitle
+      (item) => item.title === expectedDbTitle // Now searching by the unique DB title
     );
     if (mediaItem) {
       setCurrentMedia({ url: mediaItem.url, id: mediaItem.id });
@@ -49,36 +68,42 @@ export const MediaUploadSlot: React.FC<MediaUploadSlotProps> = ({ title, descrip
     setUploading(true);
     try {
       const fileExt = file.name.split('.').pop();
-      const sanitizedTitleForFilename = sanitizeFilename(title);
-      const sanitizedPageContextForFilename = sanitizeFilename(pageContext);
+      const sanitizedTitleForFilename = sanitizeFilename(title); // For the actual file name in storage
+      const sanitizedPageContextForFilename = sanitizeFilename(pageContext); // For the actual file name in storage
       const fileName = `${sanitizedPageContextForFilename}-${sanitizedTitleForFilename}-${Date.now()}.${fileExt}`;
       const filePath = `${type}s/${fileName}`;
 
-      const dbTitleToStore = getUniqueDbTitle(title, pageContext, type);
+      const dbTitleToStore = getUniqueDbTitle(title, pageContext, type); // This is the unique identifier for the DB 'title' column
 
+      // 1. Upload new file to storage
       const { error: uploadError } = await supabase.storage.from('media').upload(filePath, file);
       if (uploadError) throw uploadError;
       const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(filePath);
 
+      // 2. Update or Insert record in database
       if (currentMedia) {
+        // If media already exists for this slot, update it
         const { error: dbUpdateError } = await supabase
           .from('media')
-          .update({ url: publicUrl, created_at: new Date().toISOString(), title: dbTitleToStore })
-          .eq('id', currentMedia.id);
+          .update({ url: publicUrl, created_at: new Date().toISOString(), title: dbTitleToStore }) // Update URL, timestamp, and ensure title is the unique identifier
+          .eq('id', currentMedia.id); // Identify by ID
         if (dbUpdateError) throw dbUpdateError;
 
+        // 3. Delete old file from storage (after successful DB update)
         const oldFilePath = currentMedia.url.split('/media/')[1];
         if (oldFilePath) {
           const { error: storageDeleteError } = await supabase.storage.from('media').remove([oldFilePath]);
           if (storageDeleteError) {
             console.warn('Error deleting old file from storage:', storageDeleteError);
+            // Log warning but don't block the main operation
           }
         }
       } else {
+        // If no media exists for this slot, insert a new one
         const { error: dbInsertError } = await supabase.from('media').insert({
           type: type,
           url: publicUrl,
-          title: dbTitleToStore,
+          title: dbTitleToStore, // Store the unique identifier here
           description: description,
           page_context: pageContext,
         });
@@ -102,18 +127,20 @@ export const MediaUploadSlot: React.FC<MediaUploadSlotProps> = ({ title, descrip
     }
 
     try {
+      // Delete from storage
       const filePath = currentMedia.url.split('/media/')[1];
       if (filePath) {
         const { error: storageError } = await supabase.storage.from('media').remove([filePath]);
         if (storageError) throw storageError;
       }
 
+      // Delete from database
       const { error: dbError } = await supabase.from('media').delete().eq('id', currentMedia.id);
       if (dbError) throw dbError;
 
       toast.success('Medium erfolgreich gelöscht!');
       setCurrentMedia(null);
-      refetchAllMedia();
+      refetchAllMedia(); // Refresh media list
     } catch (error: any) {
       toast.error('Fehler beim Löschen: ' + error.message);
       console.error('Delete error:', error);
