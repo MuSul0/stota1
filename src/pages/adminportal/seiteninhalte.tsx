@@ -8,29 +8,20 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Loader2, Edit, FileText, BarChart, Clock, CheckCircle, TrendingUp } from 'lucide-react';
+import { Loader2, Edit, FileText, Clock, CheckCircle, TrendingUp, ChevronDown, ChevronRight } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useAllMedia } from '@/hooks/useAllMedia';
 import { MediaUploadSlot } from '@/components/Admin/MediaUploadSlot';
 
 interface SeoMetadata {
   path: string;
   title: string;
-  description:string;
+  description: string;
   keywords: string;
   updated_at: string;
 }
-
-const mockKeywords = [
-    { name: 'Transport Gelsenkirchen', rank: 3, volume: '1.200', change: 2 },
-    { name: 'Gartenbau in der Nähe', rank: 5, volume: '2.500', change: 1 },
-    { name: 'Umzugsfirma Kosten', rank: 8, volume: '3.100', change: -1 },
-    { name: 'Entsorgung Sperrmüll', rank: 4, volume: '900', change: 3 },
-    { name: 'Gebäudereinigung Büro', rank: 6, volume: '1.500', change: 2 },
-];
 
 export default function AdminSeiteninhalte() {
   const [metadata, setMetadata] = useState<SeoMetadata[]>([]);
@@ -38,6 +29,7 @@ export default function AdminSeiteninhalte() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedMeta, setSelectedMeta] = useState<SeoMetadata | null>(null);
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
   const { media: allMediaItems, loading: loadingMedia, mutate: refetchAllMedia } = useAllMedia();
 
@@ -46,18 +38,25 @@ export default function AdminSeiteninhalte() {
   }, []);
 
   const fetchMetadata = async () => {
-    setLoadingSeo(true);
-    const { data, error } = await supabase
-      .from('seo_metadata')
-      .select('*')
-      .order('path', { ascending: true });
+    try {
+      setLoadingSeo(true);
+      const { data, error } = await supabase
+        .from('seo_metadata')
+        .select('*')
+        .order('path', { ascending: true });
 
-    if (error) {
+      if (error) {
+        console.error('SEO fetch error:', error);
+        toast.error('Fehler beim Laden der SEO-Daten.');
+      } else {
+        setMetadata(data || []);
+      }
+    } catch (error) {
+      console.error('SEO fetch error:', error);
       toast.error('Fehler beim Laden der SEO-Daten.');
-    } else {
-      setMetadata(data || []);
+    } finally {
+      setLoadingSeo(false);
     }
-    setLoadingSeo(false);
   };
 
   const handleEditClick = (meta: SeoMetadata) => {
@@ -76,30 +75,43 @@ export default function AdminSeiteninhalte() {
     if (!selectedMeta) return;
 
     setIsSubmitting(true);
-    const { error } = await supabase
-      .from('seo_metadata')
-      .update({
-        title: selectedMeta.title,
-        description: selectedMeta.description,
-        keywords: selectedMeta.keywords,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('path', selectedMeta.path);
+    try {
+      const { error } = await supabase
+        .from('seo_metadata')
+        .update({
+          title: selectedMeta.title,
+          description: selectedMeta.description,
+          keywords: selectedMeta.keywords,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('path', selectedMeta.path);
 
-    if (error) {
+      if (error) {
+        toast.error('Fehler beim Speichern der Daten.');
+      } else {
+        toast.success(`SEO-Daten für ${selectedMeta.path} erfolgreich aktualisiert.`);
+        setIsDialogOpen(false);
+        fetchMetadata();
+      }
+    } catch (error) {
+      console.error('Save error:', error);
       toast.error('Fehler beim Speichern der Daten.');
-    } else {
-      toast.success(`SEO-Daten für ${selectedMeta.path} erfolgreich aktualisiert.`);
-      setIsDialogOpen(false);
-      fetchMetadata();
+    } finally {
+      setIsSubmitting(false);
     }
-    setIsSubmitting(false);
+  };
+
+  const toggleSection = (section: string) => {
+    setExpandedSection(expandedSection === section ? null : section);
   };
 
   if (loadingSeo || loadingMedia) {
     return (
-      <div className="flex justify-center p-8">
-        <Loader2 className="h-8 w-8 animate-spin text-white" />
+      <div className="flex justify-center items-center min-h-screen bg-gray-900">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-white mx-auto mb-4" />
+          <p className="text-white">Lade Daten...</p>
+        </div>
       </div>
     );
   }
@@ -108,140 +120,351 @@ export default function AdminSeiteninhalte() {
   const totalPages = metadata.length;
 
   return (
-    <main className="flex-grow container mx-auto px-4 sm:px-6 py-12 max-w-7xl text-white">
-      <h1 className="text-3xl font-bold mb-8">Seiteninhalte & SEO</h1>
-      
-      <Tabs defaultValue="seo-dashboard">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="seo-dashboard">SEO Dashboard</TabsTrigger>
-          <TabsTrigger value="bildverwaltung">Bildverwaltung</TabsTrigger>
-        </TabsList>
+    <div className="min-h-screen bg-gray-900 text-white">
+      <main className="flex-grow container mx-auto px-4 sm:px-6 py-12 max-w-7xl">
+        <h1 className="text-3xl font-bold mb-8 text-white">Seiteninhalte & SEO</h1>
+        
+        <Tabs defaultValue="seo-dashboard" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 bg-gray-800">
+            <TabsTrigger value="seo-dashboard" className="text-white data-[state=active]:bg-gray-700">SEO Dashboard</TabsTrigger>
+            <TabsTrigger value="bildverwaltung" className="text-white data-[state=active]:bg-gray-700">Bildverwaltung</TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="seo-dashboard" className="mt-6">
-          {/* Top Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card className="bg-gray-800 border-gray-700"><CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2"><CardTitle className="text-sm font-medium text-gray-300">Gesamt Seiten</CardTitle><FileText className="h-4 w-4 text-gray-400" /></CardHeader><CardContent><div className="text-2xl font-bold">{totalPages}</div><p className="text-xs text-gray-400">Alle Seiten mit SEO-Metadaten</p></CardContent></Card>
-            <Card className="bg-gray-800 border-gray-700"><CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2"><CardTitle className="text-sm font-medium text-gray-300">SEO Score</CardTitle><TrendingUp className="h-4 w-4 text-gray-400" /></CardHeader><CardContent><div className="text-2xl font-bold">{seoScore}/100</div><p className="text-xs text-gray-400">Basierend auf internen Metriken</p></CardContent></Card>
-            <Card className="bg-gray-800 border-gray-700"><CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2"><CardTitle className="text-sm font-medium text-gray-300">Ø Ladezeit</CardTitle><Clock className="h-4 w-4 text-gray-400" /></CardHeader><CardContent><div className="text-2xl font-bold">0.9s</div><p className="text-xs text-gray-400">-0.3s seit letzter Optimierung</p></CardContent></Card>
-            <Card className="bg-gray-800 border-gray-700"><CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2"><CardTitle className="text-sm font-medium text-gray-300">Alle optimiert</CardTitle><CheckCircle className="h-4 w-4 text-green-400" /></CardHeader><CardContent><div className="text-2xl font-bold">Ja</div><p className="text-xs text-gray-400">Alle Seiten haben SEO-Daten</p></CardContent></Card>
-          </div>
-          {/* SEO Pages Overview */}
-          <Card className="bg-gray-800 border-gray-700"><CardHeader><CardTitle>SEO Seiten Übersicht</CardTitle><CardDescription>Verwalten Sie hier die SEO-Daten für jede Seite.</CardDescription></CardHeader><CardContent><Table><TableHeader><TableRow className="border-gray-700 hover:bg-gray-700/50"><TableHead className="text-white">Seite</TableHead><TableHead className="text-white">Status</TableHead><TableHead className="text-white">Performance</TableHead><TableHead className="text-white">Zuletzt aktualisiert</TableHead><TableHead className="text-right text-white">Aktionen</TableHead></TableRow></TableHeader><TableBody>{metadata.map((meta) => (<TableRow key={meta.path} className="border-gray-700 hover:bg-gray-700/50"><TableCell className="font-medium"><div className="font-bold">{meta.title.split('|')[0].trim()}</div><div className="text-xs text-gray-400">{meta.path}</div></TableCell><TableCell><Badge variant="default" className="bg-green-600/20 text-green-400 border-green-500">Aktiv</Badge></TableCell><TableCell><div className="flex items-center gap-2"><Progress value={85 + (meta.path.length % 15)} className="w-24" /><span>{85 + (meta.path.length % 15)}%</span></div></TableCell><TableCell>{new Date(meta.updated_at).toLocaleString('de-DE')}</TableCell><TableCell className="text-right"><Button variant="outline" size="sm" onClick={() => handleEditClick(meta)}><Edit className="h-4 w-4 mr-2" />Bearbeiten</Button></TableCell></TableRow>))}</TableBody></Table></CardContent></Card>
-        </TabsContent>
+          <TabsContent value="seo-dashboard" className="mt-6">
+            {/* Top Stats Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <Card className="bg-gray-800 border-gray-700">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-gray-300">Gesamt Seiten</CardTitle>
+                  <FileText className="h-4 w-4 text-gray-400" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-white">{totalPages}</div>
+                  <p className="text-xs text-gray-400">Alle Seiten mit SEO-Metadaten</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-gray-800 border-gray-700">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-gray-300">SEO Score</CardTitle>
+                  <TrendingUp className="h-4 w-4 text-gray-400" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-white">{seoScore}/100</div>
+                  <p className="text-xs text-gray-400">Basierend auf internen Metriken</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-gray-800 border-gray-700">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-gray-300">Ø Ladezeit</CardTitle>
+                  <Clock className="h-4 w-4 text-gray-400" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-white">0.9s</div>
+                  <p className="text-xs text-gray-400">-0.3s seit letzter Optimierung</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-gray-800 border-gray-700">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-gray-300">Alle optimiert</CardTitle>
+                  <CheckCircle className="h-4 w-4 text-green-400" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-white">Ja</div>
+                  <p className="text-xs text-gray-400">Alle Seiten haben SEO-Daten</p>
+                </CardContent>
+              </Card>
+            </div>
 
-        <TabsContent value="bildverwaltung" className="mt-6">
-          <Card className="bg-gray-800 border-gray-700">
-            <CardHeader>
-              <CardTitle>Bildinhalte der Seiten verwalten</CardTitle>
-              <CardDescription>Hier können Sie die Bilder für spezifische Bereiche Ihrer Webseite in Echtzeit ändern. Für die Galerie-Seite nutzen Sie bitte die allgemeine Medienverwaltung unter Einstellungen &gt; Medien.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Accordion type="single" collapsible className="w-full space-y-4">
-                <AccordionItem value="startseite" className="border border-gray-700 rounded-lg">
-                  <AccordionTrigger className="px-4 py-3 hover:no-underline">Startseite</AccordionTrigger>
-                  <AccordionContent className="p-4 space-y-4 bg-gray-900/50">
-                    <MediaUploadSlot 
-                      title="Hero Bild" 
-                      description="Das große Hauptbild ganz oben auf der Startseite." 
-                      type="image" 
-                      pageContext="startseite" 
-                    />
-                    <MediaUploadSlot 
-                      title="Vorschau Transporte" 
-                      description="Bild für die Transport-Dienstleistung auf der Startseite." 
-                      type="image" 
-                      pageContext="startseite" 
-                    />
-                    <MediaUploadSlot 
-                      title="Vorschau Reinigung" 
-                      description="Bild für die Reinigungs-Dienstleistung auf der Startseite." 
-                      type="image" 
-                      pageContext="startseite" 
-                    />
-                    <MediaUploadSlot 
-                      title="Vorschau Gartenbau" 
-                      description="Bild für die Gartenbau-Dienstleistung auf der Startseite." 
-                      type="image" 
-                      pageContext="startseite" 
-                    />
-                    <MediaUploadSlot 
-                      title="Vorschau Entsorgung" 
-                      description="Bild für die Entsorgungs-Dienstleistung auf der Startseite." 
-                      type="image" 
-                      pageContext="startseite" 
-                    />
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="leistungen" className="border border-gray-700 rounded-lg">
-                  <AccordionTrigger className="px-4 py-3 hover:no-underline">Leistungsseiten</AccordionTrigger>
-                  <AccordionContent className="p-4 space-y-4 bg-gray-900/50">
-                    <MediaUploadSlot 
-                      title="Header-Bild Transporte" 
-                      description="Das Titelbild für die Transport-Detailseite." 
-                      type="image" 
-                      pageContext="leistungen" 
-                    />
-                    <MediaUploadSlot 
-                      title="Header-Bild Reinigung" 
-                      description="Das Titelbild für die Reinigungs-Detailseite." 
-                      type="image" 
-                      pageContext="leistungen" 
-                    />
-                    <MediaUploadSlot 
-                      title="Header-Bild Gartenbau" 
-                      description="Das Titelbild für die Gartenbau-Detailseite." 
-                      type="image" 
-                      pageContext="leistungen" 
-                    />
-                    <MediaUploadSlot 
-                      title="Header-Bild Entsorgung" 
-                      description="Das Titelbild für die Entsorgungs-Detailseite." 
-                      type="image" 
-                      pageContext="leistungen" 
-                    />
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="ueber-uns" className="border border-gray-700 rounded-lg">
-                  <AccordionTrigger className="px-4 py-3 hover:no-underline">Über Uns</AccordionTrigger>
-                  <AccordionContent className="p-4 space-y-4 bg-gray-900/50">
-                    <MediaUploadSlot 
-                      title="Team Bild" 
-                      description="Ein Bild des Teams oder des Gründers auf der 'Über Uns'-Seite." 
-                      type="image" 
-                      pageContext="ueber-uns" 
-                    />
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="empfehlungsprogramm" className="border border-gray-700 rounded-lg">
-                  <AccordionTrigger className="px-4 py-3 hover:no-underline">Empfehlungsprogramm</AccordionTrigger>
-                  <AccordionContent className="p-4 space-y-4 bg-gray-900/50">
-                    <MediaUploadSlot 
-                      title="Programm-Banner" 
-                      description="Ein Werbebanner für das Empfehlungsprogramm." 
-                      type="image" 
-                      pageContext="empfehlungsprogramm" 
-                    />
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="kontakt" className="border border-gray-700 rounded-lg">
-                  <AccordionTrigger className="px-4 py-3 hover:no-underline">Kontakt</AccordionTrigger>
-                  <AccordionContent className="p-4 space-y-4 bg-gray-900/50">
-                    <MediaUploadSlot 
-                      title="Kontakt Header-Bild" 
-                      description="Das Titelbild auf der Kontaktseite." 
-                      type="image" 
-                      pageContext="kontakt" 
-                    />
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+            {/* SEO Pages Overview */}
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-white">SEO Seiten Übersicht</CardTitle>
+                <CardDescription className="text-gray-400">Verwalten Sie hier die SEO-Daten für jede Seite.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-gray-700 hover:bg-gray-700/50">
+                      <TableHead className="text-white">Seite</TableHead>
+                      <TableHead className="text-white">Status</TableHead>
+                      <TableHead className="text-white">Performance</TableHead>
+                      <TableHead className="text-white">Zuletzt aktualisiert</TableHead>
+                      <TableHead className="text-right text-white">Aktionen</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {metadata.map((meta) => (
+                      <TableRow key={meta.path} className="border-gray-700 hover:bg-gray-700/50">
+                        <TableCell className="font-medium">
+                          <div className="font-bold text-white">{meta.title.split('|')[0].trim()}</div>
+                          <div className="text-xs text-gray-400">{meta.path}</div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="default" className="bg-green-600/20 text-green-400 border-green-500">
+                            Aktiv
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Progress value={85 + (meta.path.length % 15)} className="w-24" />
+                            <span className="text-white">{85 + (meta.path.length % 15)}%</span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-white">
+                          {new Date(meta.updated_at).toLocaleString('de-DE')}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button variant="outline" size="sm" onClick={() => handleEditClick(meta)}>
+                            <Edit className="h-4 w-4 mr-2" />
+                            Bearbeiten
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-      {/* Dialog for editing SEO */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}><DialogContent className="sm:max-w-[600px] bg-gray-800 border-gray-700 text-white">{selectedMeta && (<form onSubmit={handleSubmit}><DialogHeader><DialogTitle>SEO für {selectedMeta.path} bearbeiten</DialogTitle><DialogDescription className="text-gray-400">Änderungen hier wirken sich direkt auf die Suchmaschinenergebnisse aus.</DialogDescription></DialogHeader><div className="grid gap-4 py-4"><div className="grid grid-cols-4 items-center gap-4"><Label htmlFor="title" className="text-right">Titel</Label><Input id="title" name="title" value={selectedMeta.title} onChange={handleFormChange} className="col-span-3 bg-gray-700 border-gray-600" /></div><div className="grid grid-cols-4 items-start gap-4"><Label htmlFor="description" className="text-right pt-2">Beschreibung</Label><Textarea id="description" name="description" value={selectedMeta.description} onChange={handleFormChange} className="col-span-3 bg-gray-700 border-gray-600" rows={5} /></div><div className="grid grid-cols-4 items-center gap-4"><Label htmlFor="keywords" className="text-right">Keywords</Label><Input id="keywords" name="keywords" value={selectedMeta.keywords} onChange={handleFormChange} className="col-span-3 bg-gray-700 border-gray-600" placeholder="keyword1, keyword2" /></div></div><DialogFooter><Button type="submit" disabled={isSubmitting}>{isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}Speichern</Button></DialogFooter></form>)}</DialogContent></Dialog>
-    </main>
+          <TabsContent value="bildverwaltung" className="mt-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-white">Bildinhalte der Seiten verwalten</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Hier können Sie die Bilder für spezifische Bereiche Ihrer Webseite in Echtzeit ändern.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {/* Startseite */}
+                  <div className="border border-gray-700 rounded-lg">
+                    <button
+                      onClick={() => toggleSection('startseite')}
+                      className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-gray-700/50 rounded-t-lg"
+                    >
+                      <span className="text-white font-medium">Startseite</span>
+                      {expandedSection === 'startseite' ? (
+                        <ChevronDown className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4 text-gray-400" />
+                      )}
+                    </button>
+                    {expandedSection === 'startseite' && (
+                      <div className="p-4 space-y-4 bg-gray-900/50 border-t border-gray-700">
+                        <MediaUploadSlot 
+                          title="Hero Bild" 
+                          description="Das große Hauptbild ganz oben auf der Startseite." 
+                          type="image" 
+                          pageContext="startseite" 
+                        />
+                        <MediaUploadSlot 
+                          title="Vorschau Transporte" 
+                          description="Bild für die Transport-Dienstleistung auf der Startseite." 
+                          type="image" 
+                          pageContext="startseite" 
+                        />
+                        <MediaUploadSlot 
+                          title="Vorschau Reinigung" 
+                          description="Bild für die Reinigungs-Dienstleistung auf der Startseite." 
+                          type="image" 
+                          pageContext="startseite" 
+                        />
+                        <MediaUploadSlot 
+                          title="Vorschau Gartenbau" 
+                          description="Bild für die Gartenbau-Dienstleistung auf der Startseite." 
+                          type="image" 
+                          pageContext="startseite" 
+                        />
+                        <MediaUploadSlot 
+                          title="Vorschau Entsorgung" 
+                          description="Bild für die Entsorgungs-Dienstleistung auf der Startseite." 
+                          type="image" 
+                          pageContext="startseite" 
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Leistungsseiten */}
+                  <div className="border border-gray-700 rounded-lg">
+                    <button
+                      onClick={() => toggleSection('leistungen')}
+                      className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-gray-700/50 rounded-t-lg"
+                    >
+                      <span className="text-white font-medium">Leistungsseiten</span>
+                      {expandedSection === 'leistungen' ? (
+                        <ChevronDown className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4 text-gray-400" />
+                      )}
+                    </button>
+                    {expandedSection === 'leistungen' && (
+                      <div className="p-4 space-y-4 bg-gray-900/50 border-t border-gray-700">
+                        <MediaUploadSlot 
+                          title="Header-Bild Transporte" 
+                          description="Das Titelbild für die Transport-Detailseite." 
+                          type="image" 
+                          pageContext="leistungen" 
+                        />
+                        <MediaUploadSlot 
+                          title="Header-Bild Reinigung" 
+                          description="Das Titelbild für die Reinigungs-Detailseite." 
+                          type="image" 
+                          pageContext="leistungen" 
+                        />
+                        <MediaUploadSlot 
+                          title="Header-Bild Gartenbau" 
+                          description="Das Titelbild für die Gartenbau-Detailseite." 
+                          type="image" 
+                          pageContext="leistungen" 
+                        />
+                        <MediaUploadSlot 
+                          title="Header-Bild Entsorgung" 
+                          description="Das Titelbild für die Entsorgungs-Detailseite." 
+                          type="image" 
+                          pageContext="leistungen" 
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Über Uns */}
+                  <div className="border border-gray-700 rounded-lg">
+                    <button
+                      onClick={() => toggleSection('ueber-uns')}
+                      className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-gray-700/50 rounded-t-lg"
+                    >
+                      <span className="text-white font-medium">Über Uns</span>
+                      {expandedSection === 'ueber-uns' ? (
+                        <ChevronDown className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4 text-gray-400" />
+                      )}
+                    </button>
+                    {expandedSection === 'ueber-uns' && (
+                      <div className="p-4 space-y-4 bg-gray-900/50 border-t border-gray-700">
+                        <MediaUploadSlot 
+                          title="Team Bild" 
+                          description="Ein Bild des Teams oder des Gründers auf der 'Über Uns'-Seite." 
+                          type="image" 
+                          pageContext="ueber-uns" 
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Empfehlungsprogramm */}
+                  <div className="border border-gray-700 rounded-lg">
+                    <button
+                      onClick={() => toggleSection('empfehlungsprogramm')}
+                      className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-gray-700/50 rounded-t-lg"
+                    >
+                      <span className="text-white font-medium">Empfehlungsprogramm</span>
+                      {expandedSection === 'empfehlungsprogramm' ? (
+                        <ChevronDown className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4 text-gray-400" />
+                      )}
+                    </button>
+                    {expandedSection === 'empfehlungsprogramm' && (
+                      <div className="p-4 space-y-4 bg-gray-900/50 border-t border-gray-700">
+                        <MediaUploadSlot 
+                          title="Programm-Banner" 
+                          description="Ein Werbebanner für das Empfehlungsprogramm." 
+                          type="image" 
+                          pageContext="empfehlungsprogramm" 
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Kontakt */}
+                  <div className="border border-gray-700 rounded-lg">
+                    <button
+                      onClick={() => toggleSection('kontakt')}
+                      className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-gray-700/50 rounded-t-lg"
+                    >
+                      <span className="text-white font-medium">Kontakt</span>
+                      {expandedSection === 'kontakt' ? (
+                        <ChevronDown className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4 text-gray-400" />
+                      )}
+                    </button>
+                    {expandedSection === 'kontakt' && (
+                      <div className="p-4 space-y-4 bg-gray-900/50 border-t border-gray-700">
+                        <MediaUploadSlot 
+                          title="Kontakt Header-Bild" 
+                          description="Das Titelbild auf der Kontaktseite." 
+                          type="image" 
+                          pageContext="kontakt" 
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+
+        {/* Dialog for editing SEO */}
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="sm:max-w-[600px] bg-gray-800 border-gray-700 text-white">
+            {selectedMeta && (
+              <form onSubmit={handleSubmit}>
+                <DialogHeader>
+                  <DialogTitle className="text-white">SEO für {selectedMeta.path} bearbeiten</DialogTitle>
+                  <DialogDescription className="text-gray-400">
+                    Änderungen hier wirken sich direkt auf die Suchmaschinenergebnisse aus.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="title" className="text-right text-white">Titel</Label>
+                    <Input 
+                      id="title" 
+                      name="title" 
+                      value={selectedMeta.title} 
+                      onChange={handleFormChange} 
+                      className="col-span-3 bg-gray-700 border-gray-600 text-white" 
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-start gap-4">
+                    <Label htmlFor="description" className="text-right pt-2 text-white">Beschreibung</Label>
+                    <Textarea 
+                      id="description" 
+                      name="description" 
+                      value={selectedMeta.description} 
+                      onChange={handleFormChange} 
+                      className="col-span-3 bg-gray-700 border-gray-600 text-white" 
+                      rows={5} 
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="keywords" className="text-right text-white">Keywords</Label>
+                    <Input 
+                      id="keywords" 
+                      name="keywords" 
+                      value={selectedMeta.keywords} 
+                      onChange={handleFormChange} 
+                      className="col-span-3 bg-gray-700 border-gray-600 text-white" 
+                      placeholder="keyword1, keyword2" 
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Speichern
+                  </Button>
+                </DialogFooter>
+              </form>
+            )}
+          </DialogContent>
+        </Dialog>
+      </main>
+    </div>
   );
 }
