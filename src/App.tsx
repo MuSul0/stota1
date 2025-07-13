@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
 import { SessionProvider } from '@/components/SessionProvider';
 import { MediaProvider } from './contexts/MediaContext';
-import ScrollToTop from '@/components/ScrollToTop'; // Sicherstellen, dass dieser Import vorhanden ist
+import ScrollToTop from '@/components/ScrollToTop';
 
 import Index from '@/pages/Index';
 import Login from '@/pages/Login';
@@ -36,7 +36,7 @@ import AdminSettings from '@/pages/adminportal/settings';
 import AdminAuftragsverwaltung from '@/pages/adminportal/auftragsverwaltung';
 import AdminArbeitszeiten from '@/pages/adminportal/arbeitszeiten';
 import AdminEmployeeRegistration from '@/pages/adminportal/employee-registration';
-import AdminLayout from '@/pages/Admin/index'; // Import AdminLayout
+import AdminLayout from '@/pages/Admin/index';
 
 // Kunden Portal
 import KundenDashboard from '@/pages/kundenportal/Dashboard';
@@ -59,9 +59,9 @@ import CreateAdminUser from '@/pages/Admin/CreateAdminUser';
 
 function App() {
   return (
-    <SessionProvider>
-      <MediaProvider>
-        <Router>
+    <Router>
+      <SessionProvider>
+        <MediaProvider>
           <ScrollToTop />
           <Routes>
             {/* Public Routes */}
@@ -120,10 +120,10 @@ function App() {
             {/* Catch-all for 404 */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </Router>
-        <Toaster />
-      </MediaProvider>
-    </SessionProvider>
+        </MediaProvider>
+      </SessionProvider>
+      <Toaster />
+    </Router>
   );
 }
 
