@@ -8,14 +8,18 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Loader2, Edit, FileText, BarChart, Clock, CheckCircle, Search, Key, TrendingUp, ArrowRight } from 'lucide-react';
+import { Loader2, Edit, FileText, BarChart, Clock, CheckCircle, TrendingUp } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { useAllMedia } from '@/hooks/useAllMedia';
+import { MediaUploadSlot } from '@/components/Admin/MediaUploadSlot';
 
 interface SeoMetadata {
   path: string;
   title: string;
-  description: string;
+  description:string;
   keywords: string;
   updated_at: string;
 }
@@ -28,19 +32,21 @@ const mockKeywords = [
     { name: 'Gebäudereinigung Büro', rank: 6, volume: '1.500', change: 2 },
 ];
 
-const SeoDashboard = () => {
+export default function AdminSeiteninhalte() {
   const [metadata, setMetadata] = useState<SeoMetadata[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingSeo, setLoadingSeo] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedMeta, setSelectedMeta] = useState<SeoMetadata | null>(null);
+
+  const { media: allMediaItems, loading: loadingMedia, mutate: refetchAllMedia } = useAllMedia();
 
   useEffect(() => {
     fetchMetadata();
   }, []);
 
   const fetchMetadata = async () => {
-    setLoading(true);
+    setLoadingSeo(true);
     const { data, error } = await supabase
       .from('seo_metadata')
       .select('*')
@@ -48,11 +54,10 @@ const SeoDashboard = () => {
 
     if (error) {
       toast.error('Fehler beim Laden der SEO-Daten.');
-      console.error(error);
     } else {
       setMetadata(data || []);
     }
-    setLoading(false);
+    setLoadingSeo(false);
   };
 
   const handleEditClick = (meta: SeoMetadata) => {
@@ -62,10 +67,7 @@ const SeoDashboard = () => {
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (selectedMeta) {
-      setSelectedMeta({
-        ...selectedMeta,
-        [e.target.name]: e.target.value,
-      });
+      setSelectedMeta({ ...selectedMeta, [e.target.name]: e.target.value });
     }
   };
 
@@ -94,7 +96,7 @@ const SeoDashboard = () => {
     setIsSubmitting(false);
   };
 
-  if (loading) {
+  if (loadingSeo || loadingMedia) {
     return (
       <div className="flex justify-center p-8">
         <Loader2 className="h-8 w-8 animate-spin text-white" />
@@ -107,177 +109,47 @@ const SeoDashboard = () => {
 
   return (
     <main className="flex-grow container mx-auto px-4 sm:px-6 py-12 max-w-7xl text-white">
-      <h1 className="text-3xl font-bold mb-8">Live SEO Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-8">Seiteninhalte & SEO</h1>
+      
+      <Tabs defaultValue="seo-dashboard">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="seo-dashboard">SEO Dashboard</TabsTrigger>
+          <TabsTrigger value="bildverwaltung">Bildverwaltung</TabsTrigger>
+        </TabsList>
 
-      {/* Top Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <Card className="bg-gray-800 border-gray-700">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-300">Gesamt Seiten</CardTitle>
-            <FileText className="h-4 w-4 text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalPages}</div>
-            <p className="text-xs text-gray-400">Alle Seiten mit SEO-Metadaten</p>
-          </CardContent>
-        </Card>
-        <Card className="bg-gray-800 border-gray-700">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-300">SEO Score</CardTitle>
-            <TrendingUp className="h-4 w-4 text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{seoScore}/100</div>
-            <p className="text-xs text-gray-400">Basierend auf internen Metriken</p>
-          </CardContent>
-        </Card>
-        <Card className="bg-gray-800 border-gray-700">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-300">Ø Ladezeit</CardTitle>
-            <Clock className="h-4 w-4 text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">0.9s</div>
-            <p className="text-xs text-gray-400">-0.3s seit letzter Optimierung</p>
-          </CardContent>
-        </Card>
-        <Card className="bg-gray-800 border-gray-700">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-300">Alle optimiert</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">Ja</div>
-            <p className="text-xs text-gray-400">Alle Seiten haben SEO-Daten</p>
-          </CardContent>
-        </Card>
-      </div>
+        <TabsContent value="seo-dashboard" className="mt-6">
+          {/* Top Stats Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <Card className="bg-gray-800 border-gray-700"><CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2"><CardTitle className="text-sm font-medium text-gray-300">Gesamt Seiten</CardTitle><FileText className="h-4 w-4 text-gray-400" /></CardHeader><CardContent><div className="text-2xl font-bold">{totalPages}</div><p className="text-xs text-gray-400">Alle Seiten mit SEO-Metadaten</p></CardContent></Card>
+            <Card className="bg-gray-800 border-gray-700"><CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2"><CardTitle className="text-sm font-medium text-gray-300">SEO Score</CardTitle><TrendingUp className="h-4 w-4 text-gray-400" /></CardHeader><CardContent><div className="text-2xl font-bold">{seoScore}/100</div><p className="text-xs text-gray-400">Basierend auf internen Metriken</p></CardContent></Card>
+            <Card className="bg-gray-800 border-gray-700"><CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2"><CardTitle className="text-sm font-medium text-gray-300">Ø Ladezeit</CardTitle><Clock className="h-4 w-4 text-gray-400" /></CardHeader><CardContent><div className="text-2xl font-bold">0.9s</div><p className="text-xs text-gray-400">-0.3s seit letzter Optimierung</p></CardContent></Card>
+            <Card className="bg-gray-800 border-gray-700"><CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2"><CardTitle className="text-sm font-medium text-gray-300">Alle optimiert</CardTitle><CheckCircle className="h-4 w-4 text-green-400" /></CardHeader><CardContent><div className="text-2xl font-bold">Ja</div><p className="text-xs text-gray-400">Alle Seiten haben SEO-Daten</p></CardContent></Card>
+          </div>
+          {/* SEO Pages Overview */}
+          <Card className="bg-gray-800 border-gray-700"><CardHeader><CardTitle>SEO Seiten Übersicht</CardTitle><CardDescription>Verwalten Sie hier die SEO-Daten für jede Seite.</CardDescription></CardHeader><CardContent><Table><TableHeader><TableRow className="border-gray-700 hover:bg-gray-700/50"><TableHead className="text-white">Seite</TableHead><TableHead className="text-white">Status</TableHead><TableHead className="text-white">Performance</TableHead><TableHead className="text-white">Zuletzt aktualisiert</TableHead><TableHead className="text-right text-white">Aktionen</TableHead></TableRow></TableHeader><TableBody>{metadata.map((meta) => (<TableRow key={meta.path} className="border-gray-700 hover:bg-gray-700/50"><TableCell className="font-medium"><div className="font-bold">{meta.title.split('|')[0].trim()}</div><div className="text-xs text-gray-400">{meta.path}</div></TableCell><TableCell><Badge variant="default" className="bg-green-600/20 text-green-400 border-green-500">Aktiv</Badge></TableCell><TableCell><div className="flex items-center gap-2"><Progress value={85 + (meta.path.length % 15)} className="w-24" /><span>{85 + (meta.path.length % 15)}%</span></div></TableCell><TableCell>{new Date(meta.updated_at).toLocaleString('de-DE')}</TableCell><TableCell className="text-right"><Button variant="outline" size="sm" onClick={() => handleEditClick(meta)}><Edit className="h-4 w-4 mr-2" />Bearbeiten</Button></TableCell></TableRow>))}</TableBody></Table></CardContent></Card>
+        </TabsContent>
 
-      {/* Analytics and Keywords */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8">
-        <Card className="lg:col-span-2 bg-gray-800 border-gray-700">
-          <CardHeader>
-            <CardTitle>Live SEO Analytics</CardTitle>
-            <CardDescription>Echte Daten von Google Search Console</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center h-48">
-            <BarChart className="h-12 w-12 text-gray-500 mb-4" />
-            <p className="text-center text-gray-400">Verbinden Sie Google Search Console für echte Live-Daten.</p>
-          </CardContent>
-        </Card>
-        <Card className="lg:col-span-3 bg-gray-800 border-gray-700">
-          <CardHeader>
-            <CardTitle>Live Keyword Tracking</CardTitle>
-            <CardDescription>Beispiel-Keywords zur Demonstration</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow className="border-gray-700">
-                  <TableHead className="text-white">Keyword</TableHead>
-                  <TableHead className="text-white">Rank</TableHead>
-                  <TableHead className="text-white">Veränderung</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {mockKeywords.map((kw) => (
-                  <TableRow key={kw.name} className="border-gray-700">
-                    <TableCell className="font-medium">{kw.name}</TableCell>
-                    <TableCell>#{kw.rank}</TableCell>
-                    <TableCell className={`flex items-center ${kw.change > 0 ? 'text-green-400' : 'text-red-400'}`}>
-                      <TrendingUp className={`mr-1 h-4 w-4 ${kw.change < 0 ? 'transform rotate-180' : ''}`} />
-                      {kw.change > 0 ? `+${kw.change}` : kw.change}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </div>
+        <TabsContent value="bildverwaltung" className="mt-6">
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle>Bildinhalte der Seiten verwalten</CardTitle>
+              <CardDescription>Hier können Sie die Bilder für spezifische Bereiche Ihrer Webseite in Echtzeit ändern. Für die Galerie-Seite nutzen Sie bitte die allgemeine Medienverwaltung unter Einstellungen &gt; Medien.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Accordion type="single" collapsible className="w-full space-y-4">
+                <AccordionItem value="startseite" className="border border-gray-700 rounded-lg"><AccordionTrigger className="px-4 py-3 hover:no-underline">Startseite</AccordionTrigger><AccordionContent className="p-4 space-y-4 bg-gray-900/50"><MediaUploadSlot title="Hero Bild" description="Das große Hauptbild ganz oben auf der Startseite." type="image" pageContext="startseite" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /><MediaUploadSlot title="Vorschau Transporte" description="Bild für die Transport-Dienstleistung auf der Startseite." type="image" pageContext="startseite" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /><MediaUploadSlot title="Vorschau Reinigung" description="Bild für die Reinigungs-Dienstleistung auf der Startseite." type="image" pageContext="startseite" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /><MediaUploadSlot title="Vorschau Gartenbau" description="Bild für die Gartenbau-Dienstleistung auf der Startseite." type="image" pageContext="startseite" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /><MediaUploadSlot title="Vorschau Entsorgung" description="Bild für die Entsorgungs-Dienstleistung auf der Startseite." type="image" pageContext="startseite" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /></AccordionContent></AccordionItem>
+                <AccordionItem value="leistungen" className="border border-gray-700 rounded-lg"><AccordionTrigger className="px-4 py-3 hover:no-underline">Leistungsseiten</AccordionTrigger><AccordionContent className="p-4 space-y-4 bg-gray-900/50"><MediaUploadSlot title="Header-Bild Transporte" description="Das Titelbild für die Transport-Detailseite." type="image" pageContext="leistungen" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /><MediaUploadSlot title="Header-Bild Reinigung" description="Das Titelbild für die Reinigungs-Detailseite." type="image" pageContext="leistungen" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /><MediaUploadSlot title="Header-Bild Gartenbau" description="Das Titelbild für die Gartenbau-Detailseite." type="image" pageContext="leistungen" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /><MediaUploadSlot title="Header-Bild Entsorgung" description="Das Titelbild für die Entsorgungs-Detailseite." type="image" pageContext="leistungen" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /></AccordionContent></AccordionItem>
+                <AccordionItem value="ueber-uns" className="border border-gray-700 rounded-lg"><AccordionTrigger className="px-4 py-3 hover:no-underline">Über Uns</AccordionTrigger><AccordionContent className="p-4 space-y-4 bg-gray-900/50"><MediaUploadSlot title="Team Bild" description="Ein Bild des Teams oder des Gründers auf der 'Über Uns'-Seite." type="image" pageContext="ueber-uns" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /></AccordionContent></AccordionItem>
+                <AccordionItem value="empfehlungsprogramm" className="border border-gray-700 rounded-lg"><AccordionTrigger className="px-4 py-3 hover:no-underline">Empfehlungsprogramm</AccordionTrigger><AccordionContent className="p-4 space-y-4 bg-gray-900/50"><MediaUploadSlot title="Programm-Banner" description="Ein Werbebanner für das Empfehlungsprogramm." type="image" pageContext="empfehlungsprogramm" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /></AccordionContent></AccordionItem>
+                <AccordionItem value="kontakt" className="border border-gray-700 rounded-lg"><AccordionTrigger className="px-4 py-3 hover:no-underline">Kontakt</AccordionTrigger><AccordionContent className="p-4 space-y-4 bg-gray-900/50"><MediaUploadSlot title="Kontakt Header-Bild" description="Das Titelbild auf der Kontaktseite." type="image" pageContext="kontakt" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /></AccordionContent></AccordionItem>
+              </Accordion>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
-      {/* SEO Pages Overview */}
-      <Card className="bg-gray-800 border-gray-700">
-        <CardHeader>
-          <CardTitle>SEO Seiten Übersicht</CardTitle>
-          <CardDescription>Verwalten Sie hier die SEO-Daten für jede Seite.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow className="border-gray-700 hover:bg-gray-700/50">
-                <TableHead className="text-white">Seite</TableHead>
-                <TableHead className="text-white">Status</TableHead>
-                <TableHead className="text-white">Performance</TableHead>
-                <TableHead className="text-white">Zuletzt aktualisiert</TableHead>
-                <TableHead className="text-right text-white">Aktionen</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {metadata.map((meta) => (
-                <TableRow key={meta.path} className="border-gray-700 hover:bg-gray-700/50">
-                  <TableCell className="font-medium">
-                    <div className="font-bold">{meta.title.split('|')[0].trim()}</div>
-                    <div className="text-xs text-gray-400">{meta.path}</div>
-                  </TableCell>
-                  <TableCell><Badge variant="default" className="bg-green-600/20 text-green-400 border-green-500">Aktiv</Badge></TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Progress value={85 + (meta.path.length % 15)} className="w-24" />
-                      <span>{85 + (meta.path.length % 15)}%</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>{new Date(meta.updated_at).toLocaleString('de-DE')}</TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="outline" size="sm" onClick={() => handleEditClick(meta)}>
-                      <Edit className="h-4 w-4 mr-2" />
-                      Bearbeiten
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
-      {/* Dialog for editing */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[600px] bg-gray-800 border-gray-700 text-white">
-          {selectedMeta && (
-            <form onSubmit={handleSubmit}>
-              <DialogHeader>
-                <DialogTitle>SEO für {selectedMeta.path} bearbeiten</DialogTitle>
-                <DialogDescription className="text-gray-400">
-                  Änderungen hier wirken sich direkt auf die Suchmaschinenergebnisse aus.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="title" className="text-right">Titel</Label>
-                  <Input id="title" name="title" value={selectedMeta.title} onChange={handleFormChange} className="col-span-3 bg-gray-700 border-gray-600" />
-                </div>
-                <div className="grid grid-cols-4 items-start gap-4">
-                  <Label htmlFor="description" className="text-right pt-2">Beschreibung</Label>
-                  <Textarea id="description" name="description" value={selectedMeta.description} onChange={handleFormChange} className="col-span-3 bg-gray-700 border-gray-600" rows={5} />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="keywords" className="text-right">Keywords</Label>
-                  <Input id="keywords" name="keywords" value={selectedMeta.keywords} onChange={handleFormChange} className="col-span-3 bg-gray-700 border-gray-600" placeholder="keyword1, keyword2" />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Speichern
-                </Button>
-              </DialogFooter>
-            </form>
-          )}
-        </DialogContent>
-      </Dialog>
+      {/* Dialog for editing SEO */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}><DialogContent className="sm:max-w-[600px] bg-gray-800 border-gray-700 text-white">{selectedMeta && (<form onSubmit={handleSubmit}><DialogHeader><DialogTitle>SEO für {selectedMeta.path} bearbeiten</DialogTitle><DialogDescription className="text-gray-400">Änderungen hier wirken sich direkt auf die Suchmaschinenergebnisse aus.</DialogDescription></DialogHeader><div className="grid gap-4 py-4"><div className="grid grid-cols-4 items-center gap-4"><Label htmlFor="title" className="text-right">Titel</Label><Input id="title" name="title" value={selectedMeta.title} onChange={handleFormChange} className="col-span-3 bg-gray-700 border-gray-600" /></div><div className="grid grid-cols-4 items-start gap-4"><Label htmlFor="description" className="text-right pt-2">Beschreibung</Label><Textarea id="description" name="description" value={selectedMeta.description} onChange={handleFormChange} className="col-span-3 bg-gray-700 border-gray-600" rows={5} /></div><div className="grid grid-cols-4 items-center gap-4"><Label htmlFor="keywords" className="text-right">Keywords</Label><Input id="keywords" name="keywords" value={selectedMeta.keywords} onChange={handleFormChange} className="col-span-3 bg-gray-700 border-gray-600" placeholder="keyword1, keyword2" /></div></div><DialogFooter><Button type="submit" disabled={isSubmitting}>{isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}Speichern</Button></DialogFooter></form>)}</DialogContent></Dialog>
     </main>
   );
-};
-
-export default SeoDashboard;
+}
