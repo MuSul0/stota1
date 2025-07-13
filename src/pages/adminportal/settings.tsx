@@ -8,6 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Trash2, Edit, Upload, Video } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -37,6 +38,12 @@ export default function AdminSettings() {
     file: null as File | null
   });
 
+  // State for editing media
+  const [editingMedia, setEditingMedia] = useState<{ id: string; url: string; title: string; type: 'image' | 'video' } | null>(null);
+  const [newFileForEdit, setNewFileForEdit] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
   useEffect(() => {
     fetchSettings();
     fetchMedia();
@@ -50,26 +57,13 @@ export default function AdminSettings() {
         .select('*')
         .single();
 
-      if (error && error.code === 'PGRST116') { // No rows found
-        // Insert default settings if no row exists
+      if (error && error.code === 'PGRST116') {
         const { error: insertError } = await supabase
           .from('settings')
-          .insert({
-            id: 1, // Assuming a single settings row with ID 1
-            company_name: settings.companyName,
-            contact_email: settings.contactEmail,
-            phone_number: settings.phoneNumber,
-            address: settings.address,
-            maintenance_mode: settings.maintenanceMode,
-            analytics_enabled: settings.analyticsEnabled,
-            dark_mode: settings.darkMode,
-            default_language: settings.defaultLanguage,
-            timezone: settings.timezone,
-            currency: settings.currency
-          });
+          .insert({ id: 1, company_name: settings.companyName, contact_email: settings.contactEmail, phone_number: settings.phoneNumber, address: settings.address, maintenance_mode: settings.maintenanceMode, analytics_enabled: settings.analyticsEnabled, dark_mode: settings.darkMode, default_language: settings.defaultLanguage, timezone: settings.timezone, currency: settings.currency });
         if (insertError) throw insertError;
         toast.success('Standardeinstellungen initialisiert');
-        fetchSettings(); // Re-fetch after insert
+        fetchSettings();
       } else if (error) {
         throw error;
       } else if (data) {
@@ -96,20 +90,9 @@ export default function AdminSettings() {
 
   const fetchMedia = async () => {
     try {
-      const { data: images } = await supabase
-        .from('media')
-        .select('*')
-        .eq('type', 'image');
-
-      const { data: videos } = await supabase
-        .from('media')
-        .select('*')
-        .eq('type', 'video');
-
-      setMedia({
-        images: images || [],
-        videos: videos || []
-      });
+      const { data: images } = await supabase.from('media').select('*').eq('type', 'image');
+      const { data: videos } = await supabase.from('media').select('*').eq('type', 'video');
+      setMedia({ images: images || [], videos: videos || [] });
     } catch (error) {
       toast.error('Fehler beim Laden der Medien');
       console.error(error);
@@ -121,24 +104,8 @@ export default function AdminSettings() {
     try {
       const { error } = await supabase
         .from('settings')
-        .upsert({
-          id: 1,
-          company_name: settings.companyName,
-          contact_email: settings.contactEmail,
-          phone_number: settings.phoneNumber,
-          address: settings.address,
-          maintenance_mode: settings.maintenanceMode,
-          analytics_enabled: settings.analyticsEnabled,
-          dark_mode: settings.darkMode,
-          default_language: settings.defaultLanguage,
-          timezone: settings.timezone,
-          currency: settings.currency
-        }, {
-          onConflict: 'id'
-        });
-
+        .upsert({ id: 1, company_name: settings.companyName, contact_email: settings.contactEmail, phone_number: settings.phoneNumber, address: settings.address, maintenance_mode: settings.maintenanceMode, analytics_enabled: settings.analyticsEnabled, dark_mode: settings.darkMode, default_language: settings.defaultLanguage, timezone: settings.timezone, currency: settings.currency }, { onConflict: 'id' });
       if (error) throw error;
-      
       toast.success('Einstellungen erfolgreich gespeichert');
     } catch (error) {
       toast.error('Fehler beim Speichern der Einstellungen');
@@ -150,33 +117,16 @@ export default function AdminSettings() {
 
   const handleFileUpload = async () => {
     if (!newMedia.file) return;
-    
     setUploading(true);
     try {
       const fileExt = newMedia.file.name.split('.').pop();
       const fileName = `${Math.random()}.${fileExt}`;
       const filePath = `${newMedia.type}s/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('media')
-        .upload(filePath, newMedia.file);
-
+      const { error: uploadError } = await supabase.storage.from('media').upload(filePath, newMedia.file);
       if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('media')
-        .getPublicUrl(filePath);
-
-      const { error: dbError } = await supabase
-        .from('media')
-        .insert({
-          type: newMedia.type,
-          url: publicUrl,
-          title: newMedia.title
-        });
-
+      const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(filePath);
+      const { error: dbError } = await supabase.from('media').insert({ type: newMedia.type, url: publicUrl, title: newMedia.title });
       if (dbError) throw dbError;
-
       toast.success('Medien erfolgreich hochgeladen');
       setNewMedia({ type: 'image', title: '', file: null });
       fetchMedia();
@@ -190,20 +140,70 @@ export default function AdminSettings() {
 
   const deleteMedia = async (id: string) => {
     if (!window.confirm('Möchten Sie dieses Medium wirklich löschen?')) return;
-    
     try {
-      const { error } = await supabase
-        .from('media')
-        .delete()
-        .eq('id', id);
-
+      const { error } = await supabase.from('media').delete().eq('id', id);
       if (error) throw error;
-      
       toast.success('Medium erfolgreich gelöscht');
       fetchMedia();
     } catch (error) {
       toast.error('Fehler beim Löschen des Mediums');
       console.error(error);
+    }
+  };
+
+  const handleEditClick = (item: { id: string; url: string; title: string; type: 'image' | 'video' }) => {
+    setEditingMedia(item);
+    setIsEditModalOpen(true);
+    setPreviewUrl(null);
+    setNewFileForEdit(null);
+  };
+
+  const handleFileSelectForEdit = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setNewFileForEdit(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditModalOpen(false);
+    setEditingMedia(null);
+    setNewFileForEdit(null);
+    setPreviewUrl(null);
+  };
+
+  const handleReplaceMedia = async () => {
+    if (!newFileForEdit || !editingMedia) return;
+    setUploading(true);
+    try {
+      const oldFilePath = editingMedia.url.split('/media/')[1];
+      if (oldFilePath) {
+        await supabase.storage.from('media').remove([oldFilePath]);
+      }
+
+      const fileExt = newFileForEdit.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const newFilePath = `${editingMedia.type}s/${fileName}`;
+      const { error: uploadError } = await supabase.storage.from('media').upload(newFilePath, newFileForEdit);
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(newFilePath);
+      const { error: dbError } = await supabase.from('media').update({ url: publicUrl }).eq('id', editingMedia.id);
+      if (dbError) throw dbError;
+
+      toast.success('Medium erfolgreich ersetzt');
+      fetchMedia();
+      handleCancelEdit();
+    } catch (error) {
+      toast.error('Fehler beim Ersetzen des Mediums');
+      console.error(error);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -228,103 +228,54 @@ export default function AdminSettings() {
           <TabsTrigger value="media">Medien</TabsTrigger>
         </TabsList>
         
-        {/* Allgemeine Einstellungen */}
         <TabsContent value="general">
           <Card>
-            <CardHeader>
-              <CardTitle>Allgemeine Einstellungen</CardTitle>
-            </CardHeader>
+            <CardHeader><CardTitle>Allgemeine Einstellungen</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="companyName">Firmenname</Label>
-                  <Input
-                    id="companyName"
-                    value={settings.companyName}
-                    onChange={(e) => setSettings(prev => ({ ...prev, companyName: e.target.value }))}
-                  />
+                  <Input id="companyName" value={settings.companyName} onChange={(e) => setSettings(prev => ({ ...prev, companyName: e.target.value }))} />
                 </div>
                 <div>
                   <Label htmlFor="contactEmail">Kontakt E-Mail</Label>
-                  <Input
-                    id="contactEmail"
-                    type="email"
-                    value={settings.contactEmail}
-                    onChange={(e) => setSettings(prev => ({ ...prev, contactEmail: e.target.value }))}
-                  />
+                  <Input id="contactEmail" type="email" value={settings.contactEmail} onChange={(e) => setSettings(prev => ({ ...prev, contactEmail: e.target.value }))} />
                 </div>
                 <div>
                   <Label htmlFor="phoneNumber">Telefonnummer</Label>
-                  <Input
-                    id="phoneNumber"
-                    value={settings.phoneNumber}
-                    onChange={(e) => setSettings(prev => ({ ...prev, phoneNumber: e.target.value }))}
-                  />
+                  <Input id="phoneNumber" value={settings.phoneNumber} onChange={(e) => setSettings(prev => ({ ...prev, phoneNumber: e.target.value }))} />
                 </div>
                 <div>
                   <Label htmlFor="address">Adresse</Label>
-                  <Input
-                    id="address"
-                    value={settings.address}
-                    onChange={(e) => setSettings(prev => ({ ...prev, address: e.target.value }))}
-                  />
+                  <Input id="address" value={settings.address} onChange={(e) => setSettings(prev => ({ ...prev, address: e.target.value }))} />
                 </div>
               </div>
               <div className="flex items-center space-x-4">
-                <Checkbox
-                  id="maintenanceMode"
-                  checked={settings.maintenanceMode}
-                  onCheckedChange={(checked) => setSettings(prev => ({ ...prev, maintenanceMode: !!checked }))}
-                />
+                <Checkbox id="maintenanceMode" checked={settings.maintenanceMode} onCheckedChange={(checked) => setSettings(prev => ({ ...prev, maintenanceMode: !!checked }))} />
                 <Label htmlFor="maintenanceMode">Wartungsmodus aktivieren</Label>
               </div>
-              <Button onClick={handleSave} className="mt-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-                Einstellungen speichern
-              </Button>
+              <Button onClick={handleSave} className="mt-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">Einstellungen speichern</Button>
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* Medienverwaltung */}
         <TabsContent value="media">
           <Card>
-            <CardHeader>
-              <CardTitle>Medienverwaltung</CardTitle>
-            </CardHeader>
+            <CardHeader><CardTitle>Medienverwaltung</CardTitle></CardHeader>
             <CardContent className="space-y-6">
               <div className="border rounded-lg p-4">
                 <h3 className="font-medium mb-4">Neues Medium hochladen</h3>
                 <div className="space-y-4">
                   <div className="flex items-center space-x-4">
-                    <Select 
-                      value={newMedia.type} 
-                      onValueChange={(value) => setNewMedia(prev => ({ ...prev, type: value }))}
-                    >
-                      <SelectTrigger className="w-[120px]">
-                        <SelectValue placeholder="Typ" />
-                      </SelectTrigger>
+                    <Select value={newMedia.type} onValueChange={(value) => setNewMedia(prev => ({ ...prev, type: value }))}>
+                      <SelectTrigger className="w-[120px]"><SelectValue placeholder="Typ" /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="image">Bild</SelectItem>
                         <SelectItem value="video">Video</SelectItem>
                       </SelectContent>
                     </Select>
-                    
-                    <Input
-                      type="file"
-                      accept={newMedia.type === 'image' ? 'image/*' : 'video/*'}
-                      onChange={(e) => setNewMedia(prev => ({ 
-                        ...prev, 
-                        file: e.target.files?.[0] || null 
-                      }))}
-                    />
-                    
-                    <Button 
-                      onClick={handleFileUpload}
-                      disabled={!newMedia.file || uploading}
-                    >
-                      <Upload className="h-4 w-4 mr-2" />
-                      {uploading ? 'Hochladen...' : 'Hochladen'}
-                    </Button>
+                    <Input type="file" accept={newMedia.type === 'image' ? 'image/*' : 'video/*'} onChange={(e) => setNewMedia(prev => ({ ...prev, file: e.target.files?.[0] || null }))} />
+                    <Button onClick={handleFileUpload} disabled={!newMedia.file || uploading}><Upload className="h-4 w-4 mr-2" />{uploading ? 'Hochladen...' : 'Hochladen'}</Button>
                   </div>
                 </div>
               </div>
@@ -343,28 +294,12 @@ export default function AdminSettings() {
                   <TableBody>
                     {media.images.map((item) => (
                       <TableRow key={item.id}>
-                        <TableCell>
-                          <img 
-                            src={item.url} 
-                            alt={item.title} 
-                            className="h-12 w-12 object-cover rounded"
-                          />
-                        </TableCell>
+                        <TableCell><img src={item.url} alt={item.title} className="h-12 w-12 object-cover rounded" /></TableCell>
                         <TableCell>{item.title}</TableCell>
-                        <TableCell className="text-sm text-gray-500 truncate max-w-xs">
-                          {item.url}
-                        </TableCell>
+                        <TableCell className="text-sm text-gray-500 truncate max-w-xs">{item.url}</TableCell>
                         <TableCell className="text-right">
-                          <Button variant="ghost" size="sm" className="mr-2">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            variant="destructive" 
-                            size="sm"
-                            onClick={() => deleteMedia(item.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                          <Button variant="ghost" size="sm" className="mr-2" onClick={() => handleEditClick({ ...item, type: 'image' })}><Edit className="h-4 w-4" /></Button>
+                          <Button variant="destructive" size="sm" onClick={() => deleteMedia(item.id)}><Trash2 className="h-4 w-4" /></Button>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -386,26 +321,12 @@ export default function AdminSettings() {
                   <TableBody>
                     {media.videos.map((item) => (
                       <TableRow key={item.id}>
-                        <TableCell>
-                          <div className="h-12 w-12 bg-gray-100 flex items-center justify-center rounded">
-                            <Video className="h-6 w-6 text-gray-400" />
-                          </div>
-                        </TableCell>
+                        <TableCell><div className="h-12 w-12 bg-gray-100 flex items-center justify-center rounded"><Video className="h-6 w-6 text-gray-400" /></div></TableCell>
                         <TableCell>{item.title}</TableCell>
-                        <TableCell className="text-sm text-gray-500 truncate max-w-xs">
-                          {item.url}
-                        </TableCell>
+                        <TableCell className="text-sm text-gray-500 truncate max-w-xs">{item.url}</TableCell>
                         <TableCell className="text-right">
-                          <Button variant="ghost" size="sm" className="mr-2">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            variant="destructive" 
-                            size="sm"
-                            onClick={() => deleteMedia(item.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                          <Button variant="ghost" size="sm" className="mr-2" onClick={() => handleEditClick({ ...item, type: 'video' })}><Edit className="h-4 w-4" /></Button>
+                          <Button variant="destructive" size="sm" onClick={() => deleteMedia(item.id)}><Trash2 className="h-4 w-4" /></Button>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -418,10 +339,50 @@ export default function AdminSettings() {
       </Tabs>
 
       <div className="flex justify-end">
-        <Button onClick={handleSave} disabled={loadingData}>
-          {loadingData ? 'Speichern...' : 'Einstellungen speichern'}
-        </Button>
+        <Button onClick={handleSave} disabled={loadingData}>{loadingData ? 'Speichern...' : 'Einstellungen speichern'}</Button>
       </div>
+
+      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Medium ersetzen</DialogTitle>
+            <DialogDescription>Ersetzen Sie das vorhandene Medium durch eine neue Datei. Sie sehen eine Vorschau, bevor Sie die Änderung speichern.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label>Aktuelles Medium</Label>
+              {editingMedia?.type === 'image' ? (
+                <img src={editingMedia.url} alt="Aktuelles Bild" className="w-full h-48 object-cover rounded-md mt-2" />
+              ) : (
+                <div className="w-full h-48 bg-gray-200 flex items-center justify-center rounded-md mt-2">
+                  <Video className="h-12 w-12 text-gray-500" />
+                  <p className="text-sm text-gray-500 ml-2">Aktuelles Video</p>
+                </div>
+              )}
+            </div>
+            <div>
+              <Label htmlFor="replace-file">Neue Datei auswählen</Label>
+              <Input id="replace-file" type="file" accept={editingMedia?.type === 'image' ? 'image/*' : 'video/*'} onChange={handleFileSelectForEdit} className="mt-2" />
+            </div>
+            {previewUrl && (
+              <div>
+                <Label>Vorschau der neuen Datei</Label>
+                {editingMedia?.type === 'image' ? (
+                  <img src={previewUrl} alt="Vorschau" className="w-full h-48 object-cover rounded-md mt-2" />
+                ) : (
+                  <video src={previewUrl} controls className="w-full rounded-md mt-2" />
+                )}
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCancelEdit}>Abbrechen</Button>
+            <Button onClick={handleReplaceMedia} disabled={!newFileForEdit || uploading}>
+              {uploading ? 'Ersetze...' : 'Ersetzen'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }
