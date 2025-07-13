@@ -1,137 +1,194 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { MediaUploadSlot } from "@/components/admin/MediaUploadSlot";
-import { FileImage, Loader2 } from "lucide-react";
-import { useAllMedia } from "@/hooks/useAllMedia";
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
+import { Loader2, Edit } from 'lucide-react';
 
-const mediaSlots = {
-  startseite: [
-    { title: "Hero Background", description: "Großes Hintergrundbild auf der Startseite.", type: "image" as const },
-    { title: "Referral Program Teaser", description: "Bild im Abschnitt 'Empfehlungsprogramm' auf der Startseite.", type: "image" as const },
-    { title: "About Us Teaser", description: "Bild im Abschnitt 'Über Uns' auf der Startseite.", type: "image" as const },
-  ],
-  ueberUns: [
-    { title: "About Us Main Image", description: "Hauptbild oben auf der 'Über Uns'-Seite.", type: "image" as const },
-    { title: "Nicolae Bogdanel Turcitu Profile", description: "Profilbild von Nicolae Bogdanel Turcitu.", type: "image" as const },
-    { title: "Maria Schmidt Profile", description: "Profilbild von Maria Schmidt.", type: "image" as const },
-    { title: "Thomas Weber Profile", description: "Profilbild von Thomas Weber.", type: "image" as const },
-  ],
-  galerie: [
-    { title: "Office Cleaning Before", description: "Vorher-Bild der Büroreinigung.", type: "image" as const },
-    { title: "Office Cleaning After", description: "Nachher-Bild der Büroreinigung.", type: "image" as const },
-    { title: "Kitchen Cleaning Before", description: "Vorher-Bild der Küchenreinigung.", type: "image" as const },
-    { title: "Kitchen Cleaning After", description: "Nachher-Bild der Küchenreinigung.", type: "image" as const },
-    { title: "Office Cleaning Timelapse", description: "Zeitraffer-Video der Büroreinigung.", type: "video" as const },
-    { title: "Family Move Documented", description: "Video-Dokumentation eines Familienumzugs.", type: "video" as const },
-  ],
-  weitere: [
-    { title: "Leistungen Hero Background", description: "Hintergrundbild für die Haupt-Leistungsseite.", type: "image" as const },
-    { title: "Reinigung Hero Background", description: "Hintergrundbild für die Reinigungs-Leistungsseite.", type: "image" as const },
-    { title: "GartenLandschaftsbau Hero Background", description: "Hintergrundbild für die Garten- & Landschaftsbau-Leistungsseite.", type: "image" as const },
-    { title: "Entsorgung Hero Background", description: "Hintergrundbild für die Entsorgungs-Leistungsseite.", type: "image" as const },
-    { title: "Transporte Hero Background", description: "Hintergrundbild für die Transporte-Leistungsseite.", type: "image" as const },
-    { title: "Empfehlungsprogramm Hero Background", description: "Hintergrundbild für die Empfehlungsseite.", type: "image" as const },
-    { title: "Kontakt Hero Background", description: "Hintergrundbild für die Kontaktseite.", type: "image" as const },
-  ]
-};
+interface SeoMetadata {
+  path: string;
+  title: string;
+  description: string;
+  keywords: string;
+}
 
-const Seiteninhalte = () => {
-  const { media: allMediaItems, loading, error, mutate: refetchAllMedia } = useAllMedia();
+const SeoEditor = () => {
+  const [metadata, setMetadata] = useState<SeoMetadata[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedMeta, setSelectedMeta] = useState<SeoMetadata | null>(null);
+
+  useEffect(() => {
+    fetchMetadata();
+  }, []);
+
+  const fetchMetadata = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('seo_metadata')
+      .select('*')
+      .order('path', { ascending: true });
+
+    if (error) {
+      toast.error('Fehler beim Laden der SEO-Daten.');
+      console.error(error);
+    } else {
+      setMetadata(data || []);
+    }
+    setLoading(false);
+  };
+
+  const handleEditClick = (meta: SeoMetadata) => {
+    setSelectedMeta(JSON.parse(JSON.stringify(meta))); // Deep copy to avoid state mutation issues
+    setIsDialogOpen(true);
+  };
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (selectedMeta) {
+      setSelectedMeta({
+        ...selectedMeta,
+        [e.target.name]: e.target.value,
+      });
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedMeta) return;
+
+    setIsSubmitting(true);
+    const { error } = await supabase
+      .from('seo_metadata')
+      .update({
+        title: selectedMeta.title,
+        description: selectedMeta.description,
+        keywords: selectedMeta.keywords,
+      })
+      .eq('path', selectedMeta.path);
+
+    if (error) {
+      toast.error('Fehler beim Speichern der Daten.');
+      console.error(error);
+    } else {
+      toast.success(`SEO-Daten für ${selectedMeta.path} erfolgreich aktualisiert.`);
+      setIsDialogOpen(false);
+      fetchMetadata(); // Refresh data
+    }
+    setIsSubmitting(false);
+  };
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
+      <div className="flex justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin text-white" />
       </div>
     );
   }
 
-  if (error) {
-    return <p className="text-red-500">Fehler beim Laden der Medien: {error}</p>;
-  }
-
   return (
-    <div className="space-y-6 text-white">
-      <div className="flex items-center gap-3">
-        <FileImage className="h-8 w-8 text-blue-400" />
-        <h1 className="text-3xl font-bold">Seiteninhalte verwalten</h1>
-      </div>
-      <p className="text-gray-300">
-        Hier können Sie die Bilder und Videos für die verschiedenen Bereiche Ihrer Webseite zentral verwalten. 
-        Laden Sie neue Medien hoch, um bestehende zu ersetzen.
-      </p>
+    <main className="flex-grow container mx-auto px-6 py-12 max-w-7xl">
+      <Card>
+        <CardHeader>
+          <CardTitle>SEO-Inhalte verwalten</CardTitle>
+          <CardDescription>
+            Hier können Sie die SEO-Titel, Beschreibungen und Keywords für jede Seite Ihrer Website bearbeiten.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Pfad</TableHead>
+                <TableHead>Titel</TableHead>
+                <TableHead className="text-right">Aktion</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {metadata.map((meta) => (
+                <TableRow key={meta.path}>
+                  <TableCell className="font-medium">{meta.path}</TableCell>
+                  <TableCell>{meta.title}</TableCell>
+                  <TableCell className="text-right">
+                    <Button variant="outline" size="sm" onClick={() => handleEditClick(meta)}>
+                      <Edit className="h-4 w-4 mr-2" />
+                      Bearbeiten
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
 
-      <Accordion type="single" collapsible className="w-full" defaultValue="startseite">
-        <AccordionItem value="startseite" className="border-gray-600">
-          <AccordionTrigger className="text-xl hover:no-underline">Startseite</AccordionTrigger>
-          <AccordionContent className="space-y-4 pt-4">
-            {mediaSlots.startseite.map(slot => (
-              <MediaUploadSlot 
-                key={slot.title} 
-                {...slot} 
-                pageContext="Startseite" 
-                allMediaItems={allMediaItems}
-                refetchAllMedia={refetchAllMedia}
-              />
-            ))}
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="ueber-uns" className="border-gray-600">
-          <AccordionTrigger className="text-xl hover:no-underline">Über Uns</AccordionTrigger>
-          <AccordionContent className="space-y-4 pt-4">
-            {mediaSlots.ueberUns.map(slot => (
-              <MediaUploadSlot 
-                key={slot.title} 
-                {...slot} 
-                pageContext="Über Uns" 
-                allMediaItems={allMediaItems}
-                refetchAllMedia={refetchAllMedia}
-              />
-            ))}
-          </AccordionContent>
-        </AccordionItem>
-        
-        <AccordionItem value="galerie" className="border-gray-600">
-          <AccordionTrigger className="text-xl hover:no-underline">Galerie (Spezifische Inhalte)</AccordionTrigger>
-          <AccordionContent className="space-y-4 pt-4">
-            {mediaSlots.galerie.map(slot => (
-              <MediaUploadSlot 
-                key={slot.title} 
-                {...slot} 
-                pageContext="Galerie" 
-                allMediaItems={allMediaItems}
-                refetchAllMedia={refetchAllMedia}
-              />
-            ))}
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="weitere" className="border-gray-600">
-          <AccordionTrigger className="text-xl hover:no-underline">Weitere Seiten (Hero-Bilder)</AccordionTrigger>
-          <AccordionContent className="space-y-4 pt-4">
-            {mediaSlots.weitere.map(slot => (
-              <MediaUploadSlot 
-                key={slot.title} 
-                {...slot} 
-                pageContext="Hero-Sektionen" 
-                allMediaItems={allMediaItems}
-                refetchAllMedia={refetchAllMedia}
-              />
-            ))}
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-      
-      <div className="mt-8 p-6 bg-gray-700 rounded-lg">
-        <h2 className="text-2xl font-bold mb-4">Allgemeine Galerie-Medien</h2>
-        <p className="text-gray-300 mb-4">
-          Medien, die hier hochgeladen werden, erscheinen in der allgemeinen Galerie-Ansicht. 
-          Diese Funktion wird in Kürze überarbeitet, um das Hinzufügen und Verwalten zu vereinfachen.
-        </p>
-        <p className="text-yellow-400 text-sm">Hinweis: Die allgemeine Galerie-Verwaltung befindet sich in Entwicklung.</p>
-      </div>
-    </div>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          {selectedMeta && (
+            <form onSubmit={handleSubmit}>
+              <DialogHeader>
+                <DialogTitle>SEO für {selectedMeta.path} bearbeiten</DialogTitle>
+                <DialogDescription>
+                  Änderungen hier wirken sich direkt auf die Suchmaschinenergebnisse aus.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="title" className="text-right">
+                    Titel
+                  </Label>
+                  <Input
+                    id="title"
+                    name="title"
+                    value={selectedMeta.title}
+                    onChange={handleFormChange}
+                    className="col-span-3"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-start gap-4">
+                  <Label htmlFor="description" className="text-right pt-2">
+                    Beschreibung
+                  </Label>
+                  <Textarea
+                    id="description"
+                    name="description"
+                    value={selectedMeta.description}
+                    onChange={handleFormChange}
+                    className="col-span-3"
+                    rows={5}
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="keywords" className="text-right">
+                    Keywords
+                  </Label>
+                  <Input
+                    id="keywords"
+                    name="keywords"
+                    value={selectedMeta.keywords}
+                    onChange={handleFormChange}
+                    className="col-span-3"
+                    placeholder="keyword1, keyword2, keyword3"
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Speichern
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
+    </main>
   );
 };
 
-export default Seiteninhalte;
+export default SeoEditor;

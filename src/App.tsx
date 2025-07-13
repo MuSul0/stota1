@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
-import { SessionProvider } from '@/components/SessionProvider';
+import { SessionProvider } from './components/SessionProvider';
+import ScrollToTop from './components/ScrollToTop';
+import SeoManager from './components/SeoManager';
 import Index from '@/pages/Index';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -57,7 +59,9 @@ import CreateAdminUser from '@/pages/Admin/CreateAdminUser';
 function App() {
   return (
     <Router>
+      <SeoManager />
       <SessionProvider>
+        <ScrollToTop />
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Index />} />
