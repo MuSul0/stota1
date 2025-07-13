@@ -16,6 +16,15 @@ interface Notification {
   created_at: string;
 }
 
+interface MessageWithProfile {
+  id: string;
+  subject: string;
+  content: string;
+  status: 'gelesen' | 'ungelesen';
+  created_at: string;
+  profiles: { email: string } | null;
+}
+
 export default function Notifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loadingData, setLoadingData] = useState(true);
@@ -44,8 +53,7 @@ export default function Notifications() {
 
       if (error) throw error;
 
-      // Map user email from profiles relation
-      const mapped = (data || []).map((item: any) => ({
+      const mapped = (data as MessageWithProfile[] || []).map((item) => ({
         id: item.id,
         user_email: item.profiles?.email || 'Unbekannt',
         subject: item.subject,
@@ -94,8 +102,8 @@ export default function Notifications() {
 
   if (loadingData) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Loader2 className="h-8 w-8 animate-spin" />
+      <div className="flex justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin text-white" />
       </div>
     );
   }

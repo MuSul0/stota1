@@ -3,19 +3,22 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { PlusCircle, Edit, Trash2, Save, XCircle } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, Save, XCircle, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 
 interface Service {
   id: string;
   title: string;
   description: string;
-  price: string;
+  price: number;
   duration: string;
   category: string;
   is_active: boolean;
@@ -24,7 +27,7 @@ interface Service {
 
 export default function AdminServices() {
   const [services, setServices] = useState<Service[]>([]);
-  const [editingService, setEditingService] = useState<Service | null>(null);
+  const [editingService, setEditingService] = useState<Partial<Service> | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
   const subscriptionRef = useRef<any>(null);
@@ -51,7 +54,7 @@ export default function AdminServices() {
 
       if (error) throw error;
       
-      setServices(data || []);
+      setServices(data.map(s => ({...s, price: Number(s.price) })) || []);
     } catch (error) {
       toast.error('Fehler beim Laden der Services');
       console.error(error);
@@ -63,7 +66,6 @@ export default function AdminServices() {
   const setupRealtimeSubscription = () => {
     if (subscriptionRef.current) {
       supabase.removeChannel(subscriptionRef.current);
-      subscriptionRef.current = null;
     }
     const channel = supabase
       .channel('public:services')
@@ -76,14 +78,12 @@ export default function AdminServices() {
 
   const handleAddService = () => {
     setEditingService({
-      id: '',
       title: '',
       description: '',
-      price: '',
+      price: 0,
       duration: '1 Stunde',
       category: 'reinigung',
       is_active: true,
-      created_at: new Date().toISOString()
     });
     setIsDialogOpen(true);
   };
@@ -94,18 +94,10 @@ export default function AdminServices() {
   };
 
   const handleDeleteService = async (id: string) => {
-    if (!window.confirm('Möchten Sie diesen Service wirklich löschen?')) return;
-    
     try {
-      const { error } = await supabase
-        .from('services')
-        .delete()
-        .eq('id', id);
-
+      const { error } = await supabase.from('services').delete().eq('id', id);
       if (error) throw error;
-      
       toast.success('Service erfolgreich gelöscht');
-      fetchServices();
     } catch (error) {
       toast.error('Fehler beim Löschen des Services');
       console.error(error);
@@ -115,28 +107,24 @@ export default function AdminServices() {
   const handleSaveService = async () => {
     if (!editingService) return;
 
+    const serviceData = {
+      ...editingService,
+      price: Number(editingService.price) || 0,
+    };
+
     try {
       if (editingService.id) {
-        // Update existing service
-        const { error } = await supabase
-          .from('services')
-          .update(editingService)
-          .eq('id', editingService.id);
-
+        const { error } = await supabase.from('services').update(serviceData).eq('id', editingService.id);
         if (error) throw error;
         toast.success('Service erfolgreich aktualisiert');
       } else {
-        // Create new service
-        const { error } = await supabase
-          .from('services')
-          .insert(editingService);
-
+        const { error } = await supabase.from('services').insert(serviceData);
         if (error) throw error;
         toast.success('Service erfolgreich erstellt');
       }
       
       setIsDialogOpen(false);
-      fetchServices();
+      setEditingService(null);
     } catch (error) {
       toast.error('Fehler beim Speichern des Services');
       console.error(error);
@@ -145,15 +133,9 @@ export default function AdminServices() {
 
   const toggleServiceStatus = async (id: string, currentStatus: boolean) => {
     try {
-      const { error } = await supabase
-        .from('services')
-        .update({ is_active: !currentStatus })
-        .eq('id', id);
-
+      const { error } = await supabase.from('services').update({ is_active: !currentStatus }).eq('id', id);
       if (error) throw error;
-      
       toast.success(`Service ${currentStatus ? 'deaktiviert' : 'aktiviert'}`);
-      fetchServices();
     } catch (error) {
       toast.error('Fehler beim Ändern des Status');
       console.error(error);
@@ -163,7 +145,7 @@ export default function AdminServices() {
   if (loadingData) {
     return (
       <div className="flex justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+        <Loader2 className="h-8 w-8 animate-spin text-white" />
       </div>
     );
   }
@@ -197,7 +179,7 @@ export default function AdminServices() {
                   <TableRow key={service.id}>
                     <TableCell className="font-medium">{service.title}</TableCell>
                     <TableCell>{service.category}</TableCell>
-                    <TableCell>{service.price} €</TableCell>
+                    <TableCell>{service.price.toFixed(2)} €</TableCell>
                     <TableCell>{service.duration}</TableCell>
                     <TableCell>
                       <Badge variant={service.is_active ? 'default' : 'secondary'}>
@@ -205,27 +187,29 @@ export default function AdminServices() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right space-x-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => toggleServiceStatus(service.id, service.is_active)}
-                      >
+                      <Button size="sm" variant="outline" onClick={() => toggleServiceStatus(service.id, service.is_active)}>
                         {service.is_active ? 'Deaktivieren' : 'Aktivieren'}
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleEditService(service)}
-                      >
+                      <Button size="sm" variant="ghost" onClick={() => handleEditService(service)}>
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => handleDeleteService(service.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button size="sm" variant="destructive"><Trash2 className="h-4 w-4" /></Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Sind Sie sicher?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Diese Aktion kann nicht rückgängig gemacht werden. Dadurch wird der Service dauerhaft gelöscht.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDeleteService(service.id)}>Löschen</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -237,123 +221,55 @@ export default function AdminServices() {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="sm:max-w-[650px]">
             <DialogHeader>
-              <DialogTitle>
-                {editingService?.id ? 'Service bearbeiten' : 'Neuen Service erstellen'}
-              </DialogTitle>
+              <DialogTitle>{editingService?.id ? 'Service bearbeiten' : 'Neuen Service erstellen'}</DialogTitle>
             </DialogHeader>
             
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="title" className="text-right">
-                  Titel*
-                </Label>
-                <Input
-                  id="title"
-                  value={editingService?.title || ''}
-                  onChange={(e) => setEditingService(prev => ({
-                    ...prev!,
-                    title: e.target.value
-                  }))}
-                  className="col-span-3"
-                  required
-                />
+                <Label htmlFor="title" className="text-right">Titel*</Label>
+                <Input id="title" value={editingService?.title || ''} onChange={(e) => setEditingService(prev => ({ ...prev, title: e.target.value }))} className="col-span-3" required />
               </div>
 
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="description" className="text-right">
-                  Beschreibung*
-                </Label>
-                <Textarea
-                  id="description"
-                  value={editingService?.description || ''}
-                  onChange={(e) => setEditingService(prev => ({
-                    ...prev!,
-                    description: e.target.value
-                  }))}
-                  className="col-span-3"
-                  rows={3}
-                  required
-                />
+                <Label htmlFor="description" className="text-right">Beschreibung*</Label>
+                <Textarea id="description" value={editingService?.description || ''} onChange={(e) => setEditingService(prev => ({ ...prev, description: e.target.value }))} className="col-span-3" rows={3} required />
               </div>
 
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="category" className="text-right">
-                  Kategorie*
-                </Label>
-                <select
-                  id="category"
-                  value={editingService?.category || 'reinigung'}
-                  onChange={(e) => setEditingService(prev => ({
-                    ...prev!,
-                    category: e.target.value
-                  }))}
-                  className="col-span-3 border rounded-md p-2"
-                  required
-                >
-                  <option value="reinigung">Reinigung</option>
-                  <option value="transport">Transport</option>
-                  <option value="umzug">Umzug</option>
-                  <option value="sonstiges">Sonstiges</option>
-                </select>
+                <Label htmlFor="category" className="text-right">Kategorie*</Label>
+                <Select value={editingService?.category || 'reinigung'} onValueChange={(value) => setEditingService(prev => ({ ...prev, category: value }))}>
+                  <SelectTrigger className="col-span-3"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="reinigung">Reinigung</SelectItem>
+                    <SelectItem value="transport">Transport</SelectItem>
+                    <SelectItem value="umzug">Umzug</SelectItem>
+                    <SelectItem value="sonstiges">Sonstiges</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="price" className="text-right">
-                  Preis*
-                </Label>
-                <Input
-                  id="price"
-                  type="number"
-                  value={editingService?.price || ''}
-                  onChange={(e) => setEditingService(prev => ({
-                    ...prev!,
-                    price: e.target.value
-                  }))}
-                  className="col-span-3"
-                  required
-                />
+                <Label htmlFor="price" className="text-right">Preis*</Label>
+                <Input id="price" type="number" value={editingService?.price || ''} onChange={(e) => setEditingService(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))} className="col-span-3" required />
               </div>
 
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="duration" className="text-right">
-                  Dauer*
-                </Label>
-                <Input
-                  id="duration"
-                  value={editingService?.duration || ''}
-                  onChange={(e) => setEditingService(prev => ({
-                    ...prev!,
-                    duration: e.target.value
-                  }))}
-                  className="col-span-3"
-                  required
-                />
+                <Label htmlFor="duration" className="text-right">Dauer*</Label>
+                <Input id="duration" value={editingService?.duration || ''} onChange={(e) => setEditingService(prev => ({ ...prev, duration: e.target.value }))} className="col-span-3" required />
               </div>
 
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="is_active" className="text-right">
-                  Aktiv
-                </Label>
-                <Checkbox
-                  id="is_active"
-                  checked={editingService?.is_active || false}
-                  onCheckedChange={(checked) => setEditingService(prev => ({
-                    ...prev!,
-                    is_active: !!checked
-                  }))}
-                  className="col-span-3"
-                />
+                <Label htmlFor="is_active" className="text-right">Aktiv</Label>
+                <Checkbox id="is_active" checked={editingService?.is_active} onCheckedChange={(checked) => setEditingService(prev => ({ ...prev, is_active: !!checked }))} />
               </div>
             </div>
 
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                <XCircle className="h-4 w-4 mr-2" />
-                Abbrechen
+                <XCircle className="h-4 w-4 mr-2" /> Abbrechen
               </Button>
               <Button onClick={handleSaveService}>
-                <Save className="h-4 w-4 mr-2" />
-                Speichern
+                <Save className="h-4 w-4 mr-2" /> Speichern
               </Button>
             </DialogFooter>
           </DialogContent>
