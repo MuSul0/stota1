@@ -33,6 +33,7 @@ import AdminSettings from '@/pages/adminportal/settings';
 import AdminAuftragsverwaltung from '@/pages/adminportal/auftragsverwaltung';
 import AdminArbeitszeiten from '@/pages/adminportal/arbeitszeiten';
 import AdminEmployeeRegistration from '@/pages/adminportal/employee-registration';
+import AdminLayout from '@/pages/Admin/index'; // Import AdminLayout
 
 // Kunden Portal
 import KundenDashboard from '@/pages/kundenportal/Dashboard';
@@ -76,20 +77,22 @@ function App() {
           <Route path="/empfehlungsprogramm" element={<Empfehlungsprogramm />} />
 
           {/* Admin Portal Routes */}
-          <Route path="/adminportal" element={<AdminDashboard />} />
-          <Route path="/adminportal/users" element={<AdminUsers />} />
-          <Route path="/adminportal/services" element={<AdminServices />} />
-          <Route path="/adminportal/invoices" element={<AdminInvoices />} />
-          <Route path="/adminportal/analytics" element={<AdminAnalytics />} />
-          <Route path="/adminportal/reports" element={<AdminReports />} />
-          <Route path="/adminportal/notifications" element={<AdminNotifications />} />
-          <Route path="/adminportal/seiteninhalte" element={<AdminSeiteninhalte />} />
-          <Route path="/adminportal/leads" element={<AdminLeads />} />
-          <Route path="/adminportal/referrals" element={<AdminReferrals />} />
-          <Route path="/adminportal/settings" element={<AdminSettings />} />
-          <Route path="/adminportal/auftragsverwaltung" element={<AdminAuftragsverwaltung />} />
-          <Route path="/adminportal/arbeitszeiten" element={<AdminArbeitszeiten />} />
-          <Route path="/adminportal/employee-registration" element={<AdminEmployeeRegistration />} />
+          <Route path="/adminportal" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="services" element={<AdminServices />} />
+            <Route path="invoices" element={<AdminInvoices />} />
+            <Route path="analytics" element={<AdminAnalytics />} />
+            <Route path="reports" element={<AdminReports />} />
+            <Route path="notifications" element={<AdminNotifications />} />
+            <Route path="seiteninhalte" element={<AdminSeiteninhalte />} />
+            <Route path="leads" element={<AdminLeads />} />
+            <Route path="referrals" element={<AdminReferrals />} />
+            <Route path="settings" element={<AdminSettings />} />
+            <Route path="auftragsverwaltung" element={<AdminAuftragsverwaltung />} />
+            <Route path="arbeitszeiten" element={<AdminArbeitszeiten />} />
+            <Route path="employee-registration" element={<AdminEmployeeRegistration />} />
+          </Route>
 
           {/* Kunden Portal Routes */}
           <Route path="/kundenportal" element={<KundenDashboard />} />
