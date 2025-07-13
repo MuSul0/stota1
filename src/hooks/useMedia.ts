@@ -48,7 +48,7 @@ export const useMedia = (props?: UseMediaProps) => {
       const { data, error: queryError } = await query.single();
 
       if (queryError) {
-        if (queryError.code === 'PGRST116') {
+        if (queryError.code === 'PGRST116') { // No rows found for single()
           setMedia(null);
         } else {
           throw queryError;
@@ -63,7 +63,7 @@ export const useMedia = (props?: UseMediaProps) => {
     } finally {
       setLoading(false);
     }
-  }, [id, title, type]);
+  }, [id, title, type]); // fetchMedia depends on id, title, type
 
   useEffect(() => {
     if (!supabase) {
@@ -72,33 +72,42 @@ export const useMedia = (props?: UseMediaProps) => {
       return;
     }
 
-    fetchMedia();
+    fetchMedia(); // Initial fetch
 
     if (!id && !title && !type) {
-      return;
+      return; // No specific media to track
     }
 
     const channelName = `media-single-changes-${id || title?.replace(/\s/g, '-') || type}`;
-    const channel = supabase
-      .channel(channelName)
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'media' },
-        () => {
-          fetchMedia();
-        }
-      )
-      .subscribe((status, err) => {
-        if (err) {
-          console.error("Error subscribing to Supabase channel in useMedia:", err);
-          setError(err.message || 'Failed to subscribe to real-time updates.');
-        }
-      });
+    let channel: RealtimeChannel | null = null;
+
+    try {
+      channel = supabase
+        .channel(channelName)
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'media' },
+          () => {
+            fetchMedia(); // Re-fetch on change
+          }
+        )
+        .subscribe((status, err) => {
+          if (err) {
+            console.error("Error subscribing to Supabase channel in useMedia:", err);
+            setError(err.message || 'Failed to subscribe to real-time updates.');
+          }
+        });
+    } catch (e: any) {
+      console.error("Fehler beim Abonnieren des Supabase-Kanals in useMedia:", e);
+      setError(e.message || 'Fehler beim Abonnieren von Echtzeit-Updates.');
+    }
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
-  }, [fetchMedia, id, title, type]);
+  }, [fetchMedia, id, title, type]); // Effect depends on fetchMedia and props
 
   return { media, loading, error };
 };

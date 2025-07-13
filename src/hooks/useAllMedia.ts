@@ -40,7 +40,7 @@ export const useAllMedia = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, []); // fetchAllMedia only depends on stable setters
 
   useEffect(() => {
     if (!supabase) {
@@ -49,28 +49,36 @@ export const useAllMedia = () => {
       return;
     }
 
-    fetchAllMedia();
+    fetchAllMedia(); // Initial fetch
 
-    const channel = supabase
-      .channel('media-all-changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'media' },
-        () => {
-          fetchAllMedia();
-        }
-      )
-      .subscribe((status, err) => {
-        if (err) {
-          console.error("Error subscribing to Supabase channel in useAllMedia:", err);
-          setError(err.message || 'Failed to subscribe to real-time updates.');
-        }
-      });
+    let channel: RealtimeChannel | null = null;
+    try {
+      channel = supabase
+        .channel('media-all-changes')
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'media' },
+          () => {
+            fetchAllMedia(); // Re-fetch on change
+          }
+        )
+        .subscribe((status, err) => {
+          if (err) {
+            console.error("Error subscribing to Supabase channel in useAllMedia:", err);
+            setError(err.message || 'Failed to subscribe to real-time updates.');
+          }
+        });
+    } catch (e: any) {
+      console.error("Fehler beim Abonnieren des Supabase-Kanals in useAllMedia:", e);
+      setError(e.message || 'Fehler beim Abonnieren von Echtzeit-Updates.');
+    }
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
-  }, [fetchAllMedia]);
+  }, [fetchAllMedia]); // Effect depends on fetchAllMedia
 
   return { media, loading, error, mutate: fetchAllMedia };
 };
