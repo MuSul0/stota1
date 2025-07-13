@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -14,44 +14,60 @@ const SeoManager = () => {
   const [seoData, setSeoData] = useState<SeoData | null>(null);
   const [defaultData, setDefaultData] = useState<SeoData | null>(null);
 
-  useEffect(() => {
-    const fetchSeoData = async () => {
-      const path = location.pathname;
+  const fetchSeoData = useCallback(async () => {
+    const path = location.pathname;
 
-      // Fetch data for the current path
-      const { data, error } = await supabase
+    // Fetch data for the current path
+    const { data, error } = await supabase
+      .from('seo_metadata')
+      .select('title, description, keywords')
+      .eq('path', path)
+      .single();
+
+    if (data) {
+      setSeoData(data);
+    } else {
+      setSeoData(null); // Reset if no specific data found
+    }
+    if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found
+      console.error('Error fetching SEO data:', error);
+    }
+
+    // Fetch default data for fallback if not already fetched
+    if (!defaultData) {
+      const { data: defaultResult, error: defaultError } = await supabase
         .from('seo_metadata')
         .select('title, description, keywords')
-        .eq('path', path)
+        .eq('path', '/')
         .single();
-
-      if (data) {
-        setSeoData(data);
-      } else {
-        setSeoData(null); // Reset if no specific data found
+      if (defaultResult) {
+        setDefaultData(defaultResult);
       }
-      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found
-        console.error('Error fetching SEO data:', error);
+      if (defaultError && defaultError.code !== 'PGRST116') {
+        console.error('Error fetching default SEO data:', defaultError);
       }
-
-      // Fetch default data for fallback if not already fetched
-      if (!defaultData) {
-        const { data: defaultResult, error: defaultError } = await supabase
-          .from('seo_metadata')
-          .select('title, description, keywords')
-          .eq('path', '/')
-          .single();
-        if (defaultResult) {
-          setDefaultData(defaultResult);
-        }
-        if (defaultError && defaultError.code !== 'PGRST116') {
-          console.error('Error fetching default SEO data:', defaultError);
-        }
-      }
-    };
-
-    fetchSeoData();
+    }
   }, [location.pathname, defaultData]);
+
+  useEffect(() => {
+    fetchSeoData();
+
+    const channel = supabase
+      .channel('seo-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'seo_metadata' },
+        (payload) => {
+          console.log('SEO-Änderung erkannt, lade neu:', payload);
+          fetchSeoData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchSeoData]);
 
   const currentSeo = seoData || defaultData;
 
