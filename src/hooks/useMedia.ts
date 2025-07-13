@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { RealtimeChannel } from '@supabase/supabase-js';
 
 interface MediaItem {
   id: string;
@@ -56,58 +55,19 @@ export const useMedia = (props?: UseMediaProps) => {
       } else {
         setMedia(data as MediaItem);
       }
-    } catch (err: any) {
+    } catch (err: any)
+{
       console.error("Fehler beim Laden der Medien:", err);
       setError(err.message || 'Ein unbekannter Fehler ist aufgetreten.');
       setMedia(null);
     } finally {
       setLoading(false);
     }
-  }, [id, title, type]); // fetchMedia depends on id, title, type
+  }, [id, title, type]);
 
   useEffect(() => {
-    if (!supabase) {
-      setError('Supabase client not initialized.');
-      setLoading(false);
-      return;
-    }
+    fetchMedia();
+  }, [fetchMedia]);
 
-    fetchMedia(); // Initial fetch
-
-    if (!id && !title && !type) {
-      return; // No specific media to track
-    }
-
-    const channelName = `media-single-changes-${id || title?.replace(/\s/g, '-') || type}`;
-    let channel: RealtimeChannel | null = null;
-
-    try {
-      channel = supabase
-        .channel(channelName)
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'media' },
-          () => {
-            fetchMedia(); // Re-fetch on change
-          }
-        )
-        .subscribe((status, err) => {
-          if (err) {
-            console.error("Error subscribing to Supabase channel in useMedia:", err);
-            setError(err.message || 'Failed to subscribe to real-time updates.');
-          }
-        });
-    } catch (e: any) {
-      console.error("Fehler beim Abonnieren des Supabase-Kanals in useMedia:", e);
-      setError(e.message || 'Fehler beim Abonnieren von Echtzeit-Updates.');
-    }
-
-    return () => {
-      if (channel) {
-        supabase.removeChannel(channel);
-      }
-    };
-  }, [fetchMedia, id, title, type]); // Effect depends on fetchMedia and props
-
-  return { media, loading, error };
+  return { media, loading, error, mutate: fetchMedia };
 };
