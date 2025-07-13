@@ -59,46 +59,50 @@ export const MediaUploadSlot: React.FC<MediaUploadSlotProps> = ({ title, descrip
 
     setUploading(true);
     try {
-      // Delete existing media if present
-      if (currentMedia) {
-        const { error: deleteError } = await supabase.from('media').delete().eq('id', currentMedia.id);
-        if (deleteError) {
-          console.error('Error deleting old media record:', deleteError);
-          // Don't throw, continue with upload as the storage file might still be there
-        }
-        // Attempt to delete the file from storage as well
-        const oldFilePath = currentMedia.url.split('/media/')[1];
-        if (oldFilePath) {
-          const { error: storageDeleteError } = await supabase.storage.from('media').remove([oldFilePath]);
-          if (storageDeleteError) {
-            console.warn('Error deleting old file from storage:', storageDeleteError);
-          }
-        }
-      }
-
       const fileExt = file.name.split('.').pop();
       const sanitizedTitle = sanitizeFilename(title);
       const sanitizedPageContext = sanitizeFilename(pageContext);
       const fileName = `${sanitizedPageContext}-${sanitizedTitle}-${Date.now()}.${fileExt}`;
       const filePath = `${type}s/${fileName}`;
 
+      // 1. Upload new file to storage
       const { error: uploadError } = await supabase.storage.from('media').upload(filePath, file);
       if (uploadError) throw uploadError;
-
       const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(filePath);
 
-      const { error: dbError } = await supabase.from('media').insert({
-        type: type,
-        url: publicUrl,
-        title: title, // Keep original title for display
-        description: description,
-        page_context: pageContext,
-      });
-      if (dbError) throw dbError;
+      // 2. Update or Insert record in database
+      if (currentMedia) {
+        // If media already exists for this slot, update it
+        const { error: dbUpdateError } = await supabase
+          .from('media')
+          .update({ url: publicUrl, created_at: new Date().toISOString() }) // Update URL and timestamp
+          .eq('id', currentMedia.id); // Identify by ID
+        if (dbUpdateError) throw dbUpdateError;
+
+        // 3. Delete old file from storage (after successful DB update)
+        const oldFilePath = currentMedia.url.split('/media/')[1];
+        if (oldFilePath) {
+          const { error: storageDeleteError } = await supabase.storage.from('media').remove([oldFilePath]);
+          if (storageDeleteError) {
+            console.warn('Error deleting old file from storage:', storageDeleteError);
+            // Log warning but don't block the main operation
+          }
+        }
+      } else {
+        // If no media exists for this slot, insert a new one
+        const { error: dbInsertError } = await supabase.from('media').insert({
+          type: type,
+          url: publicUrl,
+          title: title,
+          description: description,
+          page_context: pageContext,
+        });
+        if (dbInsertError) throw dbInsertError;
+      }
 
       toast.success('Medium erfolgreich hochgeladen und aktualisiert!');
       setFile(null);
-      refetchAllMedia(); // Refresh media list
+      refetchAllMedia();
     } catch (error: any) {
       toast.error('Fehler beim Hochladen: ' + error.message);
       console.error('Upload error:', error);
