@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface MediaItem {
@@ -16,8 +16,13 @@ export const useAllMedia = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchAllMedia = async () => {
-    setLoading(true);
+  const fetchAllMedia = useCallback(async () => {
+    // On initial load, we want to show a loading indicator.
+    // For subsequent real-time updates, we don't want to flash the loading state.
+    // So we only set loading if it's the first time.
+    if (loading) {
+      setLoading(true);
+    }
     setError(null);
     try {
       const { data, error } = await supabase
@@ -36,11 +41,31 @@ export const useAllMedia = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [loading]); // Dependency on `loading` to correctly handle initial state
 
   useEffect(() => {
+    // Initial fetch
     fetchAllMedia();
-  }, []);
+
+    // Set up the real-time subscription
+    const channel = supabase
+      .channel('public:media')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'media' },
+        (payload) => {
+          console.log('Media change detected, refetching...', payload);
+          // When a change is detected, refetch all media to get the updated list
+          fetchAllMedia();
+        }
+      )
+      .subscribe();
+
+    // Cleanup function to remove the subscription when the component unmounts
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchAllMedia]);
 
   return { media, loading, error, mutate: fetchAllMedia };
 };

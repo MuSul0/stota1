@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
 import { SessionProvider } from '@/components/SessionProvider';
+import { MediaProvider } from './contexts/MediaContext';
 import Index from '@/pages/Index';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
@@ -56,68 +57,71 @@ import CreateAdminUser from '@/pages/Admin/CreateAdminUser';
 
 function App() {
   return (
-    <Router>
-      <SessionProvider>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/impressum" element={<Impressum />} />
-          <Route path="/datenschutz" element={<Datenschutz />} />
-          <Route path="/kontakt" element={<Kontakt />} />
-          <Route path="/leistungen" element={<Leistungen />} />
-          <Route path="/leistungen/reinigung" element={<Reinigung />} />
-          <Route path="/leistungen/transporte" element={<Transporte />} />
-          <Route path="/leistungen/entsorgung" element={<Entsorgung />} />
-          <Route path="/leistungen/garten-landschaftsbau" element={<GartenLandschaftsbau />} />
-          <Route path="/ueber-uns" element={<UeberUns />} />
-          <Route path="/galerie" element={<Galerie />} />
-          <Route path="/bewertungen" element={<Bewertungen />} />
-          <Route path="/empfehlungsprogramm" element={<Empfehlungsprogramm />} />
+    <SessionProvider>
+      <MediaProvider>
+        <Router>
+          <ScrollToTop />
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/impressum" element={<Impressum />} />
+            <Route path="/datenschutz" element={<Datenschutz />} />
+            <Route path="/kontakt" element={<Kontakt />} />
+            <Route path="/leistungen" element={<Leistungen />} />
+            <Route path="/leistungen/reinigung" element={<Reinigung />} />
+            <Route path="/leistungen/transporte" element={<Transporte />} />
+            <Route path="/leistungen/entsorgung" element={<Entsorgung />} />
+            <Route path="/leistungen/garten-landschaftsbau" element={<GartenLandschaftsbau />} />
+            <Route path="/ueber-uns" element={<UeberUns />} />
+            <Route path="/galerie" element={<Galerie />} />
+            <Route path="/bewertungen" element={<Bewertungen />} />
+            <Route path="/empfehlungsprogramm" element={<Empfehlungsprogramm />} />
 
-          {/* Admin Portal Routes */}
-          <Route path="/adminportal" element={<AdminLayout />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="users" element={<AdminUsers />} />
-            <Route path="services" element={<AdminServices />} />
-            <Route path="invoices" element={<AdminInvoices />} />
-            <Route path="analytics" element={<AdminAnalytics />} />
-            <Route path="reports" element={<AdminReports />} />
-            <Route path="notifications" element={<AdminNotifications />} />
-            <Route path="seiteninhalte" element={<AdminSeiteninhalte />} />
-            <Route path="leads" element={<AdminLeads />} />
-            <Route path="referrals" element={<AdminReferrals />} />
-            <Route path="settings" element={<AdminSettings />} />
-            <Route path="auftragsverwaltung" element={<AdminAuftragsverwaltung />} />
-            <Route path="arbeitszeiten" element={<AdminArbeitszeiten />} />
-            <Route path="employee-registration" element={<AdminEmployeeRegistration />} />
-          </Route>
+            {/* Admin Portal Routes */}
+            <Route path="/adminportal" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="services" element={<AdminServices />} />
+              <Route path="invoices" element={<AdminInvoices />} />
+              <Route path="analytics" element={<AdminAnalytics />} />
+              <Route path="reports" element={<AdminReports />} />
+              <Route path="notifications" element={<AdminNotifications />} />
+              <Route path="seiteninhalte" element={<AdminSeiteninhalte />} />
+              <Route path="leads" element={<AdminLeads />} />
+              <Route path="referrals" element={<AdminReferrals />} />
+              <Route path="settings" element={<AdminSettings />} />
+              <Route path="auftragsverwaltung" element={<AdminAuftragsverwaltung />} />
+              <Route path="arbeitszeiten" element={<AdminArbeitszeiten />} />
+              <Route path="employee-registration" element={<AdminEmployeeRegistration />} />
+            </Route>
 
-          {/* Kunden Portal Routes */}
-          <Route path="/kundenportal" element={<KundenDashboard />} />
-          <Route path="/kundenportal/auftraege" element={<KundenAuftraege />} />
-          <Route path="/kundenportal/nachrichten" element={<KundenNachrichten />} />
-          <Route path="/kundenportal/support" element={<KundenSupport />} />
-          <Route path="/kundenportal/termine" element={<KundenTermine />} />
-          <Route path="/kundenportal/einstellungen" element={<KundenEinstellungen />} />
+            {/* Kunden Portal Routes */}
+            <Route path="/kundenportal" element={<KundenDashboard />} />
+            <Route path="/kundenportal/auftraege" element={<KundenAuftraege />} />
+            <Route path="/kundenportal/nachrichten" element={<KundenNachrichten />} />
+            <Route path="/kundenportal/support" element={<KundenSupport />} />
+            <Route path="/kundenportal/termine" element={<KundenTermine />} />
+            <Route path="/kundenportal/einstellungen" element={<KundenEinstellungen />} />
 
-          {/* Mitarbeiter Portal Routes */}
-          <Route path="/mitarbeiterportal" element={<MitarbeiterDashboard />} />
-          <Route path="/mitarbeiterportal/auftraege" element={<MitarbeiterAuftraege />} />
-          <Route path="/mitarbeiterportal/arbeitszeiten" element={<MitarbeiterArbeitszeiten />} />
-          <Route path="/mitarbeiterportal/fahrzeuge" element={<MitarbeiterFahrzeuge />} />
-          <Route path="/mitarbeiterportal/team" element={<MitarbeiterTeam />} />
+            {/* Mitarbeiter Portal Routes */}
+            <Route path="/mitarbeiterportal" element={<MitarbeiterDashboard />} />
+            <Route path="/mitarbeiterportal/auftraege" element={<MitarbeiterAuftraege />} />
+            <Route path="/mitarbeiterportal/arbeitszeiten" element={<MitarbeiterArbeitszeiten />} />
+            <Route path="/mitarbeiterportal/fahrzeuge" element={<MitarbeiterFahrzeuge />} />
+            <Route path="/mitarbeiterportal/team" element={<MitarbeiterTeam />} />
 
-          {/* Temporary Admin User Creation Route */}
-          <Route path="/create-admin" element={<CreateAdminUser />} />
+            {/* Temporary Admin User Creation Route */}
+            <Route path="/create-admin" element={<CreateAdminUser />} />
 
-          {/* Catch-all for 404 */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </SessionProvider>
-      <Toaster />
-    </Router>
+            {/* Catch-all for 404 */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Router>
+        <Toaster />
+      </MediaProvider>
+    </SessionProvider>
   );
 }
 
