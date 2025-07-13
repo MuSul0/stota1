@@ -10,7 +10,7 @@ import { useMedia } from '@/hooks/useMedia';
 
 const UeberUns = () => {
   const { media: aboutUsMainImage, loading: loadingAboutUsMainImage, error: aboutUsMainError } = useMedia({ title: 'About Us Main Image' });
-  const { media: stottaMullerProfile, loading: loadingStottaMullerProfile, error: stottaMullerProfileError } = useMedia({ title: 'Stotta Müller Profile' });
+  const { media: nicolaeTurcituProfile, loading: loadingNicolaeTurcituProfile, error: nicolaeTurcituProfileError } = useMedia({ title: 'Nicolae Bogdanel Turcitu Profile' });
   const { media: mariaSchmidtProfile, loading: loadingMariaSchmidtProfile, error: mariaSchmidtProfileError } = useMedia({ title: 'Maria Schmidt Profile' });
   const { media: thomasWeberProfile, loading: loadingThomasWeberProfile, error: thomasWeberProfileError } = useMedia({ title: 'Thomas Weber Profile' });
 
@@ -41,7 +41,7 @@ const UeberUns = () => {
     }
   ];
 
-  if (loadingAboutUsMainImage || loadingStottaMullerProfile || loadingMariaSchmidtProfile || loadingThomasWeberProfile) {
+  if (loadingAboutUsMainImage || loadingNicolaeTurcituProfile || loadingMariaSchmidtProfile || loadingThomasWeberProfile) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <p className="text-gray-600 text-lg">Lade Über uns...</p>
@@ -49,8 +49,8 @@ const UeberUns = () => {
     );
   }
 
-  if (aboutUsMainError || stottaMullerProfileError || mariaSchmidtProfileError || thomasWeberProfileError) {
-    console.error("Fehler beim Laden der Bilder auf der 'Über uns'-Seite:", aboutUsMainError, stottaMullerProfileError, mariaSchmidtProfileError, thomasWeberProfileError);
+  if (aboutUsMainError || nicolaeTurcituProfileError || mariaSchmidtProfileError || thomasWeberProfileError) {
+    console.error("Fehler beim Laden der Bilder auf der 'Über uns'-Seite:", aboutUsMainError, nicolaeTurcituProfileError, mariaSchmidtProfileError, thomasWeberProfileError);
   }
 
   return (
@@ -99,7 +99,7 @@ const UeberUns = () => {
                 </h2>
                 <div className="space-y-6 text-gray-700 text-lg leading-relaxed">
                   <p>
-                    Im Jahr 2014 begann unsere Reise mit einer klaren Vision: Stota wollte einen Dienstleister schaffen, der nicht nur arbeitet, sondern Werte lebt. Aus einem kleinen Familienunternehmen ist eine feste Größe in der Region geworden, bekannt für <strong className="text-blue-600">ehrliche Arbeit, unerschütterliche Zuverlässigkeit und faire Preise</strong>.
+                    Im Jahr 2014 begann unsere Reise mit einer klaren Vision: Der Gründer wollte einen Dienstleister schaffen, der nicht nur arbeitet, sondern Werte lebt. Aus einem kleinen Familienunternehmen ist eine feste Größe in der Region geworden, bekannt für <strong className="text-blue-600">ehrliche Arbeit, unerschütterliche Zuverlässigkeit und faire Preise</strong>.
                   </p>
                   <p>
                     Heute blicken wir stolz auf über <strong className="text-green-600">500 begeisterte Kunden</strong> und ein Team von <strong className="text-purple-600">passionierten Experten</strong>. Jeder Auftrag, ob Reinigung, Transport oder Umzug, wird mit der Hingabe behandelt, die wir unserer eigenen Familie entgegenbringen würden. <strong className="text-purple-600">Das ist unser unumstößliches Versprechen an Sie.</strong>
@@ -120,11 +120,11 @@ const UeberUns = () => {
               >
                 <img 
                   src={aboutUsMainImage?.url || "https://placehold.co/600x400/dbeafe/2563eb?text=Über+Uns"}
-                  alt="Stota Müller vor seinem ersten Transporter im Jahr 2014"
+                  alt="Nicolae Bogdanel Turcitu vor seinem ersten Transporter im Jahr 2014"
                   className="w-full h-96 object-cover rounded-3xl"
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 rounded-b-3xl">
-                  <p className="text-white font-medium">Stota Müller, 2014</p>
+                  <p className="text-white font-medium">Nicolae Bogdanel Turcitu, 2014</p>
                   <p className="text-white/80 text-sm">Der Anfang einer Erfolgsgeschichte</p>
                 </div>
               </motion.div>
@@ -231,18 +231,18 @@ const UeberUns = () => {
                 <CardContent className="p-8">
                   <div className="relative mb-6">
                     <img 
-                      src={stottaMullerProfile?.url || "https://placehold.co/128x128/e0e7ff/4338ca?text=SM"}
-                      alt="Stota Müller - Geschäftsführer"
+                      src={nicolaeTurcituProfile?.url || "https://placehold.co/128x128/e0e7ff/4338ca?text=NT"}
+                      alt="Nicolae Bogdanel Turcitu - Geschäftsführer"
                       className="w-32 h-32 rounded-full mx-auto object-cover shadow-lg"
                     />
                     <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
                       <Users className="h-5 w-5 text-white" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-2 text-gray-900">Stota Müller</h3>
+                  <h3 className="text-xl font-bold mb-2 text-gray-900">Nicolae Bogdanel Turcitu</h3>
                   <p className="text-blue-600 mb-3 font-medium">Geschäftsführer & Gründer</p>
                   <p className="text-gray-700 text-base leading-relaxed">
-                    Als Visionär und treibende Kraft hinter Stota Transport führt Stota das Unternehmen mit über 15 Jahren Branchenerfahrung. Seine unermüdliche Leidenschaft für exzellenten Service ist der Funke, der jedes Projekt zum Leuchten bringt.
+                    Als Visionär und treibende Kraft hinter Stota Transport führt Nicolae das Unternehmen mit über 15 Jahren Branchenerfahrung. Seine unermüdliche Leidenschaft für exzellenten Service ist der Funke, der jedes Projekt zum Leuchten bringt.
                   </p>
                 </CardContent>
               </Card>

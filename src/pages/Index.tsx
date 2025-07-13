@@ -400,11 +400,11 @@ const Index = () => {
               >
                 <img 
                   src={aboutUsImage?.url || "https://placehold.co/600x400/dbeafe/2563eb?text=Über+Uns"}
-                  alt="Stota Müller vor seinem ersten Transporter im Jahr 2014"
+                  alt="Nicolae Bogdanel Turcitu vor seinem ersten Transporter im Jahr 2014"
                   className="w-full h-96 object-cover rounded-3xl"
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 rounded-b-3xl">
-                  <p className="text-white font-medium">Stota Müller, 2014</p>
+                  <p className="text-white font-medium">Nicolae Bogdanel Turcitu, 2014</p>
                   <p className="text-white/80 text-sm">Der Anfang einer Erfolgsgeschichte</p>
                 </div>
               </motion.div>

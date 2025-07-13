@@ -19,7 +19,7 @@ const Impressum = () => {
               <CardContent className="space-y-4">
                 <div>
                   <h3 className="font-semibold mb-2">Stota Transport</h3>
-                  <p>Inhaber: Stota Müller</p>
+                  <p>Inhaber: Nicolae Bogdanel Turcitu</p>
                   <p>Schalker Str. 143</p>
                   <p>45881 Gelsenkirchen</p>
                   <p>Deutschland</p>

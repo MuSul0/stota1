@@ -11,7 +11,7 @@ const mediaSlots = {
   ],
   ueberUns: [
     { title: "About Us Main Image", description: "Hauptbild oben auf der 'Über Uns'-Seite.", type: "image" as const },
-    { title: "Stotta Müller Profile", description: "Profilbild von Stotta Müller.", type: "image" as const },
+    { title: "Nicolae Bogdanel Turcitu Profile", description: "Profilbild von Nicolae Bogdanel Turcitu.", type: "image" as const },
     { title: "Maria Schmidt Profile", description: "Profilbild von Maria Schmidt.", type: "image" as const },
     { title: "Thomas Weber Profile", description: "Profilbild von Thomas Weber.", type: "image" as const },
   ],
