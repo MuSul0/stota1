@@ -137,11 +137,103 @@ export default function AdminSeiteninhalte() {
             </CardHeader>
             <CardContent>
               <Accordion type="single" collapsible className="w-full space-y-4">
-                <AccordionItem value="startseite" className="border border-gray-700 rounded-lg"><AccordionTrigger className="px-4 py-3 hover:no-underline">Startseite</AccordionTrigger><AccordionContent className="p-4 space-y-4 bg-gray-900/50"><MediaUploadSlot title="Hero Bild" description="Das große Hauptbild ganz oben auf der Startseite." type="image" pageContext="startseite" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /><MediaUploadSlot title="Vorschau Transporte" description="Bild für die Transport-Dienstleistung auf der Startseite." type="image" pageContext="startseite" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /><MediaUploadSlot title="Vorschau Reinigung" description="Bild für die Reinigungs-Dienstleistung auf der Startseite." type="image" pageContext="startseite" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /><MediaUploadSlot title="Vorschau Gartenbau" description="Bild für die Gartenbau-Dienstleistung auf der Startseite." type="image" pageContext="startseite" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /><MediaUploadSlot title="Vorschau Entsorgung" description="Bild für die Entsorgungs-Dienstleistung auf der Startseite." type="image" pageContext="startseite" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /></AccordionContent></AccordionItem>
-                <AccordionItem value="leistungen" className="border border-gray-700 rounded-lg"><AccordionTrigger className="px-4 py-3 hover:no-underline">Leistungsseiten</AccordionTrigger><AccordionContent className="p-4 space-y-4 bg-gray-900/50"><MediaUploadSlot title="Header-Bild Transporte" description="Das Titelbild für die Transport-Detailseite." type="image" pageContext="leistungen" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /><MediaUploadSlot title="Header-Bild Reinigung" description="Das Titelbild für die Reinigungs-Detailseite." type="image" pageContext="leistungen" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /><MediaUploadSlot title="Header-Bild Gartenbau" description="Das Titelbild für die Gartenbau-Detailseite." type="image" pageContext="leistungen" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /><MediaUploadSlot title="Header-Bild Entsorgung" description="Das Titelbild für die Entsorgungs-Detailseite." type="image" pageContext="leistungen" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /></AccordionContent></AccordionItem>
-                <AccordionItem value="ueber-uns" className="border border-gray-700 rounded-lg"><AccordionTrigger className="px-4 py-3 hover:no-underline">Über Uns</AccordionTrigger><AccordionContent className="p-4 space-y-4 bg-gray-900/50"><MediaUploadSlot title="Team Bild" description="Ein Bild des Teams oder des Gründers auf der 'Über Uns'-Seite." type="image" pageContext="ueber-uns" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /></AccordionContent></AccordionItem>
-                <AccordionItem value="empfehlungsprogramm" className="border border-gray-700 rounded-lg"><AccordionTrigger className="px-4 py-3 hover:no-underline">Empfehlungsprogramm</AccordionTrigger><AccordionContent className="p-4 space-y-4 bg-gray-900/50"><MediaUploadSlot title="Programm-Banner" description="Ein Werbebanner für das Empfehlungsprogramm." type="image" pageContext="empfehlungsprogramm" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /></AccordionContent></AccordionItem>
-                <AccordionItem value="kontakt" className="border border-gray-700 rounded-lg"><AccordionTrigger className="px-4 py-3 hover:no-underline">Kontakt</AccordionTrigger><AccordionContent className="p-4 space-y-4 bg-gray-900/50"><MediaUploadSlot title="Kontakt Header-Bild" description="Das Titelbild auf der Kontaktseite." type="image" pageContext="kontakt" allMediaItems={allMediaItems} refetchAllMedia={refetchAllMedia} /></AccordionContent></AccordionItem>
+                <AccordionItem value="startseite" className="border border-gray-700 rounded-lg">
+                  <AccordionTrigger className="px-4 py-3 hover:no-underline">Startseite</AccordionTrigger>
+                  <AccordionContent className="p-4 space-y-4 bg-gray-900/50">
+                    <MediaUploadSlot 
+                      title="Hero Bild" 
+                      description="Das große Hauptbild ganz oben auf der Startseite." 
+                      type="image" 
+                      pageContext="startseite" 
+                    />
+                    <MediaUploadSlot 
+                      title="Vorschau Transporte" 
+                      description="Bild für die Transport-Dienstleistung auf der Startseite." 
+                      type="image" 
+                      pageContext="startseite" 
+                    />
+                    <MediaUploadSlot 
+                      title="Vorschau Reinigung" 
+                      description="Bild für die Reinigungs-Dienstleistung auf der Startseite." 
+                      type="image" 
+                      pageContext="startseite" 
+                    />
+                    <MediaUploadSlot 
+                      title="Vorschau Gartenbau" 
+                      description="Bild für die Gartenbau-Dienstleistung auf der Startseite." 
+                      type="image" 
+                      pageContext="startseite" 
+                    />
+                    <MediaUploadSlot 
+                      title="Vorschau Entsorgung" 
+                      description="Bild für die Entsorgungs-Dienstleistung auf der Startseite." 
+                      type="image" 
+                      pageContext="startseite" 
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="leistungen" className="border border-gray-700 rounded-lg">
+                  <AccordionTrigger className="px-4 py-3 hover:no-underline">Leistungsseiten</AccordionTrigger>
+                  <AccordionContent className="p-4 space-y-4 bg-gray-900/50">
+                    <MediaUploadSlot 
+                      title="Header-Bild Transporte" 
+                      description="Das Titelbild für die Transport-Detailseite." 
+                      type="image" 
+                      pageContext="leistungen" 
+                    />
+                    <MediaUploadSlot 
+                      title="Header-Bild Reinigung" 
+                      description="Das Titelbild für die Reinigungs-Detailseite." 
+                      type="image" 
+                      pageContext="leistungen" 
+                    />
+                    <MediaUploadSlot 
+                      title="Header-Bild Gartenbau" 
+                      description="Das Titelbild für die Gartenbau-Detailseite." 
+                      type="image" 
+                      pageContext="leistungen" 
+                    />
+                    <MediaUploadSlot 
+                      title="Header-Bild Entsorgung" 
+                      description="Das Titelbild für die Entsorgungs-Detailseite." 
+                      type="image" 
+                      pageContext="leistungen" 
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="ueber-uns" className="border border-gray-700 rounded-lg">
+                  <AccordionTrigger className="px-4 py-3 hover:no-underline">Über Uns</AccordionTrigger>
+                  <AccordionContent className="p-4 space-y-4 bg-gray-900/50">
+                    <MediaUploadSlot 
+                      title="Team Bild" 
+                      description="Ein Bild des Teams oder des Gründers auf der 'Über Uns'-Seite." 
+                      type="image" 
+                      pageContext="ueber-uns" 
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="empfehlungsprogramm" className="border border-gray-700 rounded-lg">
+                  <AccordionTrigger className="px-4 py-3 hover:no-underline">Empfehlungsprogramm</AccordionTrigger>
+                  <AccordionContent className="p-4 space-y-4 bg-gray-900/50">
+                    <MediaUploadSlot 
+                      title="Programm-Banner" 
+                      description="Ein Werbebanner für das Empfehlungsprogramm." 
+                      type="image" 
+                      pageContext="empfehlungsprogramm" 
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="kontakt" className="border border-gray-700 rounded-lg">
+                  <AccordionTrigger className="px-4 py-3 hover:no-underline">Kontakt</AccordionTrigger>
+                  <AccordionContent className="p-4 space-y-4 bg-gray-900/50">
+                    <MediaUploadSlot 
+                      title="Kontakt Header-Bild" 
+                      description="Das Titelbild auf der Kontaktseite." 
+                      type="image" 
+                      pageContext="kontakt" 
+                    />
+                  </AccordionContent>
+                </AccordionItem>
               </Accordion>
             </CardContent>
           </Card>
