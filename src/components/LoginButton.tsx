@@ -6,16 +6,17 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 const LoginButton = () => {
-  const { session, refreshSession } = useSession();
+  const { session } = useSession();
 
   const handleLogout = async () => {
     console.log("Attempting logout. Current session state in LoginButton:", session);
     const { error } = await supabase.auth.signOut();
     if (error) {
       if (error.message === "Auth session missing!") {
-        toast.success("Erfolgreich abgemeldet! (Sitzung war bereits abgelaufen)");
-        console.warn("Supabase signOut error: Auth session missing! User was already logged out. Forcing session refresh.");
-        await refreshSession(); // Manuelle Aktualisierung der Sitzung
+        // This means the user was already logged out from Supabase's perspective.
+        // The SessionProvider's onAuthStateChange will eventually catch the SIGNED_OUT event
+        // and handle state clearing and navigation. No specific toast needed here.
+        console.warn("Supabase signOut warning: Auth session missing! User was already logged out.");
       } else {
         toast.error("Fehler beim Abmelden: " + error.message);
         console.error("Logout error:", error);
