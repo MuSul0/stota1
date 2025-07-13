@@ -20,7 +20,7 @@ const Impressum = () => {
                 <div>
                   <h3 className="font-semibold mb-2">Stota Transport</h3>
                   <p>Inhaber: Nicolae Bogdanel Turcitu</p>
-                  <p>Schalker Str. 143</p>
+                  <p>Kurt-Schumacher-Str. 136</p>
                   <p>45881 Gelsenkirchen</p>
                   <p>Deutschland</p>
                 </div>
@@ -32,7 +32,7 @@ const Impressum = () => {
                 <CardTitle>Kontakt</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <p><strong>Telefon:</strong> +49 123 456 789</p>
+                <p><strong>Telefon:</strong> +49 176 41171386</p>
                 <p><strong>E-Mail:</strong> kontakt@info-stota.de</p>
                 <p><strong>Website:</strong> www.stota-transport.de</p>
               </CardContent>
@@ -45,6 +45,7 @@ const Impressum = () => {
               <CardContent>
                 <p>Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:</p>
                 <p><strong>DE123456789</strong></p>
+                <p className="text-sm text-gray-500 mt-2">Bitte hier Ihre korrekte USt-IdNr. eintragen, falls vorhanden.</p>
               </CardContent>
             </Card>
 
@@ -53,8 +54,8 @@ const Impressum = () => {
                 <CardTitle>Berufsbezeichnung und berufsrechtliche Regelungen</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <p><strong>Berufsbezeichnung:</strong> Dienstleistungsunternehmen</p>
-                <p><strong>Zuständige Kammer:</strong> Handwerkskammer München</p>
+                <p><strong>Berufsbezeichnung:</strong> Dienstleistungsunternehmen (Verlegung von Glasfaserleitungen, Garten- und Landschaftsbau, Kleintransporte)</p>
+                <p><strong>Zuständige Aufsichtsbehörde:</strong> Stadt Gelsenkirchen, Der Oberbürgermeister, Referat Öffentliche Sicherheit und Ordnung</p>
                 <p><strong>Verliehen durch:</strong> Deutschland</p>
               </CardContent>
             </Card>
