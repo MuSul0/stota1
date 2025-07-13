@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import { ArrowRight, CheckCircle, Play, Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { useMedia } from '@/hooks/useMedia';
 
 const floatingVariants = {
   float: {
@@ -15,22 +14,11 @@ const floatingVariants = {
   }
 };
 
-const Hero = () => {
-  const { media: heroBackground, loading: loadingHeroBackground, error: heroError } = useMedia({ title: 'Hero Background', type: 'image' });
+interface HeroProps {
+  imageUrl?: string;
+}
 
-  if (loadingHeroBackground) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <p className="text-gray-600 text-lg">Lade Hero-Sektion...</p>
-      </div>
-    );
-  }
-
-  if (heroError) {
-    console.error("Fehler beim Laden des Hero-Hintergrundbilds:", heroError);
-    // Optional: Fallback zu einem Standardbild oder Fehlermeldung anzeigen
-  }
-
+const Hero = ({ imageUrl }: HeroProps) => {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* 3D Floating Elements */}
@@ -49,7 +37,7 @@ const Hero = () => {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img 
-          src={heroBackground?.url || "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"} // Fallback image
+          src={imageUrl || "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"} // Fallback image
           alt="Professionelle Umzugshelfer beim Transport"
           className="w-full h-full object-cover"
         />
