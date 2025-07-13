@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
 import { SessionProvider } from '@/components/SessionProvider';
 import { MediaProvider } from './contexts/MediaContext';
+import ScrollToTop from '@/components/ScrollToTop'; // Sicherstellen, dass dieser Import vorhanden ist
+
 import Index from '@/pages/Index';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
