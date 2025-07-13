@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
-interface MediaItem {
+export interface MediaItem {
   id: string;
   title: string;
   url: string;

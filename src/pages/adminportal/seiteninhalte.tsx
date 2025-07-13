@@ -1,6 +1,7 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { MediaUploadSlot } from "@/components/admin/MediaUploadSlot";
-import { FileImage } from "lucide-react";
+import { FileImage, Loader2 } from "lucide-react";
+import { useAllMedia } from "@/hooks/useAllMedia";
 
 const mediaSlots = {
   startseite: [
@@ -34,6 +35,20 @@ const mediaSlots = {
 };
 
 const Seiteninhalte = () => {
+  const { media: allMediaItems, loading, error, mutate: refetchAllMedia } = useAllMedia();
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <p className="text-red-500">Fehler beim Laden der Medien: {error}</p>;
+  }
+
   return (
     <div className="space-y-6 text-white">
       <div className="flex items-center gap-3">
@@ -50,7 +65,13 @@ const Seiteninhalte = () => {
           <AccordionTrigger className="text-xl hover:no-underline">Startseite</AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
             {mediaSlots.startseite.map(slot => (
-              <MediaUploadSlot key={slot.title} {...slot} pageContext="Startseite" />
+              <MediaUploadSlot 
+                key={slot.title} 
+                {...slot} 
+                pageContext="Startseite" 
+                allMediaItems={allMediaItems}
+                refetchAllMedia={refetchAllMedia}
+              />
             ))}
           </AccordionContent>
         </AccordionItem>
@@ -59,7 +80,13 @@ const Seiteninhalte = () => {
           <AccordionTrigger className="text-xl hover:no-underline">Über Uns</AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
             {mediaSlots.ueberUns.map(slot => (
-              <MediaUploadSlot key={slot.title} {...slot} pageContext="Über Uns" />
+              <MediaUploadSlot 
+                key={slot.title} 
+                {...slot} 
+                pageContext="Über Uns" 
+                allMediaItems={allMediaItems}
+                refetchAllMedia={refetchAllMedia}
+              />
             ))}
           </AccordionContent>
         </AccordionItem>
@@ -68,7 +95,13 @@ const Seiteninhalte = () => {
           <AccordionTrigger className="text-xl hover:no-underline">Galerie (Spezifische Inhalte)</AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
             {mediaSlots.galerie.map(slot => (
-              <MediaUploadSlot key={slot.title} {...slot} pageContext="Galerie" />
+              <MediaUploadSlot 
+                key={slot.title} 
+                {...slot} 
+                pageContext="Galerie" 
+                allMediaItems={allMediaItems}
+                refetchAllMedia={refetchAllMedia}
+              />
             ))}
           </AccordionContent>
         </AccordionItem>
@@ -77,7 +110,13 @@ const Seiteninhalte = () => {
           <AccordionTrigger className="text-xl hover:no-underline">Weitere Seiten (Hero-Bilder)</AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
             {mediaSlots.weitere.map(slot => (
-              <MediaUploadSlot key={slot.title} {...slot} pageContext="Hero-Sektionen" />
+              <MediaUploadSlot 
+                key={slot.title} 
+                {...slot} 
+                pageContext="Hero-Sektionen" 
+                allMediaItems={allMediaItems}
+                refetchAllMedia={refetchAllMedia}
+              />
             ))}
           </AccordionContent>
         </AccordionItem>
