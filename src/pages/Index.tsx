@@ -3,49 +3,54 @@ import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
 import ParallaxSection from '@/components/ParallaxSection';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, Clock, Truck, Leaf, Sparkles, Star, Quote, Users, Lightbulb, Handshake, Briefcase, Smile, Euro, PhoneCall, CalendarCheck, Wrench, ThumbsUp, Gift } from 'lucide-react';
+import { CheckCircle, Clock, Truck, Leaf, Sparkles, Star, Quote, Users, Lightbulb, Handshake, Briefcase, Smile, Euro, PhoneCall, CalendarCheck, Wrench, ThumbsUp, Gift, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useMedia } from '@/hooks/useMedia';
+import { useAllMedia } from '@/hooks/useAllMedia';
+import { getUniqueDbTitle } from '@/lib/mediaUtils';
 
 const Index = () => {
   const servicesRef = useRef<HTMLDivElement>(null);
+  const { media: allMediaItems } = useAllMedia();
 
-  const { media: referralProgramImage, loading: loadingReferralProgramImage, error: referralError } = useMedia({ title: 'Referral Program Teaser' });
-  const { media: aboutUsImage, loading: loadingAboutUsImage, error: aboutUsError } = useMedia({ title: 'About Us Teaser' });
+  const getMediaUrlByTitle = (title: string, pageContext: string, type: 'image' | 'video') => {
+    const expectedDbTitle = getUniqueDbTitle(title, pageContext, type);
+    const mediaItem = allMediaItems.find(item => item.title === expectedDbTitle);
+    return mediaItem?.url;
+  };
+
+  const heroImage = getMediaUrlByTitle('Hero Bild', 'startseite', 'image');
+  const aboutUsImage = getMediaUrlByTitle('Team Bild', 'ueber-uns', 'image');
+  const referralProgramImage = getMediaUrlByTitle('Programm-Banner', 'empfehlungsprogramm', 'image');
 
   const serviceCategories = [
     {
       icon: Truck,
       title: 'Transporte',
-      subtitle: 'Ihre Güter sicher ans Ziel',
       description: 'Sicherer und pünktlicher Transport Ihrer Güter – von empfindlichen Hightech-Waren bis zu kompletten Umzügen für Privat- und Firmenkunden.',
       link: '/leistungen/transporte',
       colorClass: 'from-blue-600 to-blue-800',
     },
     {
-      icon: Leaf,
-      title: 'Garten- & Landschaftsbau',
-      subtitle: 'Ihr Traumgarten – von der Idee zur Realität',
-      description: 'Von der regelmäßigen Gartenpflege über Rasen mähen und Heckenschnitt bis hin zu Baumfällungen und der Neugestaltung Ihrer Außenanlagen.',
-      link: '/leistungen/garten-landschaftsbau',
-      colorClass: 'from-orange-600 to-red-800',
-    },
-    {
       icon: Sparkles,
       title: 'Reinigung',
-      subtitle: 'Glanz & Hygiene für Ihr Zuhause & Geschäft',
       description: 'Professionelle Reinigungsdienste für Privat- und Gewerbekunden. Von der Grundreinigung bis zur Fahrzeugaufbereitung – wir sorgen für makellose Sauberkeit.',
       link: '/leistungen/reinigung',
       colorClass: 'from-purple-600 to-indigo-800',
     },
     {
       icon: Leaf,
+      title: 'Gartenbau',
+      description: 'Von der regelmäßigen Gartenpflege über Rasen mähen und Heckenschnitt bis hin zu Baumfällungen und der Neugestaltung Ihrer Außenanlagen.',
+      link: '/leistungen/garten-landschaftsbau',
+      colorClass: 'from-orange-600 to-red-800',
+    },
+    {
+      icon: Trash2,
       title: 'Entsorgung',
-      subtitle: 'Sauber & Umweltgerecht entsorgen',
       description: 'Wir kümmern uns um die fachgerechte Entsorgung Ihrer alten Möbel, Elektrogeräte, Gartenabfälle und Renovierungsreste – schnell, zuverlässig und umweltbewusst.',
       link: '/leistungen/entsorgung',
       colorClass: 'from-green-600 to-emerald-800',
@@ -129,20 +134,11 @@ const Index = () => {
     }
   ];
 
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <Star
-        key={i}
-        className={`h-5 w-5 ${i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
-      />
-    ));
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex flex-col">
       <Header />
 
-      <Hero />
+      <Hero imageUrl={heroImage} />
 
       {/* Services Section */}
       <ParallaxSection speed={0.1}>
@@ -170,27 +166,34 @@ const Index = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-              {serviceCategories.map((category, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 40, scale: 0.95 }}
-                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.15 }}
-                  className="group cursor-pointer rounded-3xl shadow-md hover:shadow-2xl transition-shadow duration-300 flex flex-col"
-                >
-                  <div className={`w-full h-48 rounded-t-3xl bg-gradient-to-br ${category.colorClass} flex items-center justify-center text-white text-6xl drop-shadow-lg`}>
-                    <category.icon className="w-16 h-16" />
-                  </div>
-                  <div className="p-6 flex flex-col flex-grow">
-                    <h3 className="text-2xl font-bold mb-2 text-gray-900">{category.title}</h3>
-                    <p className="text-gray-700 flex-grow">{category.description}</p>
-                    <Button asChild className={`mt-6 w-full bg-gradient-to-r ${category.colorClass} hover:from-opacity-90 hover:to-opacity-90 text-white rounded-xl shadow-md font-semibold text-lg`}>
-                      <Link to={category.link}>Mehr erfahren</Link>
-                    </Button>
-                  </div>
-                </motion.div>
-              ))}
+              {serviceCategories.map((category, index) => {
+                const serviceImageUrl = getMediaUrlByTitle(`Vorschau ${category.title}`, 'startseite', 'image');
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: index * 0.15 }}
+                    className="group cursor-pointer rounded-3xl shadow-md hover:shadow-2xl transition-shadow duration-300 flex flex-col bg-white"
+                  >
+                    <div className={`relative w-full h-48 rounded-t-3xl bg-gradient-to-br ${category.colorClass} flex items-center justify-center text-white text-6xl drop-shadow-lg overflow-hidden`}>
+                      {serviceImageUrl ? (
+                        <img src={serviceImageUrl} alt={category.title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                      ) : (
+                        <category.icon className="w-16 h-16" />
+                      )}
+                    </div>
+                    <div className="p-6 flex flex-col flex-grow">
+                      <h3 className="text-2xl font-bold mb-2 text-gray-900">{category.title}</h3>
+                      <p className="text-gray-700 flex-grow">{category.description}</p>
+                      <Button asChild className={`mt-6 w-full bg-gradient-to-r ${category.colorClass} hover:from-opacity-90 hover:to-opacity-90 text-white rounded-xl shadow-md font-semibold text-lg`}>
+                        <Link to={category.link}>Mehr erfahren</Link>
+                      </Button>
+                    </div>
+                  </motion.div>
+                )
+              })}
             </div>
           </div>
         </section>
@@ -252,7 +255,7 @@ const Index = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.15 }}
-                className="flex flex-col items-center text-center p-6 border rounded-3xl shadow hover:shadow-lg transition-shadow duration-300"
+                className="flex flex-col items-center text-center p-6 border rounded-3xl shadow hover:shadow-lg transition-shadow duration-300 bg-white"
               >
                 <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-6">
                   <advantage.icon className="h-10 w-10 text-blue-600" />
@@ -262,8 +265,7 @@ const Index = () => {
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
       {/* Referral Program Section */}
       <section className="py-20 bg-gradient-to-br from-blue-50 to-purple-50">
@@ -298,7 +300,7 @@ const Index = () => {
               className="relative rounded-3xl overflow-hidden shadow-xl"
             >
               <img 
-                src={referralProgramImage?.url || "https://placehold.co/600x400/e9d5ff/8b5cf6?text=Empfehlung"}
+                src={referralProgramImage || "https://placehold.co/600x400/e9d5ff/8b5cf6?text=Empfehlung"}
                 alt="Freunde teilen eine Empfehlung"
                 className="w-full h-96 object-cover"
               />
@@ -311,7 +313,7 @@ const Index = () => {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <motion.div 
@@ -351,7 +353,7 @@ const Index = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.15 }}
-                className="flex flex-col items-center text-center p-6 border rounded-3xl shadow hover:shadow-lg transition-shadow duration-300"
+                className="flex flex-col items-center text-center p-6 border rounded-3xl shadow hover:shadow-lg transition-shadow duration-300 bg-white"
               >
                 <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mb-6">
                   <step.icon className="h-10 w-10 text-purple-600" />
@@ -399,7 +401,7 @@ const Index = () => {
                 className="relative rounded-3xl overflow-hidden shadow-2xl"
               >
                 <img 
-                  src={aboutUsImage?.url || "https://placehold.co/600x400/dbeafe/2563eb?text=Über+Uns"}
+                  src={aboutUsImage || "https://placehold.co/600x400/dbeafe/2563eb?text=Über+Uns"}
                   alt="Nicolae Bogdanel Turcitu vor seinem ersten Transporter im Jahr 2014"
                   className="w-full h-96 object-cover rounded-3xl"
                 />
@@ -446,7 +448,7 @@ const Index = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.7, delay: index * 0.15 }}
-                  className="flex flex-col p-8 border rounded-3xl shadow hover:shadow-lg transition-shadow duration-300"
+                  className="flex flex-col p-8 border rounded-3xl shadow hover:shadow-lg transition-shadow duration-300 bg-white"
                 >
                   <div className="flex items-center mb-6">
                     <Avatar className="mr-6 w-20 h-20">
@@ -475,7 +477,7 @@ const Index = () => {
       </ParallaxSection>
 
       {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-r from-blue-900 to-blue-700 text-white rounded-3xl shadow-lg mx-6 md:mx-12 lg:mx-24">
+      <section className="py-24 bg-gradient-to-r from-blue-900 to-blue-700 text-white rounded-3xl shadow-lg mx-6 md:mx-12 lg:mx-24 my-12">
         <div className="container mx-auto px-6 max-w-4xl text-center">
           <motion.h2 
             className="text-5xl font-extrabold mb-8 drop-shadow-lg tracking-tight"

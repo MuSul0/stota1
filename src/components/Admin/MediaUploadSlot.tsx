@@ -6,6 +6,7 @@ import { Upload, Trash2, Video } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { MediaItem } from '@/hooks/useAllMedia';
+import { getUniqueDbTitle, sanitizeFilename } from '@/lib/mediaUtils';
 
 interface MediaUploadSlotProps {
   title: string;
@@ -20,25 +21,6 @@ export const MediaUploadSlot: React.FC<MediaUploadSlotProps> = ({ title, descrip
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [currentMedia, setCurrentMedia] = useState<{ url: string; id: string } | null>(null);
-
-  const sanitizeFilename = (name: string) => {
-    return name
-      .toLowerCase()
-      .replace(/ä/g, 'ae')
-      .replace(/ö/g, 'oe')
-      .replace(/ü/g, 'ue')
-      .replace(/ß/g, 'ss')
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim();
-  };
-
-  const getUniqueDbTitle = (displayTitle: string, pageCtx: string, mediaType: 'image' | 'video') => {
-    const sanitizedPageContext = sanitizeFilename(pageCtx);
-    const sanitizedDisplayTitle = sanitizeFilename(displayTitle);
-    return `${sanitizedPageContext}-${sanitizedDisplayTitle}-${mediaType}`;
-  };
 
   useEffect(() => {
     const expectedDbTitle = getUniqueDbTitle(title, pageContext, type);
