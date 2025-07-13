@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { RealtimeChannel } from '@supabase/supabase-js'; // Import RealtimeChannel type
+import { RealtimeChannel } from '@supabase/supabase-js';
 
 interface MediaItem {
   id: string;
@@ -41,7 +41,6 @@ export const useMedia = (props?: UseMediaProps) => {
         } else if (props?.type) {
           query = query.eq('type', props.type);
         } else {
-          // If no specific props are provided, we can't fetch a single item.
           setMedia(null);
           setLoading(false);
           return;
@@ -50,7 +49,7 @@ export const useMedia = (props?: UseMediaProps) => {
         const { data, error } = await query.single();
 
         if (error) {
-          if (error.code === 'PGRST116' && (props?.title || props?.id)) { // No rows found for single()
+          if (error.code === 'PGRST116' && (props?.title || props?.id)) {
             setMedia(null);
           } else {
             throw error;
@@ -61,34 +60,38 @@ export const useMedia = (props?: UseMediaProps) => {
       } catch (err: any) {
         console.error("Fehler beim Laden der Medien:", err);
         setError(err.message || 'Ein unbekannter Fehler ist aufgetreten.');
-        setMedia(null); // Ensure media is null on error
+        setMedia(null);
       } finally {
         setLoading(false);
       }
     };
 
-    let channel: RealtimeChannel | null = null;
+    // Initial fetch
     if (props?.title || props?.type || props?.id) {
       fetchMedia();
-      const channelName = `media-single-changes-${props.id || props.title?.replace(/\s/g, '-') || props.type}`;
-      
-      try {
-        channel = supabase
-          .channel(channelName)
-          .on(
-            'postgres_changes',
-            { event: '*', schema: 'public', table: 'media' },
-            () => {
-              fetchMedia();
-            }
-          )
-          .subscribe();
-      } catch (e: any) {
-        console.error("Error subscribing to Supabase channel in useMedia:", e);
-        setError(e.message || 'Failed to subscribe to real-time updates.');
-      }
     } else {
       setLoading(false);
+    }
+
+    const channelName = `media-single-changes-${props?.id || props?.title?.replace(/\s/g, '-') || props?.type || 'default'}`;
+    let channel: RealtimeChannel | null = null;
+
+    try {
+      channel = supabase
+        .channel(channelName)
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'media' },
+          () => {
+            if (props?.title || props?.type || props?.id) {
+              fetchMedia(); // Re-fetch on change
+            }
+          }
+        )
+        .subscribe();
+    } catch (e: any) {
+      console.error("Error subscribing to Supabase channel in useMedia:", e);
+      setError(e.message || 'Failed to subscribe to real-time updates.');
     }
 
     return () => {
@@ -96,7 +99,7 @@ export const useMedia = (props?: UseMediaProps) => {
         supabase.removeChannel(channel);
       }
     };
-  }, [props?.title, props?.type, props?.id]);
+  }, [props?.title, props?.type, props?.id]); // Dependencies ensure re-subscription if props change
 
   return { media, loading, error };
 };

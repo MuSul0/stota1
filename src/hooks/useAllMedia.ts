@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { RealtimeChannel } from '@supabase/supabase-js'; // Import RealtimeChannel type
+import { RealtimeChannel } from '@supabase/supabase-js';
 
 interface MediaItem {
   id: string;
@@ -17,31 +17,6 @@ export const useAllMedia = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchAllMedia = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      if (!supabase) {
-        throw new Error('Supabase client is not initialized.');
-      }
-      const { data, error } = await supabase
-        .from('media')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        throw error;
-      }
-      setMedia(data as MediaItem[]);
-    } catch (err: any) {
-      console.error("Fehler beim Laden aller Medien:", err);
-      setError(err.message || 'Ein unbekannter Fehler ist aufgetreten.');
-      setMedia([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (!supabase) {
       setError('Supabase client not initialized.');
@@ -49,7 +24,29 @@ export const useAllMedia = () => {
       return;
     }
 
-    fetchAllMedia();
+    const fetchAllMedia = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const { data, error } = await supabase
+          .from('media')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          throw error;
+        }
+        setMedia(data as MediaItem[]);
+      } catch (err: any) {
+        console.error("Fehler beim Laden aller Medien:", err);
+        setError(err.message || 'Ein unbekannter Fehler ist aufgetreten.');
+        setMedia([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllMedia(); // Initial fetch
 
     let channel: RealtimeChannel | null = null;
     try {
@@ -59,7 +56,7 @@ export const useAllMedia = () => {
           'postgres_changes',
           { event: '*', schema: 'public', table: 'media' },
           () => {
-            fetchAllMedia();
+            fetchAllMedia(); // Re-fetch on change
           }
         )
         .subscribe();
@@ -73,7 +70,7 @@ export const useAllMedia = () => {
         supabase.removeChannel(channel);
       }
     };
-  }, []);
+  }, []); // Empty dependency array means this effect runs once on mount
 
   return { media, loading, error, mutate: fetchAllMedia };
 };
