@@ -19,18 +19,6 @@ export default function AdminLeads() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchLeads();
-    const channel = supabase
-      .channel('public:contact_requests')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'contact_requests' }, fetchLeads)
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
   const fetchLeads = async () => {
     setLoading(true);
     try {
@@ -48,6 +36,18 @@ export default function AdminLeads() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchLeads();
+    const channel = supabase
+      .channel('public:contact_requests')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'contact_requests' }, fetchLeads)
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   if (loading) {
     return (

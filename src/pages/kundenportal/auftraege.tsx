@@ -37,22 +37,6 @@ export default function Auftraege() {
 
   const subscriptionRef = useRef<any>(null);
 
-  useEffect(() => {
-    if (!loading) {
-      if (!session || !['kunde', 'user'].includes(user?.role || '')) {
-        navigate('/login');
-      } else {
-        fetchAuftraege();
-        setupRealtimeSubscription();
-      }
-    }
-    return () => {
-      if (subscriptionRef.current) {
-        supabase.removeChannel(subscriptionRef.current);
-      }
-    };
-  }, [session, user, loading, navigate]);
-
   const fetchAuftraege = async () => {
     if (!user) return;
     setLoadingAuftraege(true);
@@ -70,16 +54,31 @@ export default function Auftraege() {
     setLoadingAuftraege(false);
   };
 
-  const setupRealtimeSubscription = () => {
-    if (!user || subscriptionRef.current) return;
-    const channel = supabase
-      .channel('public:requests')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'requests', filter: `user_id=eq.${user.id}` }, () => {
+  useEffect(() => {
+    if (!loading) {
+      if (!session || !['kunde', 'user'].includes(user?.role || '')) {
+        navigate('/login');
+      } else {
         fetchAuftraege();
-      })
-      .subscribe();
-    subscriptionRef.current = channel;
-  };
+        
+        // Realtime subscription logic moved directly into useEffect
+        if (user) { // Ensure user is available for filter
+          const channel = supabase
+            .channel('public:requests')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'requests', filter: `user_id=eq.${user.id}` }, () => {
+              fetchAuftraege();
+            })
+            .subscribe();
+          subscriptionRef.current = channel;
+        }
+      }
+    }
+    return () => {
+      if (subscriptionRef.current) {
+        supabase.removeChannel(subscriptionRef.current);
+      }
+    };
+  }, [session, user, loading, navigate]); // Added user to dependencies for filter changes
 
   const handleAddAuftrag = async (e: React.FormEvent) => {
     e.preventDefault();

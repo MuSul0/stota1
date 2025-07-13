@@ -44,9 +44,7 @@ export default function AdminArbeitszeiten() {
   useEffect(() => {
     fetchData();
 
-    if (subscriptionRef.current) {
-      supabase.removeChannel(subscriptionRef.current);
-    }
+    // Realtime subscription logic moved directly into useEffect
     const channel = supabase
       .channel('public:work_times')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'work_times' }, () => {
@@ -59,6 +57,7 @@ export default function AdminArbeitszeiten() {
     return () => {
       if (subscriptionRef.current) {
         supabase.removeChannel(subscriptionRef.current);
+        subscriptionRef.current = null;
       }
     };
   }, []);

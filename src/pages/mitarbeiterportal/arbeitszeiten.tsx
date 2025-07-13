@@ -29,23 +29,6 @@ export default function Arbeitszeiten() {
   const [endTime, setEndTime] = useState('');
   const subscriptionRef = useRef<any>(null);
 
-  useEffect(() => {
-    if (!loading) {
-      if (!session || user?.role !== 'mitarbeiter') {
-        navigate('/login');
-      } else {
-        fetchWorkTimes();
-        setupRealtimeSubscription();
-      }
-    }
-    return () => {
-      if (subscriptionRef.current) {
-        supabase.removeChannel(subscriptionRef.current);
-        subscriptionRef.current = null;
-      }
-    };
-  }, [session, user, loading, navigate]);
-
   const fetchWorkTimes = async () => {
     if (!user) return;
     setLoadingData(true);
@@ -64,24 +47,36 @@ export default function Arbeitszeiten() {
     setLoadingData(false);
   };
 
-  const setupRealtimeSubscription = () => {
-    if (!user) return;
-    if (subscriptionRef.current) {
-      supabase.removeChannel(subscriptionRef.current);
-      subscriptionRef.current = null;
-    }
-    const channel = supabase
-      .channel('public:work_times')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'work_times', filter: `user_id=eq.${user.id}` },
-        () => {
-          fetchWorkTimes();
+  useEffect(() => {
+    if (!loading) {
+      if (!session || user?.role !== 'mitarbeiter') {
+        navigate('/login');
+      } else {
+        fetchWorkTimes();
+        
+        // Realtime subscription logic moved directly into useEffect
+        if (user) { // Ensure user is available for filter
+          const channel = supabase
+            .channel('public:work_times')
+            .on(
+              'postgres_changes',
+              { event: '*', schema: 'public', table: 'work_times', filter: `user_id=eq.${user.id}` },
+              () => {
+                fetchWorkTimes();
+              }
+            )
+            .subscribe();
+          subscriptionRef.current = channel;
         }
-      )
-      .subscribe();
-    subscriptionRef.current = channel;
-  };
+      }
+    }
+    return () => {
+      if (subscriptionRef.current) {
+        supabase.removeChannel(subscriptionRef.current);
+        subscriptionRef.current = null;
+      }
+    };
+  }, [session, user, loading, navigate]); // Added user to dependencies for filter changes
 
   const handleAddWorkTime = async () => {
     if (!startTime) {

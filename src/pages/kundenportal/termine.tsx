@@ -42,24 +42,6 @@ export default function Termine() {
   // Ref für Supabase Subscription speichern
   const subscriptionRef = useRef<any>(null);
 
-  useEffect(() => {
-    if (!loading) {
-      if (!session || !['kunde', 'user'].includes(user?.role || '')) {
-        navigate('/login');
-      } else {
-        fetchTermine();
-        setupRealtimeSubscription();
-      }
-    }
-    // Cleanup on unmount
-    return () => {
-      if (subscriptionRef.current) {
-        supabase.removeChannel(subscriptionRef.current);
-        subscriptionRef.current = null;
-      }
-    };
-  }, [session, user, loading, navigate]);
-
   const fetchTermine = async () => {
     if (!user) return;
     setLoadingTermine(true);
@@ -79,27 +61,38 @@ export default function Termine() {
     setLoadingTermine(false);
   };
 
-  const setupRealtimeSubscription = () => {
-    if (!user) return;
-    // Falls schon eine Subscription besteht, entfernen
-    if (subscriptionRef.current) {
-      supabase.removeChannel(subscriptionRef.current);
-      subscriptionRef.current = null;
-    }
+  useEffect(() => {
+    if (!loading) {
+      if (!session || !['kunde', 'user'].includes(user?.role || '')) {
+        navigate('/login');
+      } else {
+        fetchTermine();
+        
+        // Realtime subscription logic moved directly into useEffect
+        if (user) { // Ensure user is available for filter
+          const channel = supabase
+            .channel('public:appointments')
+            .on(
+              'postgres_changes',
+              { event: '*', schema: 'public', table: 'appointments', filter: `user_id=eq.${user.id}` },
+              (payload) => {
+                fetchTermine();
+              }
+            );
 
-    const channel = supabase
-      .channel('public:appointments')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'appointments', filter: `user_id=eq.${user.id}` },
-        (payload) => {
-          fetchTermine();
+          channel.subscribe();
+          subscriptionRef.current = channel;
         }
-      );
-
-    channel.subscribe();
-    subscriptionRef.current = channel;
-  };
+      }
+    }
+    // Cleanup on unmount
+    return () => {
+      if (subscriptionRef.current) {
+        supabase.removeChannel(subscriptionRef.current);
+        subscriptionRef.current = null;
+      }
+    };
+  }, [session, user, loading, navigate]); // Added user to dependencies for filter changes
 
   const handleAddTermin = async () => {
     if (!newDate || !newTime || !newService) {

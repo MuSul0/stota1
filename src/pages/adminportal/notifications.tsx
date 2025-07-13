@@ -21,18 +21,6 @@ export default function Notifications() {
   const [loadingData, setLoadingData] = useState(true);
   const subscriptionRef = useRef<any>(null);
 
-  useEffect(() => {
-    fetchNotifications();
-    setupRealtimeSubscription();
-    
-    return () => {
-      if (subscriptionRef.current) {
-        supabase.removeChannel(subscriptionRef.current);
-        subscriptionRef.current = null;
-      }
-    };
-  }, []);
-
   const fetchNotifications = async () => {
     setLoadingData(true);
     try {
@@ -63,11 +51,10 @@ export default function Notifications() {
     }
   };
 
-  const setupRealtimeSubscription = () => {
-    if (subscriptionRef.current) {
-      supabase.removeChannel(subscriptionRef.current);
-      subscriptionRef.current = null;
-    }
+  useEffect(() => {
+    fetchNotifications();
+    
+    // Realtime subscription logic moved directly into useEffect
     const channel = supabase
       .channel('public:messages')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => {
@@ -75,7 +62,14 @@ export default function Notifications() {
       })
       .subscribe();
     subscriptionRef.current = channel;
-  };
+    
+    return () => {
+      if (subscriptionRef.current) {
+        supabase.removeChannel(subscriptionRef.current);
+        subscriptionRef.current = null;
+      }
+    };
+  }, []);
 
   const markAsRead = async (id: string) => {
     const { error } = await supabase

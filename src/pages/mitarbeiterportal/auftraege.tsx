@@ -24,23 +24,6 @@ export default function Auftraege() {
   const [loadingData, setLoadingData] = useState(true);
   const subscriptionRef = useRef<any>(null);
 
-  useEffect(() => {
-    if (!loading) {
-      if (!session || user?.role !== 'mitarbeiter') {
-        navigate('/login');
-      } else {
-        fetchAuftraege();
-        setupRealtimeSubscription();
-      }
-    }
-    return () => {
-      if (subscriptionRef.current) {
-        supabase.removeChannel(subscriptionRef.current);
-        subscriptionRef.current = null;
-      }
-    };
-  }, [session, user, loading, navigate]);
-
   const fetchAuftraege = async () => {
     if (!user) return;
     setLoadingData(true);
@@ -59,24 +42,36 @@ export default function Auftraege() {
     setLoadingData(false);
   };
 
-  const setupRealtimeSubscription = () => {
-    if (!user) return;
-    if (subscriptionRef.current) {
-      supabase.removeChannel(subscriptionRef.current);
-      subscriptionRef.current = null;
-    }
-    const channel = supabase
-      .channel('public:tasks')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'tasks', filter: `assigned_to=eq.${user.id}` },
-        () => {
-          fetchAuftraege();
+  useEffect(() => {
+    if (!loading) {
+      if (!session || user?.role !== 'mitarbeiter') {
+        navigate('/login');
+      } else {
+        fetchAuftraege();
+        
+        // Realtime subscription logic moved directly into useEffect
+        if (user) { // Ensure user is available for filter
+          const channel = supabase
+            .channel('public:tasks')
+            .on(
+              'postgres_changes',
+              { event: '*', schema: 'public', table: 'tasks', filter: `assigned_to=eq.${user.id}` },
+              () => {
+                fetchAuftraege();
+              }
+            )
+            .subscribe();
+          subscriptionRef.current = channel;
         }
-      )
-      .subscribe();
-    subscriptionRef.current = channel;
-  };
+      }
+    }
+    return () => {
+      if (subscriptionRef.current) {
+        supabase.removeChannel(subscriptionRef.current);
+        subscriptionRef.current = null;
+      }
+    };
+  }, [session, user, loading, navigate]); // Added user to dependencies for filter changes
 
   const handleStatusChange = async (auftragId: string, newStatus: string) => {
     const { error } = await supabase

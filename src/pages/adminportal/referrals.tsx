@@ -21,18 +21,6 @@ export default function AdminReferrals() {
   const [referrals, setReferrals] = useState<Referral[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchReferrals();
-    const channel = supabase
-      .channel('public:referrals')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'referrals' }, fetchReferrals)
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
   const fetchReferrals = async () => {
     setLoading(true);
     try {
@@ -50,6 +38,18 @@ export default function AdminReferrals() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchReferrals();
+    const channel = supabase
+      .channel('public:referrals')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'referrals' }, fetchReferrals)
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const handleStatusChange = async (id: string, status: string) => {
     try {
