@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { useAllMedia } from '@/hooks/useAllMedia';
 
 interface MediaUploadSlotProps {
-  title: string;
+  title: string; // This is the display title
   description: string;
   type: 'image' | 'video';
   pageContext: string;
@@ -20,23 +20,6 @@ export const MediaUploadSlot: React.FC<MediaUploadSlotProps> = ({ title, descrip
   const [currentMedia, setCurrentMedia] = useState<{ url: string; id: string } | null>(null);
 
   const { media: allMediaItems, mutate: refetchAllMedia } = useAllMedia();
-
-  useEffect(() => {
-    const mediaItem = allMediaItems.find(
-      (item) => item.title === title && item.page_context === pageContext && item.type === type
-    );
-    if (mediaItem) {
-      setCurrentMedia({ url: mediaItem.url, id: mediaItem.id });
-    } else {
-      setCurrentMedia(null);
-    }
-  }, [allMediaItems, title, pageContext, type]);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-    }
-  };
 
   const sanitizeFilename = (name: string) => {
     return name
@@ -51,6 +34,31 @@ export const MediaUploadSlot: React.FC<MediaUploadSlotProps> = ({ title, descrip
       .trim();
   };
 
+  // Function to generate a unique identifier for the database 'title' column
+  const getUniqueDbTitle = (displayTitle: string, pageCtx: string, mediaType: 'image' | 'video') => {
+    const sanitizedPageContext = sanitizeFilename(pageCtx);
+    const sanitizedDisplayTitle = sanitizeFilename(displayTitle);
+    return `${sanitizedPageContext}-${sanitizedDisplayTitle}-${mediaType}`;
+  };
+
+  useEffect(() => {
+    const expectedDbTitle = getUniqueDbTitle(title, pageContext, type);
+    const mediaItem = allMediaItems.find(
+      (item) => item.title === expectedDbTitle // Now searching by the unique DB title
+    );
+    if (mediaItem) {
+      setCurrentMedia({ url: mediaItem.url, id: mediaItem.id });
+    } else {
+      setCurrentMedia(null);
+    }
+  }, [allMediaItems, title, pageContext, type]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  };
+
   const handleFileUpload = async () => {
     if (!file) {
       toast.error('Bitte wählen Sie eine Datei zum Hochladen aus.');
@@ -60,10 +68,12 @@ export const MediaUploadSlot: React.FC<MediaUploadSlotProps> = ({ title, descrip
     setUploading(true);
     try {
       const fileExt = file.name.split('.').pop();
-      const sanitizedTitle = sanitizeFilename(title);
-      const sanitizedPageContext = sanitizeFilename(pageContext);
-      const fileName = `${sanitizedPageContext}-${sanitizedTitle}-${Date.now()}.${fileExt}`;
+      const sanitizedTitleForFilename = sanitizeFilename(title); // For the actual file name in storage
+      const sanitizedPageContextForFilename = sanitizeFilename(pageContext); // For the actual file name in storage
+      const fileName = `${sanitizedPageContextForFilename}-${sanitizedTitleForFilename}-${Date.now()}.${fileExt}`;
       const filePath = `${type}s/${fileName}`;
+
+      const dbTitleToStore = getUniqueDbTitle(title, pageContext, type); // This is the unique identifier for the DB 'title' column
 
       // 1. Upload new file to storage
       const { error: uploadError } = await supabase.storage.from('media').upload(filePath, file);
@@ -75,7 +85,7 @@ export const MediaUploadSlot: React.FC<MediaUploadSlotProps> = ({ title, descrip
         // If media already exists for this slot, update it
         const { error: dbUpdateError } = await supabase
           .from('media')
-          .update({ url: publicUrl, created_at: new Date().toISOString() }) // Update URL and timestamp
+          .update({ url: publicUrl, created_at: new Date().toISOString(), title: dbTitleToStore }) // Update URL, timestamp, and ensure title is the unique identifier
           .eq('id', currentMedia.id); // Identify by ID
         if (dbUpdateError) throw dbUpdateError;
 
@@ -93,7 +103,7 @@ export const MediaUploadSlot: React.FC<MediaUploadSlotProps> = ({ title, descrip
         const { error: dbInsertError } = await supabase.from('media').insert({
           type: type,
           url: publicUrl,
-          title: title,
+          title: dbTitleToStore, // Store the unique identifier here
           description: description,
           page_context: pageContext,
         });
