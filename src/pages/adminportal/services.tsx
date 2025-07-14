@@ -54,7 +54,8 @@ export default function AdminServices() {
 
       if (error) throw error;
       
-      setServices(data.map(s => ({...s, price: Number(s.price) })) || []);
+      // FIX: Handle case where data might be null to prevent crash
+      setServices((data || []).map(s => ({...s, price: Number(s.price) })));
     } catch (error) {
       toast.error('Fehler beim Laden der Services');
       console.error(error);
@@ -70,7 +71,6 @@ export default function AdminServices() {
     const channel = supabase
       .channel('public:services')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'services' }, payload => {
-        // Granular update based on event type
         if (payload.eventType === 'INSERT') {
           setServices(prevServices => [
             { ...payload.new, price: Number(payload.new.price) } as Service,
@@ -88,7 +88,7 @@ export default function AdminServices() {
           toast.info('Service aktualisiert!');
         } else if (payload.eventType === 'DELETE') {
           setServices(prevServices =>
-            prevServices.filter(service => service.id !== payload.old.id)
+            prevServices.filter(service => service.id !== (payload.old as any).id)
           );
           toast.warning('Service gelöscht!');
         }
@@ -118,8 +118,7 @@ export default function AdminServices() {
     try {
       const { error } = await supabase.from('services').delete().eq('id', id);
       if (error) throw error;
-      // Realtime subscription will handle state update
-      // toast.success('Service erfolgreich gelöscht'); // Toast handled by realtime listener
+      // Realtime subscription will handle UI update and toast
     } catch (error) {
       toast.error('Fehler beim Löschen des Services');
       console.error(error);
@@ -138,13 +137,9 @@ export default function AdminServices() {
       if (editingService.id) {
         const { error } = await supabase.from('services').update(serviceData).eq('id', editingService.id);
         if (error) throw error;
-        // Realtime subscription will handle state update
-        // toast.success('Service erfolgreich aktualisiert'); // Toast handled by realtime listener
       } else {
         const { error } = await supabase.from('services').insert(serviceData);
         if (error) throw error;
-        // Realtime subscription will handle state update
-        // toast.success('Service erfolgreich erstellt'); // Toast handled by realtime listener
       }
       
       setIsDialogOpen(false);
@@ -159,8 +154,6 @@ export default function AdminServices() {
     try {
       const { error } = await supabase.from('services').update({ is_active: !currentStatus }).eq('id', id);
       if (error) throw error;
-      // Realtime subscription will handle state update
-      // toast.success(`Service ${currentStatus ? 'deaktiviert' : 'aktiviert'}`); // Toast handled by realtime listener
     } catch (error) {
       toast.error('Fehler beim Ändern des Status');
       console.error(error);
