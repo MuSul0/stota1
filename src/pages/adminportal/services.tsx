@@ -150,14 +150,17 @@ export default function AdminServices() {
     }
 
     try {
+      let error;
       if (editingService.id) {
         // Update existing service
-        const { error } = await supabase.from('services').update(serviceToSave).eq('id', editingService.id);
+        const { error: updateError } = await supabase.from('services').update(serviceToSave).eq('id', editingService.id);
+        error = updateError;
         if (error) throw error;
         toast.success('Service erfolgreich aktualisiert');
       } else {
         // Insert new service
-        const { error } = await supabase.from('services').insert(serviceToSave);
+        const { error: insertError } = await supabase.from('services').insert(serviceToSave);
+        error = insertError;
         if (error) throw error;
         toast.success('Service erfolgreich erstellt');
       }
@@ -166,7 +169,17 @@ export default function AdminServices() {
       setEditingService(null);
     } catch (error: any) {
       console.error('Fehler beim Speichern des Services:', error);
-      toast.error(`Fehler beim Speichern des Services: ${error.message || 'Unbekannter Fehler'}`);
+      let errorMessage = 'Unbekannter Fehler';
+      if (error && typeof error === 'object') {
+        if (error.message) {
+          errorMessage = error.message;
+        } else if (error.details) { // Supabase specific error details
+          errorMessage = error.details;
+        }
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+      toast.error(`Fehler beim Speichern des Services: ${errorMessage}`);
     }
   };
 
