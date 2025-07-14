@@ -35,14 +35,15 @@ export default function AdminAnalytics() {
       const { data, error, count } = await supabase
         .from('visitors')
         .select('*', { count: 'exact' })
-        .order('visited_at', { ascending: false });
+        .order('visited_at', { ascending: false })
+        .limit(100);
 
       if (error) throw error;
 
       const uniqueCountries = new Set(data.map(v => v.country).filter(Boolean)).size;
       const uniqueCities = new Set(data.map(v => v.city).filter(Boolean)).size;
 
-      setVisitors(data.slice(0, 100) || []); // Show only last 100 in table, but calculate on all
+      setVisitors(data || []);
       setStats({
         totalVisitors: count || 0,
         uniqueCountries,
@@ -100,7 +101,7 @@ export default function AdminAnalytics() {
 
       <Card className="bg-gray-700 text-white">
         <CardHeader>
-          <CardTitle>Letzte 100 Besucher</CardTitle>
+          <CardTitle>Letzte Besucher</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">

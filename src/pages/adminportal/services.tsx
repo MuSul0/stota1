@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import supabase from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -54,8 +54,7 @@ export default function AdminServices() {
 
       if (error) throw error;
       
-      // FIX: Handle case where data might be null to prevent crash
-      setServices((data || []).map(s => ({...s, price: Number(s.price) })));
+      setServices(data.map(s => ({...s, price: Number(s.price) })) || []);
     } catch (error) {
       toast.error('Fehler beim Laden der Services');
       console.error(error);
@@ -70,28 +69,8 @@ export default function AdminServices() {
     }
     const channel = supabase
       .channel('public:services')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'services' }, payload => {
-        if (payload.eventType === 'INSERT') {
-          setServices(prevServices => [
-            { ...payload.new, price: Number(payload.new.price) } as Service,
-            ...prevServices
-          ]);
-          toast.success('Neuer Service hinzugefügt!');
-        } else if (payload.eventType === 'UPDATE') {
-          setServices(prevServices =>
-            prevServices.map(service =>
-              service.id === payload.new.id
-                ? { ...payload.new, price: Number(payload.new.price) } as Service
-                : service
-            )
-          );
-          toast.info('Service aktualisiert!');
-        } else if (payload.eventType === 'DELETE') {
-          setServices(prevServices =>
-            prevServices.filter(service => service.id !== (payload.old as any).id)
-          );
-          toast.warning('Service gelöscht!');
-        }
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'services' }, () => {
+        fetchServices();
       })
       .subscribe();
     subscriptionRef.current = channel;
@@ -118,7 +97,7 @@ export default function AdminServices() {
     try {
       const { error } = await supabase.from('services').delete().eq('id', id);
       if (error) throw error;
-      // Realtime subscription will handle UI update and toast
+      toast.success('Service erfolgreich gelöscht');
     } catch (error) {
       toast.error('Fehler beim Löschen des Services');
       console.error(error);
@@ -137,9 +116,11 @@ export default function AdminServices() {
       if (editingService.id) {
         const { error } = await supabase.from('services').update(serviceData).eq('id', editingService.id);
         if (error) throw error;
+        toast.success('Service erfolgreich aktualisiert');
       } else {
         const { error } = await supabase.from('services').insert(serviceData);
         if (error) throw error;
+        toast.success('Service erfolgreich erstellt');
       }
       
       setIsDialogOpen(false);
@@ -154,6 +135,7 @@ export default function AdminServices() {
     try {
       const { error } = await supabase.from('services').update({ is_active: !currentStatus }).eq('id', id);
       if (error) throw error;
+      toast.success(`Service ${currentStatus ? 'deaktiviert' : 'aktiviert'}`);
     } catch (error) {
       toast.error('Fehler beim Ändern des Status');
       console.error(error);
