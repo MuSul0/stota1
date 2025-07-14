@@ -47,22 +47,16 @@ export default function AdminServices() {
   const fetchServices = async () => {
     setLoadingData(true);
     try {
-      const { data, error, status } = await supabase
+      const { data, error } = await supabase
         .from('services')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) {
-        if (status === 401 || status === 403) {
-          toast.error('Zugriff verweigert: Du bist kein Admin oder nicht angemeldet.');
-        } else {
-          toast.error('Fehler beim Laden der Services');
-        }
-        throw error;
-      }
+      if (error) throw error;
       
       setServices(data.map(s => ({...s, price: Number(s.price) })) || []);
     } catch (error) {
+      toast.error('Fehler beim Laden der Services');
       console.error(error);
     } finally {
       setLoadingData(false);

@@ -1,1 +1,0 @@
-UPDATE profiles SET role = 'admin' WHERE email = 'DEINE_EMAIL@domain.de';
