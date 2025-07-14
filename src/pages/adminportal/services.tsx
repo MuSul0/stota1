@@ -54,7 +54,14 @@ export default function AdminServices() {
 
       if (error) throw error;
       
-      setServices(data.map(s => ({...s, price: Number(s.price) })) || []);
+      // Ensure data types are correct for rendering
+      const processedData = data.map(s => ({
+        ...s,
+        price: Number(s.price), // Ensure price is a number
+        is_active: typeof s.is_active === 'boolean' ? s.is_active : true, // Ensure is_active is boolean
+      })) as Service[]; // Cast to Service[] to ensure type safety
+
+      setServices(processedData || []);
     } catch (error) {
       toast.error('Fehler beim Laden der Services');
       console.error(error);
@@ -105,29 +112,61 @@ export default function AdminServices() {
   };
 
   const handleSaveService = async () => {
-    if (!editingService) return;
+    if (!editingService) {
+      toast.error('Kein Service zum Speichern ausgewählt.');
+      return;
+    }
 
-    const serviceData = {
-      ...editingService,
+    // Validate and prepare data for Supabase
+    const serviceToSave: Omit<Service, 'id' | 'created_at'> = {
+      title: editingService.title?.trim() || '',
+      description: editingService.description?.trim() || '',
       price: Number(editingService.price) || 0,
+      duration: editingService.duration?.trim() || '',
+      category: editingService.category || 'reinigung',
+      is_active: typeof editingService.is_active === 'boolean' ? editingService.is_active : true,
     };
+
+    // Client-side validation
+    if (!serviceToSave.title) {
+      toast.error('Titel ist erforderlich.');
+      return;
+    }
+    if (!serviceToSave.description) {
+      toast.error('Beschreibung ist erforderlich.');
+      return;
+    }
+    if (isNaN(serviceToSave.price)) {
+      toast.error('Preis muss eine gültige Zahl sein.');
+      return;
+    }
+    if (serviceToSave.price < 0) {
+      toast.error('Preis darf nicht negativ sein.');
+      return;
+    }
+    if (!serviceToSave.duration) {
+      toast.error('Dauer ist erforderlich.');
+      return;
+    }
 
     try {
       if (editingService.id) {
-        const { error } = await supabase.from('services').update(serviceData).eq('id', editingService.id);
+        // Update existing service
+        const { error } = await supabase.from('services').update(serviceToSave).eq('id', editingService.id);
         if (error) throw error;
         toast.success('Service erfolgreich aktualisiert');
       } else {
-        const { error } = await supabase.from('services').insert(serviceData);
+        // Insert new service
+        const { error } = await supabase.from('services').insert(serviceToSave);
         if (error) throw error;
         toast.success('Service erfolgreich erstellt');
       }
       
       setIsDialogOpen(false);
       setEditingService(null);
-    } catch (error) {
-      toast.error('Fehler beim Speichern des Services');
-      console.error(error);
+    } catch (error: any) {
+      console.error('Fehler beim Speichern des Services:', error);
+      toast.error(`Fehler beim Speichern des Services: ${error.message || 'Unbekannter Fehler'}`);
     }
   };
 
