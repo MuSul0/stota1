@@ -21,7 +21,6 @@ import Bewertungen from '@/pages/Bewertungen';
 import Empfehlungsprogramm from '@/pages/Empfehlungsprogramm';
 
 // Admin Portal
-import AdminDashboard from '@/pages/adminportal/Dashboard';
 import AdminUsers from '@/pages/adminportal/users';
 import AdminServices from '@/pages/adminportal/services';
 import AdminInvoices from '@/pages/adminportal/invoices';
@@ -35,7 +34,8 @@ import AdminSettings from '@/pages/adminportal/settings';
 import AdminAuftragsverwaltung from '@/pages/adminportal/auftragsverwaltung';
 import AdminArbeitszeiten from '@/pages/adminportal/arbeitszeiten';
 import AdminEmployeeRegistration from '@/pages/adminportal/employee-registration';
-import AdminLayout from '@/pages/Admin/index'; // Import AdminLayout
+import AdminLayout from '@/components/AdminLayout'; // Import AdminLayout
+import AdminDashboard from '@/pages/Admin/Dashboard';
 
 // Kunden Portal
 import KundenDashboard from '@/pages/kundenportal/Dashboard';
@@ -83,6 +83,7 @@ function App() {
           {/* Admin Portal Routes */}
           <Route path="/adminportal" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="services" element={<AdminServices />} />
             <Route path="invoices" element={<AdminInvoices />} />
