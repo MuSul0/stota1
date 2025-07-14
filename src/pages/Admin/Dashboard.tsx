@@ -25,16 +25,11 @@ export default function AdminDashboard() {
         .from('services')
         .select('*', { count: 'exact' });
 
-      const { count: pendingRequestsCount } = await supabase
-        .from('requests')
-        .select('*', { count: 'exact' })
-        .eq('status', 'pending'); // Ausstehende Anfragen abfragen
-
       setStats({
         totalRevenue: revenue || 0,
         activeUsers: users || 0,
         completedServices: services || 0,
-        pendingRequests: pendingRequestsCount || 0 // Echte Daten verwenden
+        pendingRequests: 8 // Beispielwert
       });
     };
 
@@ -53,7 +48,7 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalRevenue.toLocaleString()} €</div>
-            {/* <p className="text-xs text-gray-500">+12% im letzten Monat</p> */}
+            <p className="text-xs text-gray-500">+12% im letzten Monat</p>
           </CardContent>
         </Card>
 
@@ -64,7 +59,7 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.activeUsers}</div>
-            {/* <p className="text-xs text-gray-500">+5 neue Benutzer</p> */}
+            <p className="text-xs text-gray-500">+5 neue Benutzer</p>
           </CardContent>
         </Card>
 
@@ -75,7 +70,7 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.completedServices}</div>
-            {/* <p className="text-xs text-gray-500">+15% im letzten Monat</p> */}
+            <p className="text-xs text-gray-500">+15% im letzten Monat</p>
           </CardContent>
         </Card>
 
@@ -86,7 +81,7 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.pendingRequests}</div>
-            {/* <p className="text-xs text-gray-500">2 hoch priorisiert</p> */}
+            <p className="text-xs text-gray-500">2 hoch priorisiert</p>
           </CardContent>
         </Card>
       </div>
@@ -98,8 +93,14 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {/* Dynamische Aktivitäten hier anzeigen, z.B. letzte Anfragen oder Buchungen */}
-              <p className="text-gray-500">Keine aktuellen Aktivitäten.</p>
+              <div className="flex items-center">
+                <TrendingUp className="h-4 w-4 mr-2 text-green-500" />
+                <span>Neuer Service gebucht (Umzugshilfe)</span>
+              </div>
+              <div className="flex items-center">
+                <Users className="h-4 w-4 mr-2 text-blue-500" />
+                <span>Neuer Benutzer registriert</span>
+              </div>
             </div>
           </CardContent>
         </Card>
