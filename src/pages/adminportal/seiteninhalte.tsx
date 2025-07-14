@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -256,9 +256,28 @@ export default function AdminSeiteninhalte() {
   const [selectedMeta, setSelectedMeta] = useState<SeoMetadata | null>(null);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const subscriptionRef = useRef<any>(null);
 
   useEffect(() => {
     fetchMetadata();
+
+    if (subscriptionRef.current) {
+      supabase.removeChannel(subscriptionRef.current);
+    }
+    const channel = supabase
+      .channel('public:seo_metadata-seiteninhalte')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'seo_metadata' }, () => {
+        toast.info("SEO-Daten werden aktualisiert...");
+        fetchMetadata();
+      })
+      .subscribe();
+    subscriptionRef.current = channel;
+
+    return () => {
+      if (subscriptionRef.current) {
+        supabase.removeChannel(subscriptionRef.current);
+      }
+    };
   }, []);
 
   const fetchMetadata = async () => {

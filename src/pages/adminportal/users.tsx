@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -25,9 +25,28 @@ export default function AdminUsers() {
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const subscriptionRef = useRef<any>(null);
 
   useEffect(() => {
     fetchUsers();
+
+    if (subscriptionRef.current) {
+      supabase.removeChannel(subscriptionRef.current);
+    }
+    const channel = supabase
+      .channel('admin-users-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
+        toast.info("Benutzerliste wird aktualisiert...");
+        fetchUsers();
+      })
+      .subscribe();
+    subscriptionRef.current = channel;
+
+    return () => {
+      if (subscriptionRef.current) {
+        supabase.removeChannel(subscriptionRef.current);
+      }
+    };
   }, []);
 
   useEffect(() => {
