@@ -29,7 +29,7 @@ export default function AdminServices() {
   const [services, setServices] = useState<Service[]>([]);
   const [editingService, setEditingService] = useState<Partial<Service> | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [loadingData, setLoadingData] = useState(true);
+  const [loadingData, setLoadingData] = true;
   const subscriptionRef = useRef<any>(null);
 
   useEffect(() => {
@@ -150,36 +150,23 @@ export default function AdminServices() {
     }
 
     try {
-      let error;
       if (editingService.id) {
         // Update existing service
-        const { error: updateError } = await supabase.from('services').update(serviceToSave).eq('id', editingService.id);
-        error = updateError;
+        const { error } = await supabase.from('services').update(serviceToSave).eq('id', editingService.id);
         if (error) throw error;
         toast.success('Service erfolgreich aktualisiert');
       } else {
         // Insert new service
-        const { error: insertError } = await supabase.from('services').insert(serviceToSave);
-        error = insertError;
+        const { error } = await supabase.from('services').insert(serviceToSave);
         if (error) throw error;
         toast.success('Service erfolgreich erstellt');
       }
       
       setIsDialogOpen(false);
       setEditingService(null);
-    } catch (error: any) {
-      console.error('Fehler beim Speichern des Services:', error);
-      let errorMessage = 'Unbekannter Fehler';
-      if (error && typeof error === 'object') {
-        if (error.message) {
-          errorMessage = error.message;
-        } else if (error.details) { // Supabase specific error details
-          errorMessage = error.details;
-        }
-      } else if (typeof error === 'string') {
-        errorMessage = error;
-      }
-      toast.error(`Fehler beim Speichern des Services: ${errorMessage}`);
+    } catch (error) {
+      toast.error('Fehler beim Speichern des Services');
+      console.error(error);
     }
   };
 
