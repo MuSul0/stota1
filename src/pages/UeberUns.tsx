@@ -1,7 +1,7 @@
-import { Heart, Shield, Clock, Award, Users, Target } from 'lucide-react';
+import { Heart, Shield, Clock, Award, Users, Target, Lightbulb, Handshake } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -9,17 +9,10 @@ import ParallaxSection from '@/components/ParallaxSection';
 import { useMedia } from '@/hooks/useMedia';
 
 const UeberUns = () => {
-  // Hole alle Bilder mit pageContext "ueber-uns"
-  const { media: ueberUnsBilder, loading, error } = useMedia({ pageContext: 'ueber-uns' });
-
-  // Hilfsfunktion: Bild anhand des Titels finden
-  const getBild = (titel: string) =>
-    ueberUnsBilder?.find((m) => m.title?.toLowerCase().includes(titel.toLowerCase()));
-
-  const aboutUsMainImage = getBild('Hauptbild') || getBild('Main') || ueberUnsBilder?.[0];
-  const nicolaeTurcituProfile = getBild('Nicolae') || getBild('Turcitu');
-  const mariaSchmidtProfile = getBild('Maria');
-  const thomasWeberProfile = getBild('Thomas');
+  const { media: aboutUsMainImage, loading: loadingAboutUsMainImage, error: aboutUsMainError } = useMedia({ title: 'About Us Main Image' });
+  const { media: nicolaeTurcituProfile, loading: loadingNicolaeTurcituProfile, error: nicolaeTurcituProfileError } = useMedia({ title: 'Nicolae Bogdanel Turcitu Profile' });
+  const { media: mariaSchmidtProfile, loading: loadingMariaSchmidtProfile, error: mariaSchmidtProfileError } = useMedia({ title: 'Maria Schmidt Profile' });
+  const { media: thomasWeberProfile, loading: loadingThomasWeberProfile, error: thomasWeberProfileError } = useMedia({ title: 'Thomas Weber Profile' });
 
   const values = [
     {
@@ -48,7 +41,7 @@ const UeberUns = () => {
     }
   ];
 
-  if (loading) {
+  if (loadingAboutUsMainImage || loadingNicolaeTurcituProfile || loadingMariaSchmidtProfile || loadingThomasWeberProfile) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <p className="text-gray-600 text-lg">Lade Über uns...</p>
@@ -56,8 +49,8 @@ const UeberUns = () => {
     );
   }
 
-  if (error) {
-    console.error("Fehler beim Laden der Bilder auf der 'Über uns'-Seite:", error);
+  if (aboutUsMainError || nicolaeTurcituProfileError || mariaSchmidtProfileError || thomasWeberProfileError) {
+    console.error("Fehler beim Laden der Bilder auf der 'Über uns'-Seite:", aboutUsMainError, nicolaeTurcituProfileError, mariaSchmidtProfileError, thomasWeberProfileError);
   }
 
   return (

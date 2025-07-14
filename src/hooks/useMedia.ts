@@ -1,13 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import supabase from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 
-export interface MediaItem {
+interface MediaItem {
   id: string;
   title: string;
   url: string;
   type: string;
-  page_context?: string | null;
-  description?: string | null;
   created_at: string;
 }
 
@@ -15,53 +13,60 @@ interface UseMediaProps {
   title?: string;
   type?: string;
   id?: string;
-  pageContext?: string;
 }
 
 export const useMedia = (props?: UseMediaProps) => {
-  const [media, setMedia] = useState<MediaItem[] | null>(null);
+  const [media, setMedia] = useState<MediaItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { id, title, type, pageContext } = props || {};
+  const { id, title, type } = props || {};
 
   const fetchMedia = useCallback(async () => {
+    if (!id && !title && !type) {
+      setMedia(null);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
-
     try {
+      if (!supabase) {
+        throw new Error('Supabase client is not initialized.');
+      }
       let query = supabase.from('media').select('*');
 
       if (id) {
         query = query.eq('id', id);
-      }
-      if (title) {
-        query = query.ilike('title', `%${title}%`);
-      }
-      if (type) {
+      } else if (title) {
+        query = query.eq('title', title);
+      } else if (type) {
         query = query.eq('type', type);
       }
-      if (pageContext) {
-        query = query.eq('page_context', pageContext);
-      }
 
-      const { data, error: queryError } = await query.order('created_at', { ascending: false });
+      const { data, error: queryError } = await query.single();
 
       if (queryError) {
-        throw queryError;
+        if (queryError.code === 'PGRST116') { // No rows found for single()
+          setMedia(null);
+        } else {
+          throw queryError;
+        }
+      } else {
+        setMedia(data as MediaItem);
       }
-      setMedia(data as MediaItem[]);
-    } catch (err: any) {
+    } catch (err: any)
+{
+      console.error("Fehler beim Laden der Medien:", err);
       setError(err.message || 'Ein unbekannter Fehler ist aufgetreten.');
       setMedia(null);
     } finally {
       setLoading(false);
     }
-  }, [id, title, type, pageContext]);
+  }, [id, title, type]);
 
   useEffect(() => {
     fetchMedia();
-    // Optional: Echtzeit-Updates für Medien
-    // (Könnte hier ein Supabase-Subscription-Setup erfolgen, falls gewünscht)
   }, [fetchMedia]);
 
   return { media, loading, error, mutate: fetchMedia };
