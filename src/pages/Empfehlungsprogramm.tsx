@@ -160,25 +160,7 @@ const Empfehlungsprogramm = () => {
                 <Card className="text-center h-full hover:shadow-xl transition-shadow duration-300">
                   <CardContent className="p-6">
                     <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <step.icon className="h-8 w-8 text-blue-600" /><think>Deciding which files are relevant...
-
-{
-  "complexity": "high",
-  "relevantFiles": [
-    "src/pages/adminportal/seiteninhalte.tsx",
-    "src/components/Hero.tsx",
-    "src/pages/Index.tsx",
-    "src/pages/Leistungen/Transporte.tsx",
-    "src/pages/Leistungen/Reinigung.tsx",
-    "src/pages/Leistungen/GartenLandschaftsbau.tsx",
-    "src/pages/Leistungen/Entsorgung.tsx",
-    "src/pages/UeberUns.tsx",
-    "src/pages/Galerie.tsx",
-    "src/pages/Empfehlungsprogramm.tsx",
-    "src/pages/Kontakt.tsx",
-    "src/hooks/useMedia.ts"
-  ]
-}</think><dyad-codebase-context files="src/pages/adminportal/seiteninhalte.tsx,src/components/Hero.tsx,src/pages/Index.tsx,src/pages/Leistungen/Transporte.tsx,src/pages/Leistungen/Reinigung.tsx,src/pages/Leistungen/GartenLandschaftsbau.tsx,src/pages/Leistungen/Entsorgung.tsx,src/pages/UeberUns.tsx,src/pages/Galerie.tsx,src/pages/Empfehlungsprogramm.tsx,src/pages/Kontakt.tsx,src/hooks/useMedia.ts">Complexity: high</dyad-codebase-context>
+                      <step.icon className="h-8 w-8 text-blue-600" />
                     </div>
                     <h3 className="text-xl font-bold mb-2 text-gray-800">{step.title}</h3>
                     <p className="text-gray-600">{step.description}</p>
