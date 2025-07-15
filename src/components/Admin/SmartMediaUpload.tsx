@@ -16,12 +16,13 @@ interface MediaItem {
   created_at: string;
 }
 
-export const SmartMediaUpload = ({ title, description, type, pageContext, onMediaUpdate }: {
+export const SmartMediaUpload = ({ title, description, type, pageContext, onMediaUpdate, refreshTrigger }: {
   title: string;
   description: string;
   type: 'image' | 'video';
   pageContext: string;
   onMediaUpdate?: () => void;
+  refreshTrigger?: number;
 }) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -30,16 +31,17 @@ export const SmartMediaUpload = ({ title, description, type, pageContext, onMedi
 
   useEffect(() => {
     loadCurrentMedia();
-  }, [title, pageContext]);
+  }, [title, pageContext, refreshTrigger]);
 
   const loadCurrentMedia = async () => {
     try {
       setLoading(true);
+      const fullTitle = `${pageContext}-${title}`;
       const { data, error } = await supabase
         .from('media')
         .select('*')
+        .eq('title', fullTitle)
         .eq('page_context', pageContext)
-        .ilike('title', `%${title}%`)
         .eq('type', type)
         .order('created_at', { ascending: false })
         .limit(1);
@@ -77,7 +79,8 @@ export const SmartMediaUpload = ({ title, description, type, pageContext, onMedi
       }
 
       const fileExt = file.name.split('.').pop();
-      const fileName = `${pageContext}-${title.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}.${fileExt}`;
+      const fullTitle = `${pageContext}-${title}`;
+      const fileName = `${fullTitle.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}.${fileExt}`;
       const filePath = `${type}s/${fileName}`;
 
       const { error: uploadError } = await supabase.storage.from('media').upload(filePath, file);
@@ -88,7 +91,7 @@ export const SmartMediaUpload = ({ title, description, type, pageContext, onMedi
       const { data: newMedia, error: dbError } = await supabase.from('media').insert({
         type: type,
         url: publicUrl,
-        title: `${pageContext}-${title}`,
+        title: fullTitle,
         description: description,
         page_context: pageContext,
       }).select().single();

@@ -25,7 +25,7 @@ export const useMedia = (props?: UseMediaProps) => {
   const subscriptionRef = useRef<any>(null);
 
   const fetchMedia = useCallback(async () => {
-    if (!id && (!title || !pageContext) && !type) {
+    if (!id && (!title || !pageContext)) {
       setMedia(null);
       setLoading(false);
       return;
@@ -42,7 +42,8 @@ export const useMedia = (props?: UseMediaProps) => {
       if (id) {
         query = query.eq('id', id);
       } else if (title && pageContext) {
-        query = query.eq('title', title).eq('page_context', pageContext);
+        const fullTitle = `${pageContext}-${title}`;
+        query = query.eq('title', fullTitle).eq('page_context', pageContext);
       } else if (type) {
         query = query.eq('type', type);
       } else {
@@ -51,7 +52,7 @@ export const useMedia = (props?: UseMediaProps) => {
         return;
       }
 
-      const { data, error: queryError } = await query.single();
+      const { data, error: queryError } = await query.order('created_at', { ascending: false }).limit(1).single();
 
       if (queryError) {
         if (queryError.code === 'PGRST116') { // No rows found for single()
@@ -79,7 +80,8 @@ export const useMedia = (props?: UseMediaProps) => {
       if (subscriptionRef.current) {
         supabase.removeChannel(subscriptionRef.current);
       }
-
+      
+      const fullTitle = `${pageContext}-${title}`;
       const channel = supabase
         .channel(`media_channel_${pageContext}_${title.replace(/\s/g, '_')}`) // Unique channel name
         .on('postgres_changes', { 
@@ -89,7 +91,7 @@ export const useMedia = (props?: UseMediaProps) => {
           filter: `page_context=eq.${pageContext}` // Filter by page_context
         }, (payload) => {
           // Check if the changed item matches the specific title
-          if (payload.new?.title === title || payload.old?.title === title) {
+          if (payload.new?.title === fullTitle || payload.old?.title === fullTitle) {
             console.log('Real-time update for media:', payload);
             fetchMedia(); // Re-fetch the media item
           }
