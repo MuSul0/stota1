@@ -34,34 +34,41 @@ export const useMedia = (props?: UseMediaProps) => {
     setLoading(true);
     setError(null);
     try {
-      if (!supabase) {
-        throw new Error('Supabase client is not initialized.');
-      }
-      let query = supabase.from('media').select('*');
-
-      if (id) {
-        query = query.eq('id', id);
-      } else if (title && pageContext) {
-        query = query.eq('title', title).eq('page_context', pageContext);
-      } else if (type) {
-        query = query.eq('type', type);
-      } else {
-        setMedia(null);
-        setLoading(false);
-        return;
-      }
-
-      const { data, error: queryError } = await query.single();
-
-      if (queryError) {
-        if (queryError.code === 'PGRST116') { // No rows found for single()
-          setMedia(null);
-        } else {
-          throw queryError;
+      const fetchPromise = (async () => {
+        if (!supabase) {
+          throw new Error('Supabase client is not initialized.');
         }
-      } else {
-        setMedia(data as MediaItem);
-      }
+        let query = supabase.from('media').select('*');
+
+        if (id) {
+          query = query.eq('id', id);
+        } else if (title && pageContext) {
+          query = query.eq('title', title).eq('page_context', pageContext);
+        } else if (type) {
+          query = query.eq('type', type);
+        } else {
+          return null;
+        }
+
+        const { data, error: queryError } = await query.single();
+
+        if (queryError) {
+          if (queryError.code === 'PGRST116') { // No rows found for single()
+            return null;
+          } else {
+            throw queryError;
+          }
+        }
+        return data;
+      })();
+
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Datenabfrage hat zu lange gedauert (Timeout).')), 10000)
+      );
+
+      const result = await Promise.race([fetchPromise, timeoutPromise]);
+      setMedia(result as MediaItem | null);
+
     } catch (err: any) {
       console.error("Fehler beim Laden der Medien:", err);
       setError(err.message || 'Ein unbekannter Fehler ist aufgetreten.');
