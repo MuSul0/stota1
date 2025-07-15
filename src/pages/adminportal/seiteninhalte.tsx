@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -14,6 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SmartMediaUpload } from '@/components/admin/SmartMediaUpload';
 
+// Definiert die Struktur für SEO-Metadaten
 interface SeoMetadata {
   path: string;
   title: string;
@@ -21,6 +22,34 @@ interface SeoMetadata {
   keywords: string;
   updated_at: string;
 }
+
+// Definiert die Seiten und ihre zugehörigen Medien-Upload-Slots
+const pageSections = [
+  {
+    id: 'startseite',
+    name: 'Startseite',
+    media: [
+      { title: "Hero Bild", description: "Das große Hauptbild ganz oben.", type: "image" },
+      { title: "Vorschau Transporte", description: "Bild für die Transport-Dienstleistung.", type: "image" },
+      { title: "Vorschau Reinigung", description: "Bild für die Reinigungs-Dienstleistung.", type: "image" },
+      { title: "Vorschau Gartenbau", description: "Bild für die Gartenbau-Dienstleistung.", type: "image" },
+      { title: "Vorschau Entsorgung", description: "Bild für die Entsorgungs-Dienstleistung.", type: "image" },
+    ]
+  },
+  {
+    id: 'leistungen',
+    name: 'Leistungen',
+    media: [
+      { title: "Header-Bild Transporte", description: "Titelbild für die Transport-Detailseite.", type: "image" },
+      { title: "Header-Bild Reinigung", description: "Titelbild für die Reinigungs-Detailseite.", type: "image" },
+      { title: "Header-Bild Gartenbau", description: "Titelbild für die Gartenbau-Detailseite.", type: "image" },
+      { title: "Header-Bild Entsorgung", description: "Titelbild für die Entsorgungs-Detailseite.", type: "image" },
+    ]
+  },
+  { id: 'ueber-uns', name: 'Über Uns', media: [{ title: "Team Bild", description: "Ein Bild des Teams oder Gründers.", type: "image" }] },
+  { id: 'empfehlungsprogramm', name: 'Empfehlungsprogramm', media: [{ title: "Programm-Banner", description: "Werbebanner für das Empfehlungsprogramm.", type: "image" }] },
+  { id: 'kontakt', name: 'Kontakt', media: [{ title: "Kontakt Header-Bild", description: "Das Titelbild auf der Kontaktseite.", type: "image" }] },
+];
 
 export default function AdminSeiteninhalte() {
   const [metadata, setMetadata] = useState<SeoMetadata[]>([]);
@@ -31,6 +60,24 @@ export default function AdminSeiteninhalte() {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const subscriptionRef = useRef<any>(null);
+
+  const fetchMetadata = useCallback(async () => {
+    setLoadingSeo(true);
+    try {
+      const { data, error } = await supabase
+        .from('seo_metadata')
+        .select('*')
+        .order('path', { ascending: true });
+
+      if (error) throw error;
+      setMetadata(data || []);
+    } catch (error) {
+      console.error('SEO fetch error:', error);
+      toast.error('Fehler beim Laden der SEO-Daten.');
+    } finally {
+      setLoadingSeo(false);
+    }
+  }, []);
 
   useEffect(() => {
     fetchMetadata();
@@ -52,29 +99,7 @@ export default function AdminSeiteninhalte() {
         supabase.removeChannel(subscriptionRef.current);
       }
     };
-  }, []);
-
-  const fetchMetadata = async () => {
-    try {
-      setLoadingSeo(true);
-      const { data, error } = await supabase
-        .from('seo_metadata')
-        .select('*')
-        .order('path', { ascending: true });
-
-      if (error) {
-        console.error('SEO fetch error:', error);
-        toast.error('Fehler beim Laden der SEO-Daten.');
-      } else {
-        setMetadata(data || []);
-      }
-    } catch (error) {
-      console.error('SEO fetch error:', error);
-      toast.error('Fehler beim Laden der SEO-Daten.');
-    } finally {
-      setLoadingSeo(false);
-    }
-  };
+  }, [fetchMetadata]);
 
   const handleEditClick = (meta: SeoMetadata) => {
     setSelectedMeta(JSON.parse(JSON.stringify(meta)));
@@ -99,20 +124,15 @@ export default function AdminSeiteninhalte() {
           title: selectedMeta.title,
           description: selectedMeta.description,
           keywords: selectedMeta.keywords,
-          updated_at: new Date().toISOString(),
         })
         .eq('path', selectedMeta.path);
 
-      if (error) {
-        toast.error('Fehler beim Speichern der Daten.');
-      } else {
-        toast.success(`SEO-Daten für ${selectedMeta.path} erfolgreich aktualisiert.`);
-        setIsDialogOpen(false);
-        fetchMetadata();
-      }
-    } catch (error) {
-      console.error('Save error:', error);
-      toast.error('Fehler beim Speichern der Daten.');
+      if (error) throw error;
+      
+      toast.success(`SEO-Daten für ${selectedMeta.path} erfolgreich aktualisiert.`);
+      setIsDialogOpen(false);
+    } catch (error: any) {
+      toast.error('Fehler beim Speichern der Daten: ' + error.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -128,189 +148,179 @@ export default function AdminSeiteninhalte() {
 
   if (loadingSeo) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-900">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-white mx-auto mb-4" />
-          <p className="text-white">Lade Daten...</p>
-        </div>
+      <div className="flex justify-center items-center h-full">
+        <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
   }
 
-  const seoScore = 92;
-  const totalPages = metadata.length;
-
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      <main className="flex-grow container mx-auto px-4 sm:px-6 py-12 max-w-7xl">
-        <h1 className="text-3xl font-bold mb-8 text-white">Seiteninhalte & SEO</h1>
-        
-        <Tabs defaultValue="seo-dashboard" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-gray-800">
-            <TabsTrigger value="seo-dashboard" className="text-white data-[state=active]:bg-gray-700">SEO Dashboard</TabsTrigger>
-            <TabsTrigger value="bildverwaltung" className="text-white data-[state=active]:bg-gray-700">Bildverwaltung</TabsTrigger>
-          </TabsList>
+    <div className="p-4 md:p-6 space-y-6">
+      <h1 className="text-3xl font-bold">Seiteninhalte & SEO</h1>
+      
+      <Tabs defaultValue="seo-dashboard" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="seo-dashboard">SEO Dashboard</TabsTrigger>
+          <TabsTrigger value="bildverwaltung">Bildverwaltung</TabsTrigger>
+        </TabsList>
 
-          <TabsContent value="seo-dashboard" className="mt-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <Card className="bg-gray-800 border-gray-700">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-300">Gesamt Seiten</CardTitle>
-                  <FileText className="h-4 w-4 text-gray-400" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-white">{totalPages}</div>
-                  <p className="text-xs text-gray-400">Alle Seiten mit SEO-Metadaten</p>
-                </CardContent>
-              </Card>
-              <Card className="bg-gray-800 border-gray-700">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-300">SEO Score</CardTitle>
-                  <TrendingUp className="h-4 w-4 text-gray-400" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-white">{seoScore}/100</div>
-                  <p className="text-xs text-gray-400">Basierend auf internen Metriken</p>
-                </CardContent>
-              </Card>
-              <Card className="bg-gray-800 border-gray-700">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-300">Ø Ladezeit</CardTitle>
-                  <Clock className="h-4 w-4 text-gray-400" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-white">0.9s</div>
-                  <p className="text-xs text-gray-400">-0.3s seit letzter Optimierung</p>
-                </CardContent>
-              </Card>
-              <Card className="bg-gray-800 border-gray-700">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-300">Alle optimiert</CardTitle>
-                  <CheckCircle className="h-4 w-4 text-green-400" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-white">Ja</div>
-                  <p className="text-xs text-gray-400">Alle Seiten haben SEO-Daten</p>
-                </CardContent>
-              </Card>
-            </div>
-
-            <Card className="bg-gray-800 border-gray-700">
-              <CardHeader>
-                <CardTitle className="text-white">SEO Seiten Übersicht</CardTitle>
-                <CardDescription className="text-gray-400">Verwalten Sie hier die SEO-Daten für jede Seite.</CardDescription>
+        <TabsContent value="seo-dashboard" className="mt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Gesamt Seiten</CardTitle>
+                <FileText className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow className="border-gray-700 hover:bg-gray-700/50">
-                      <TableHead className="text-white">Seite</TableHead>
-                      <TableHead className="text-white">Status</TableHead>
-                      <TableHead className="text-white">Performance</TableHead>
-                      <TableHead className="text-white">Zuletzt aktualisiert</TableHead>
-                      <TableHead className="text-right text-white">Aktionen</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {metadata.map((meta) => (
-                      <TableRow key={meta.path} className="border-gray-700 hover:bg-gray-700/50">
-                        <TableCell className="font-medium">
-                          <div className="font-bold text-white">{meta.title.split('|')[0].trim()}</div>
-                          <div className="text-xs text-gray-400">{meta.path}</div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="default" className="bg-green-600/20 text-green-400 border-green-500">Aktiv</Badge>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <Progress value={85 + (meta.path.length % 15)} className="w-24" />
-                            <span className="text-white">{85 + (meta.path.length % 15)}%</span>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-white">{new Date(meta.updated_at).toLocaleString('de-DE')}</TableCell>
-                        <TableCell className="text-right">
-                          <Button variant="outline" size="sm" onClick={() => handleEditClick(meta)}><Edit className="h-4 w-4 mr-2" />Bearbeiten</Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                <div className="text-2xl font-bold">{metadata.length}</div>
+                <p className="text-xs text-muted-foreground">Alle Seiten mit SEO-Metadaten</p>
               </CardContent>
             </Card>
-          </TabsContent>
-
-          <TabsContent value="bildverwaltung" className="mt-6">
-            <Card className="bg-gray-800 border-gray-700">
-              <CardHeader>
-                <CardTitle className="text-white">Bildinhalte der Seiten verwalten</CardTitle>
-                <CardDescription className="text-gray-400">Hier können Sie die Bilder für spezifische Bereiche Ihrer Webseite in Echtzeit ändern.</CardDescription>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">SEO Score</CardTitle>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="space-y-4" key={refreshKey}>
-                  {['startseite', 'leistungen', 'ueber-uns', 'empfehlungsprogramm', 'kontakt'].map(section => (
-                    <div key={section} className="border border-gray-700 rounded-lg">
-                      <button onClick={() => toggleSection(section)} className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-gray-700/50 rounded-t-lg">
-                        <span className="text-white font-medium capitalize">{section.replace('-', ' ')}</span>
-                        {expandedSection === section ? <ChevronDown className="h-4 w-4 text-gray-400" /> : <ChevronRight className="h-4 w-4 text-gray-400" />}
-                      </button>
-                      {expandedSection === section && (
-                        <div className="p-4 space-y-4 bg-gray-900/50 border-t border-gray-700">
-                          {section === 'startseite' && <>
-                            <SmartMediaUpload title="Hero Bild" description="Das große Hauptbild ganz oben." type="image" pageContext="startseite" onMediaUpdate={handleMediaUpdate} />
-                            <SmartMediaUpload title="Vorschau Transporte" description="Bild für die Transport-Dienstleistung." type="image" pageContext="startseite" onMediaUpdate={handleMediaUpdate} />
-                            <SmartMediaUpload title="Vorschau Reinigung" description="Bild für die Reinigungs-Dienstleistung." type="image" pageContext="startseite" onMediaUpdate={handleMediaUpdate} />
-                            <SmartMediaUpload title="Vorschau Gartenbau" description="Bild für die Gartenbau-Dienstleistung." type="image" pageContext="startseite" onMediaUpdate={handleMediaUpdate} />
-                            <SmartMediaUpload title="Vorschau Entsorgung" description="Bild für die Entsorgungs-Dienstleistung." type="image" pageContext="startseite" onMediaUpdate={handleMediaUpdate} />
-                          </>}
-                          {section === 'leistungen' && <>
-                            <SmartMediaUpload title="Header-Bild Transporte" description="Titelbild für die Transport-Detailseite." type="image" pageContext="leistungen" onMediaUpdate={handleMediaUpdate} />
-                            <SmartMediaUpload title="Header-Bild Reinigung" description="Titelbild für die Reinigungs-Detailseite." type="image" pageContext="leistungen" onMediaUpdate={handleMediaUpdate} />
-                            <SmartMediaUpload title="Header-Bild Gartenbau" description="Titelbild für die Gartenbau-Detailseite." type="image" pageContext="leistungen" onMediaUpdate={handleMediaUpdate} />
-                            <SmartMediaUpload title="Header-Bild Entsorgung" description="Titelbild für die Entsorgungs-Detailseite." type="image" pageContext="leistungen" onMediaUpdate={handleMediaUpdate} />
-                          </>}
-                          {section === 'ueber-uns' && <SmartMediaUpload title="Team Bild" description="Ein Bild des Teams oder Gründers." type="image" pageContext="ueber-uns" onMediaUpdate={handleMediaUpdate} />}
-                          {section === 'empfehlungsprogramm' && <SmartMediaUpload title="Programm-Banner" description="Werbebanner für das Empfehlungsprogramm." type="image" pageContext="empfehlungsprogramm" onMediaUpdate={handleMediaUpdate} />}
-                          {section === 'kontakt' && <SmartMediaUpload title="Kontakt Header-Bild" description="Das Titelbild auf der Kontaktseite." type="image" pageContext="kontakt" onMediaUpdate={handleMediaUpdate} />}
+                <div className="text-2xl font-bold">92/100</div>
+                <p className="text-xs text-muted-foreground">Basierend auf internen Metriken</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Alle optimiert</CardTitle>
+                <CheckCircle className="h-4 w-4 text-green-500" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">Ja</div>
+                <p className="text-xs text-muted-foreground">Alle Seiten haben SEO-Daten</p>
+              </CardContent>
+            </Card>
+             <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Ø Ladezeit</CardTitle>
+                <Clock className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">0.9s</div>
+                <p className="text-xs text-muted-foreground">-0.3s seit letzter Optimierung</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>SEO Seiten Übersicht</CardTitle>
+              <CardDescription>Verwalten Sie hier die SEO-Daten für jede Seite.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Seite</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Performance</TableHead>
+                    <TableHead>Zuletzt aktualisiert</TableHead>
+                    <TableHead className="text-right">Aktionen</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {metadata.map((meta) => (
+                    <TableRow key={meta.path}>
+                      <TableCell className="font-medium">
+                        <div className="font-bold">{meta.title.split('|')[0].trim()}</div>
+                        <div className="text-xs text-muted-foreground">{meta.path}</div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="text-green-600 border-green-600">Aktiv</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Progress value={85 + (meta.path.length % 15)} className="w-24" />
+                          <span>{85 + (meta.path.length % 15)}%</span>
                         </div>
-                      )}
-                    </div>
+                      </TableCell>
+                      <TableCell>{new Date(meta.updated_at).toLocaleString('de-DE')}</TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="outline" size="sm" onClick={() => handleEditClick(meta)}><Edit className="h-4 w-4 mr-2" />Bearbeiten</Button>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="sm:max-w-[600px] bg-gray-800 border-gray-700 text-white">
-            {selectedMeta && (
-              <form onSubmit={handleSubmit}>
-                <DialogHeader>
-                  <DialogTitle className="text-white">SEO für {selectedMeta.path} bearbeiten</DialogTitle>
-                  <DialogDescription className="text-gray-400">Änderungen hier wirken sich direkt auf die Suchmaschinenergebnisse aus.</DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="title" className="text-right text-white">Titel</Label>
-                    <Input id="title" name="title" value={selectedMeta.title} onChange={handleFormChange} className="col-span-3 bg-gray-700 border-gray-600 text-white" />
+        <TabsContent value="bildverwaltung" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Bildinhalte der Seiten verwalten</CardTitle>
+              <CardDescription>Hier können Sie die Bilder für spezifische Bereiche Ihrer Webseite in Echtzeit ändern.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4" key={refreshKey}>
+                {pageSections.map(section => (
+                  <div key={section.id} className="border rounded-lg">
+                    <button onClick={() => toggleSection(section.id)} className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-accent rounded-t-lg">
+                      <span className="font-medium capitalize">{section.name}</span>
+                      {expandedSection === section.id ? <ChevronDown className="h-4 w-4 text-muted-foreground" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" />}
+                    </button>
+                    {expandedSection === section.id && (
+                      <div className="p-4 space-y-4 bg-background/50 border-t">
+                        {section.media.map(mediaSlot => (
+                          <SmartMediaUpload 
+                            key={mediaSlot.title}
+                            title={mediaSlot.title} 
+                            description={mediaSlot.description} 
+                            type={mediaSlot.type as 'image' | 'video'} 
+                            pageContext={section.id} 
+                            onMediaUpdate={handleMediaUpdate} 
+                          />
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <div className="grid grid-cols-4 items-start gap-4">
-                    <Label htmlFor="description" className="text-right pt-2 text-white">Beschreibung</Label>
-                    <Textarea id="description" name="description" value={selectedMeta.description} onChange={handleFormChange} className="col-span-3 bg-gray-700 border-gray-600 text-white" rows={5} />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="keywords" className="text-right text-white">Keywords</Label>
-                    <Input id="keywords" name="keywords" value={selectedMeta.keywords} onChange={handleFormChange} className="col-span-3 bg-gray-700 border-gray-600 text-white" placeholder="keyword1, keyword2" />
-                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          {selectedMeta && (
+            <form onSubmit={handleSubmit}>
+              <DialogHeader>
+                <DialogTitle>SEO für {selectedMeta.path} bearbeiten</DialogTitle>
+                <DialogDescription>Änderungen hier wirken sich direkt auf die Suchmaschinenergebnisse aus.</DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="title" className="text-right">Titel</Label>
+                  <Input id="title" name="title" value={selectedMeta.title} onChange={handleFormChange} className="col-span-3" />
                 </div>
-                <DialogFooter>
-                  <Button type="submit" disabled={isSubmitting}>{isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Speichern</Button>
-                </DialogFooter>
-              </form>
-            )}
-          </DialogContent>
-        </Dialog>
-      </main>
+                <div className="grid grid-cols-4 items-start gap-4">
+                  <Label htmlFor="description" className="text-right pt-2">Beschreibung</Label>
+                  <Textarea id="description" name="description" value={selectedMeta.description} onChange={handleFormChange} className="col-span-3" rows={5} />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="keywords" className="text-right">Keywords</Label>
+                  <Input id="keywords" name="keywords" value={selectedMeta.keywords} onChange={handleFormChange} className="col-span-3" placeholder="keyword1, keyword2" />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="secondary" onClick={() => setIsDialogOpen(false)}>Abbrechen</Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Speichern
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
