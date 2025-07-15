@@ -17,12 +17,12 @@ interface MediaItem {
 }
 
 export const SmartMediaUpload = ({ title, description, type, pageContext, onMediaUpdate, refreshTrigger }: {
-  title: string;
+  title: string; // e.g., "Startseite Hero Background"
   description: string;
   type: 'image' | 'video';
-  pageContext: string;
+  pageContext: string; // e.g., "startseite"
   onMediaUpdate?: () => void;
-  refreshTrigger?: number; // Neuer Prop hinzugefügt
+  refreshTrigger?: number;
 }) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -31,7 +31,7 @@ export const SmartMediaUpload = ({ title, description, type, pageContext, onMedi
 
   useEffect(() => {
     loadCurrentMedia();
-  }, [title, pageContext, refreshTrigger]); // refreshTrigger zu den Abhängigkeiten hinzugefügt
+  }, [title, pageContext, refreshTrigger]);
 
   const loadCurrentMedia = async () => {
     try {
@@ -39,8 +39,8 @@ export const SmartMediaUpload = ({ title, description, type, pageContext, onMedi
       const { data, error } = await supabase
         .from('media')
         .select('*')
-        .eq('page_context', pageContext)
-        .ilike('title', `%${title}%`)
+        .eq('page_context', pageContext) // Filter by page context
+        .eq('title', title) // Filter by the exact descriptive title
         .eq('type', type)
         .order('created_at', { ascending: false })
         .limit(1);
@@ -74,10 +74,11 @@ export const SmartMediaUpload = ({ title, description, type, pageContext, onMedi
     setUploading(true);
     try {
       if (currentMedia) {
-        await handleDelete(false);
+        await handleDelete(false); // Delete old media first
       }
 
       const fileExt = file.name.split('.').pop();
+      // Filename for storage bucket can still include pageContext for uniqueness
       const fileName = `${pageContext}-${title.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}.${fileExt}`;
       const filePath = `${type}s/${fileName}`;
 
@@ -86,10 +87,11 @@ export const SmartMediaUpload = ({ title, description, type, pageContext, onMedi
 
       const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(filePath);
 
+      // Store the descriptive title in the 'title' column and pageContext in 'page_context'
       const { data: newMedia, error: dbError } = await supabase.from('media').insert({
         type: type,
         url: publicUrl,
-        title: `${pageContext}-${title}`,
+        title: title, // Store the descriptive title directly
         description: description,
         page_context: pageContext,
       }).select().single();

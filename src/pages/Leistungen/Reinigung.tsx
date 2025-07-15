@@ -8,7 +8,7 @@ import { Sparkles, Home, Briefcase, Building, Car, Paintbrush, CheckCircle } fro
 import { useMedia } from '@/hooks/useMedia';
 
 const Reinigung = () => {
-  const { media: heroBackground } = useMedia({ title: 'Leistungen Header Reinigung' });
+  const { media: heroBackground } = useMedia({ title: 'Leistungen Header Reinigung', pageContext: 'leistungen' });
 
   const cleaningServices = [
     {

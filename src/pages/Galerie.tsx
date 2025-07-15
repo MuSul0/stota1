@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { useMedia } from '@/hooks/useMedia';
 
 const Galerie = () => {
-  const { media: heroBackground } = useMedia({ title: 'Galerie Header' });
+  const { media: heroBackground } = useMedia({ title: 'Galerie Header', pageContext: 'galerie' });
 
   return (
     <div className="min-h-screen">

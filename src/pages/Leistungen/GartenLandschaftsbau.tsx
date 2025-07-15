@@ -8,7 +8,7 @@ import { Leaf, Scissors, TreeDeciduous, Palette, HardHat, CheckCircle } from 'lu
 import { useMedia } from '@/hooks/useMedia';
 
 const GartenLandschaftsbau = () => {
-  const { media: heroBackground } = useMedia({ title: 'Leistungen Header Gartenbau' });
+  const { media: heroBackground } = useMedia({ title: 'Leistungen Header Gartenbau', pageContext: 'leistungen' });
 
   const gardenServices = [
     {

@@ -14,8 +14,8 @@ import { useMedia } from '@/hooks/useMedia';
 const Index = () => {
   const servicesRef = useRef<HTMLDivElement>(null);
 
-  const { media: referralProgramImage } = useMedia({ title: 'Startseite Referral Program Teaser' });
-  const { media: aboutUsImage } = useMedia({ title: 'Startseite About Us Teaser' });
+  const { media: referralProgramImage } = useMedia({ title: 'Startseite Referral Program Teaser', pageContext: 'startseite' });
+  const { media: aboutUsImage } = useMedia({ title: 'Startseite About Us Teaser', pageContext: 'startseite' });
 
   const serviceCategories = [
     {
@@ -455,7 +455,7 @@ const Index = () => {
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <h3 className="text-2xl font-bold text-gray-900">{testimonial.name}</h3>
+                      <h3 className="text-2xl font-bold mb-2 text-gray-900">{testimonial.name}</h3>
                       <p className="text-gray-600 text-lg">{testimonial.location}</p>
                       <div className="flex mt-2">{Array.from({ length: 5 }).map((_, i) => (
                         <Star 

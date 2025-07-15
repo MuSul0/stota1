@@ -14,7 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useMedia } from '@/hooks/useMedia';
 
 const Kontakt = () => {
-  const { media: heroBackground } = useMedia({ title: 'Kontakt Header' });
+  const { media: heroBackground } = useMedia({ title: 'Kontakt Header', pageContext: 'kontakt' });
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',

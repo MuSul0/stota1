@@ -7,7 +7,7 @@ import { ReferralForm } from '@/components/ReferralForm';
 import { useMedia } from '@/hooks/useMedia';
 
 const Empfehlungsprogramm = () => {
-  const { media: bannerImage } = useMedia({ title: 'Empfehlungsprogramm Banner' });
+  const { media: bannerImage } = useMedia({ title: 'Empfehlungsprogramm Banner', pageContext: 'empfehlungsprogramm' });
 
   const howItWorksSteps = [
     {
@@ -36,7 +36,26 @@ const Empfehlungsprogramm = () => {
     {
       icon: Users,
       title: 'Für Ihre Freunde: Startvorteil',
-      description: 'Ihre Freunde profitieren von einem exklusiven Rabatt auf ihren ersten Service bei Stota Transport.'
+      description: 'Ihre Freunde profitieren von einem exklusiven Rabatt auf ihren ersten Service bei Stota Transport<think>Deciding which files are relevant...
+
+{
+  "complexity": "high",
+  "relevantFiles": [
+    "src/components/Admin/SmartMediaUpload.tsx",
+    "src/hooks/useMedia.ts",
+    "src/pages/Index.tsx",
+    "src/components/Hero.tsx",
+    "src/pages/Leistungen/Transporte.tsx",
+    "src/pages/Leistungen/Reinigung.tsx",
+    "src/pages/Leistungen/GartenLandschaftsbau.tsx",
+    "src/pages/Leistungen/Entsorgung.tsx",
+    "src/pages/UeberUns.tsx",
+    "src/pages/Galerie.tsx",
+    "src/pages/Empfehlungsprogramm.tsx",
+    "src/pages/Kontakt.tsx",
+    "src/pages/adminportal/seiteninhalte.tsx"
+  ]
+}</think><dyad-codebase-context files="src/components/Admin/SmartMediaUpload.tsx,src/hooks/useMedia.ts,src/pages/Index.tsx,src/components/Hero.tsx,src/pages/Leistungen/Transporte.tsx,src/pages/Leistungen/Reinigung.tsx,src/pages/Leistungen/GartenLandschaftsbau.tsx,src/pages/Leistungen/Entsorgung.tsx,src/pages/UeberUns.tsx,src/pages/Galerie.tsx,src/pages/Empfehlungsprogramm.tsx,src/pages/Kontakt.tsx,src/pages/adminportal/seiteninhalte.tsx">Complexity: high</dyad-codebase-context>.'
     },
     {
       icon: MessageSquare,

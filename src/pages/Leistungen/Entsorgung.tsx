@@ -8,7 +8,7 @@ import { Trash2, Sofa, Zap, Leaf, Wrench, PackageX, CheckCircle } from 'lucide-r
 import { useMedia } from '@/hooks/useMedia';
 
 const Entsorgung = () => {
-  const { media: heroBackground } = useMedia({ title: 'Leistungen Header Entsorgung' });
+  const { media: heroBackground } = useMedia({ title: 'Leistungen Header Entsorgung', pageContext: 'leistungen' });
 
   const disposalServices = [
     {

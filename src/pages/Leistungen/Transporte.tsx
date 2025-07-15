@@ -8,7 +8,7 @@ import { Truck, Package, Box, Building, Home, Printer, Dumbbell, Smartphone, Che
 import { useMedia } from '@/hooks/useMedia';
 
 const Transporte = () => {
-  const { media: heroBackground } = useMedia({ title: 'Leistungen Header Transporte' });
+  const { media: heroBackground } = useMedia({ title: 'Leistungen Header Transporte', pageContext: 'leistungen' });
 
   const transportServices = [
     {

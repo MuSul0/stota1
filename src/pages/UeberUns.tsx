@@ -9,10 +9,10 @@ import ParallaxSection from '@/components/ParallaxSection';
 import { useMedia } from '@/hooks/useMedia';
 
 const UeberUns = () => {
-  const { media: aboutUsMainImage } = useMedia({ title: 'UeberUns Main Image' });
-  const { media: nicolaeTurcituProfile } = useMedia({ title: 'UeberUns Profile Nicolae Turcitu' });
-  const { media: mariaSchmidtProfile } = useMedia({ title: 'UeberUns Profile Maria Schmidt' });
-  const { media: thomasWeberProfile } = useMedia({ title: 'UeberUns Profile Thomas Weber' });
+  const { media: aboutUsMainImage } = useMedia({ title: 'UeberUns Main Image', pageContext: 'ueber-uns' });
+  const { media: nicolaeTurcituProfile } = useMedia({ title: 'UeberUns Profile Nicolae Turcitu', pageContext: 'ueber-uns' });
+  const { media: mariaSchmidtProfile } = useMedia({ title: 'UeberUns Profile Maria Schmidt', pageContext: 'ueber-uns' });
+  const { media: thomasWeberProfile } = useMedia({ title: 'UeberUns Profile Thomas Weber', pageContext: 'ueber-uns' });
 
   const values = [
     {

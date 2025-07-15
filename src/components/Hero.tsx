@@ -16,7 +16,7 @@ const floatingVariants = {
 };
 
 const Hero = () => {
-  const { media: heroBackground, loading: loadingHeroBackground } = useMedia({ title: 'Startseite Hero Background' });
+  const { media: heroBackground, loading: loadingHeroBackground } = useMedia({ title: 'Startseite Hero Background', pageContext: 'startseite' });
 
   if (loadingHeroBackground) {
     return (
