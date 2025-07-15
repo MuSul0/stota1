@@ -21,7 +21,7 @@ import Bewertungen from '@/pages/Bewertungen';
 import Empfehlungsprogramm from '@/pages/Empfehlungsprogramm';
 
 // Admin Portal
-import AdminDashboard from '@/pages/adminportal/dashboard';
+import AdminDashboard from './pages/adminportal/dashboard';
 import AdminUsers from '@/pages/adminportal/users';
 import AdminServices from '@/pages/adminportal/services';
 import AdminInvoices from '@/pages/adminportal/invoices';
