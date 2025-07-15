@@ -16,12 +16,13 @@ interface MediaItem {
   created_at: string;
 }
 
-export const SmartMediaUpload = ({ title, description, type, pageContext, onMediaUpdate }: {
+export const SmartMediaUpload = ({ title, description, type, pageContext, onMediaUpdate, refreshTrigger }: {
   title: string;
   description: string;
   type: 'image' | 'video';
   pageContext: string;
   onMediaUpdate?: () => void;
+  refreshTrigger?: number; // Neuer Prop hinzugefügt
 }) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -30,7 +31,7 @@ export const SmartMediaUpload = ({ title, description, type, pageContext, onMedi
 
   useEffect(() => {
     loadCurrentMedia();
-  }, [title, pageContext]);
+  }, [title, pageContext, refreshTrigger]); // refreshTrigger zu den Abhängigkeiten hinzugefügt
 
   const loadCurrentMedia = async () => {
     try {

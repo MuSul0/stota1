@@ -259,7 +259,7 @@ export default function AdminSeiteninhalte() {
               <CardDescription>Hier können Sie die Bilder für spezifische Bereiche Ihrer Webseite in Echtzeit ändern.</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4" key={refreshKey}>
+              <div className="space-y-4"> {/* key={refreshKey} hier entfernt */}
                 {pageSections.map(section => (
                   <div key={section.id} className="border rounded-lg">
                     <button onClick={() => toggleSection(section.id)} className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-accent rounded-t-lg">
@@ -275,7 +275,8 @@ export default function AdminSeiteninhalte() {
                             description={mediaSlot.description} 
                             type={mediaSlot.type as 'image' | 'video'} 
                             pageContext={section.id} 
-                            onMediaUpdate={handleMediaUpdate} 
+                            onMediaUpdate={handleMediaUpdate}
+                            refreshTrigger={refreshKey} // refreshKey als Prop übergeben
                           />
                         ))}
                       </div>
