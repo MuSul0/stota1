@@ -16,29 +16,12 @@ const floatingVariants = {
 };
 
 const Hero = () => {
-  const { media: heroBackground, loading: loadingHeroBackground, error } = useMedia({ title: 'Startseite Hero Background', pageContext: 'startseite' });
+  const { media: heroBackground, loading: loadingHeroBackground } = useMedia({ title: 'Startseite Hero Background', pageContext: 'startseite' });
 
   if (loadingHeroBackground) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <p className="text-gray-600 text-lg">Lade Hero-Sektion...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-red-100 p-4">
-        <div className="text-center">
-          <h2 className="text-xl font-bold text-red-800 mb-2">Ein Fehler ist aufgetreten</h2>
-          <p className="text-red-700">Die Inhalte für diesen Bereich konnten nicht geladen werden.</p>
-          <p className="text-sm text-red-600 mt-2">Fehlerdetails: {error}</p>
-          <p className="text-sm text-gray-600 mt-4">
-            <strong>Mögliche Ursache:</strong> Dies passiert oft, wenn die Webseite die Datenbank nicht erreichen kann. 
-            Bitte überprüfen Sie, ob die Supabase-Umgebungsvariablen (VITE_SUPABASE_URL und VITE_SUPABASE_KEY) 
-            in Ihrer Hosting-Umgebung korrekt konfiguriert sind.
-          </p>
-        </div>
       </div>
     );
   }
