@@ -9,10 +9,10 @@ import ParallaxSection from '@/components/ParallaxSection';
 import { useMedia } from '@/hooks/useMedia';
 
 const UeberUns = () => {
-  const { media: aboutUsMainImage, loading: loadingAboutUsMainImage, error: aboutUsMainError } = useMedia({ title: 'About Us Main Image' });
-  const { media: nicolaeTurcituProfile, loading: loadingNicolaeTurcituProfile, error: nicolaeTurcituProfileError } = useMedia({ title: 'Nicolae Bogdanel Turcitu Profile' });
-  const { media: mariaSchmidtProfile, loading: loadingMariaSchmidtProfile, error: mariaSchmidtProfileError } = useMedia({ title: 'Maria Schmidt Profile' });
-  const { media: thomasWeberProfile, loading: loadingThomasWeberProfile, error: thomasWeberProfileError } = useMedia({ title: 'Thomas Weber Profile' });
+  const { media: aboutUsMainImage } = useMedia({ title: 'UeberUns Main Image' });
+  const { media: nicolaeTurcituProfile } = useMedia({ title: 'UeberUns Profile Nicolae Turcitu' });
+  const { media: mariaSchmidtProfile } = useMedia({ title: 'UeberUns Profile Maria Schmidt' });
+  const { media: thomasWeberProfile } = useMedia({ title: 'UeberUns Profile Thomas Weber' });
 
   const values = [
     {
@@ -40,18 +40,6 @@ const UeberUns = () => {
       color: 'from-purple-500 to-indigo-500'
     }
   ];
-
-  if (loadingAboutUsMainImage || loadingNicolaeTurcituProfile || loadingMariaSchmidtProfile || loadingThomasWeberProfile) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <p className="text-gray-600 text-lg">Lade Über uns...</p>
-      </div>
-    );
-  }
-
-  if (aboutUsMainError || nicolaeTurcituProfileError || mariaSchmidtProfileError || thomasWeberProfileError) {
-    console.error("Fehler beim Laden der Bilder auf der 'Über uns'-Seite:", aboutUsMainError, nicolaeTurcituProfileError, mariaSchmidtProfileError, thomasWeberProfileError);
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex flex-col">

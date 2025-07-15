@@ -16,7 +16,7 @@ const floatingVariants = {
 };
 
 const Hero = () => {
-  const { media: heroBackground, loading: loadingHeroBackground, error: heroError } = useMedia({ title: 'Hero Background', type: 'image' });
+  const { media: heroBackground, loading: loadingHeroBackground } = useMedia({ title: 'Startseite Hero Background' });
 
   if (loadingHeroBackground) {
     return (
@@ -24,11 +24,6 @@ const Hero = () => {
         <p className="text-gray-600 text-lg">Lade Hero-Sektion...</p>
       </div>
     );
-  }
-
-  if (heroError) {
-    console.error("Fehler beim Laden des Hero-Hintergrundbilds:", heroError);
-    // Optional: Fallback zu einem Standardbild oder Fehlermeldung anzeigen
   }
 
   return (

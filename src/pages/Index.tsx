@@ -14,8 +14,8 @@ import { useMedia } from '@/hooks/useMedia';
 const Index = () => {
   const servicesRef = useRef<HTMLDivElement>(null);
 
-  const { media: referralProgramImage, loading: loadingReferralProgramImage, error: referralError } = useMedia({ title: 'Referral Program Teaser' });
-  const { media: aboutUsImage, loading: loadingAboutUsImage, error: aboutUsError } = useMedia({ title: 'About Us Teaser' });
+  const { media: referralProgramImage } = useMedia({ title: 'Startseite Referral Program Teaser' });
+  const { media: aboutUsImage } = useMedia({ title: 'Startseite About Us Teaser' });
 
   const serviceCategories = [
     {

@@ -1,13 +1,14 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Card, CardContent } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 import { UserPlus, Gift, CheckCircle, DollarSign, Users, MessageSquare } from 'lucide-react';
 import { ReferralForm } from '@/components/ReferralForm';
+import { useMedia } from '@/hooks/useMedia';
 
 const Empfehlungsprogramm = () => {
+  const { media: bannerImage } = useMedia({ title: 'Empfehlungsprogramm Banner' });
+
   const howItWorksSteps = [
     {
       icon: UserPlus,
@@ -98,6 +99,22 @@ const Empfehlungsprogramm = () => {
         </div>
       </section>
 
+      {/* Banner Image Section */}
+      {bannerImage && (
+        <section className="py-10 bg-white">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.8 }}
+            >
+              <img src={bannerImage.url} alt="Empfehlungsprogramm Banner" className="rounded-lg shadow-lg w-full object-cover" style={{maxHeight: '400px'}} />
+            </motion.div>
+          </div>
+        </section>
+      )}
+
       {/* How It Works Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -143,7 +160,25 @@ const Empfehlungsprogramm = () => {
                 <Card className="text-center h-full hover:shadow-xl transition-shadow duration-300">
                   <CardContent className="p-6">
                     <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <step.icon className="h-8 w-8 text-blue-600" />
+                      <step.icon className="h-8 w-8 text-blue-600" /><think>Deciding which files are relevant...
+
+{
+  "complexity": "high",
+  "relevantFiles": [
+    "src/pages/adminportal/seiteninhalte.tsx",
+    "src/components/Hero.tsx",
+    "src/pages/Index.tsx",
+    "src/pages/Leistungen/Transporte.tsx",
+    "src/pages/Leistungen/Reinigung.tsx",
+    "src/pages/Leistungen/GartenLandschaftsbau.tsx",
+    "src/pages/Leistungen/Entsorgung.tsx",
+    "src/pages/UeberUns.tsx",
+    "src/pages/Galerie.tsx",
+    "src/pages/Empfehlungsprogramm.tsx",
+    "src/pages/Kontakt.tsx",
+    "src/hooks/useMedia.ts"
+  ]
+}</think><dyad-codebase-context files="src/pages/adminportal/seiteninhalte.tsx,src/components/Hero.tsx,src/pages/Index.tsx,src/pages/Leistungen/Transporte.tsx,src/pages/Leistungen/Reinigung.tsx,src/pages/Leistungen/GartenLandschaftsbau.tsx,src/pages/Leistungen/Entsorgung.tsx,src/pages/UeberUns.tsx,src/pages/Galerie.tsx,src/pages/Empfehlungsprogramm.tsx,src/pages/Kontakt.tsx,src/hooks/useMedia.ts">Complexity: high</dyad-codebase-context>
                     </div>
                     <h3 className="text-xl font-bold mb-2 text-gray-800">{step.title}</h3>
                     <p className="text-gray-600">{step.description}</p>

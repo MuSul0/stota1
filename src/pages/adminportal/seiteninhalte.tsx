@@ -14,7 +14,6 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SmartMediaUpload } from '@/components/admin/SmartMediaUpload';
 
-// Definiert die Struktur für SEO-Metadaten
 interface SeoMetadata {
   path: string;
   title: string;
@@ -23,32 +22,57 @@ interface SeoMetadata {
   updated_at: string;
 }
 
-// Definiert die Seiten und ihre zugehörigen Medien-Upload-Slots
 const pageSections = [
   {
     id: 'startseite',
     name: 'Startseite',
     media: [
-      { title: "Hero Bild", description: "Das große Hauptbild ganz oben.", type: "image" },
-      { title: "Vorschau Transporte", description: "Bild für die Transport-Dienstleistung.", type: "image" },
-      { title: "Vorschau Reinigung", description: "Bild für die Reinigungs-Dienstleistung.", type: "image" },
-      { title: "Vorschau Gartenbau", description: "Bild für die Gartenbau-Dienstleistung.", type: "image" },
-      { title: "Vorschau Entsorgung", description: "Bild für die Entsorgungs-Dienstleistung.", type: "image" },
+      { title: "Startseite Hero Background", description: "Das große Hauptbild auf der Startseite.", type: "image" },
+      { title: "Startseite About Us Teaser", description: "Vorschaubild für den 'Über Uns' Bereich.", type: "image" },
+      { title: "Startseite Referral Program Teaser", description: "Vorschaubild für das Empfehlungsprogramm.", type: "image" },
     ]
   },
   {
     id: 'leistungen',
-    name: 'Leistungen',
+    name: 'Leistungen (Detailseiten)',
     media: [
-      { title: "Header-Bild Transporte", description: "Titelbild für die Transport-Detailseite.", type: "image" },
-      { title: "Header-Bild Reinigung", description: "Titelbild für die Reinigungs-Detailseite.", type: "image" },
-      { title: "Header-Bild Gartenbau", description: "Titelbild für die Gartenbau-Detailseite.", type: "image" },
-      { title: "Header-Bild Entsorgung", description: "Titelbild für die Entsorgungs-Detailseite.", type: "image" },
+      { title: "Leistungen Header Transporte", description: "Titelbild für die Transport-Detailseite.", type: "image" },
+      { title: "Leistungen Header Reinigung", description: "Titelbild für die Reinigungs-Detailseite.", type: "image" },
+      { title: "Leistungen Header Gartenbau", description: "Titelbild für die Gartenbau-Detailseite.", type: "image" },
+      { title: "Leistungen Header Entsorgung", description: "Titelbild für die Entsorgungs-Detailseite.", type: "image" },
     ]
   },
-  { id: 'ueber-uns', name: 'Über Uns', media: [{ title: "Team Bild", description: "Ein Bild des Teams oder Gründers.", type: "image" }] },
-  { id: 'empfehlungsprogramm', name: 'Empfehlungsprogramm', media: [{ title: "Programm-Banner", description: "Werbebanner für das Empfehlungsprogramm.", type: "image" }] },
-  { id: 'kontakt', name: 'Kontakt', media: [{ title: "Kontakt Header-Bild", description: "Das Titelbild auf der Kontaktseite.", type: "image" }] },
+  { 
+    id: 'ueber-uns', 
+    name: 'Über Uns', 
+    media: [
+      { title: "UeberUns Main Image", description: "Hauptbild auf der 'Über Uns' Seite.", type: "image" },
+      { title: "UeberUns Profile Nicolae Turcitu", description: "Profilbild des Geschäftsführers.", type: "image" },
+      { title: "UeberUns Profile Maria Schmidt", description: "Profilbild der Teamleiterin.", type: "image" },
+      { title: "UeberUns Profile Thomas Weber", description: "Profilbild des Transport-Spezialisten.", type: "image" },
+    ] 
+  },
+  { 
+    id: 'galerie', 
+    name: 'Galerie', 
+    media: [
+        { title: "Galerie Header", description: "Das Titelbild auf der Galerie-Seite.", type: "image" }
+    ] 
+  },
+  { 
+    id: 'empfehlungsprogramm', 
+    name: 'Empfehlungsprogramm', 
+    media: [
+        { title: "Empfehlungsprogramm Banner", description: "Ein Bannerbild für die Empfehlungsseite.", type: "image" }
+    ] 
+  },
+  { 
+    id: 'kontakt', 
+    name: 'Kontakt', 
+    media: [
+        { title: "Kontakt Header", description: "Das Titelbild auf der Kontaktseite.", type: "image" }
+    ] 
+  },
 ];
 
 export default function AdminSeiteninhalte() {
@@ -57,7 +81,7 @@ export default function AdminSeiteninhalte() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedMeta, setSelectedMeta] = useState<SeoMetadata | null>(null);
-  const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const [expandedSection, setExpandedSection] = useState<string | null>('startseite');
   const [refreshKey, setRefreshKey] = useState(0);
   const subscriptionRef = useRef<any>(null);
 
@@ -158,56 +182,13 @@ export default function AdminSeiteninhalte() {
     <div className="p-4 md:p-6 space-y-6">
       <h1 className="text-3xl font-bold">Seiteninhalte & SEO</h1>
       
-      <Tabs defaultValue="seo-dashboard" className="w-full">
+      <Tabs defaultValue="bildverwaltung" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="seo-dashboard">SEO Dashboard</TabsTrigger>
           <TabsTrigger value="bildverwaltung">Bildverwaltung</TabsTrigger>
         </TabsList>
 
         <TabsContent value="seo-dashboard" className="mt-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Gesamt Seiten</CardTitle>
-                <FileText className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{metadata.length}</div>
-                <p className="text-xs text-muted-foreground">Alle Seiten mit SEO-Metadaten</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">SEO Score</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">92/100</div>
-                <p className="text-xs text-muted-foreground">Basierend auf internen Metriken</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Alle optimiert</CardTitle>
-                <CheckCircle className="h-4 w-4 text-green-500" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">Ja</div>
-                <p className="text-xs text-muted-foreground">Alle Seiten haben SEO-Daten</p>
-              </CardContent>
-            </Card>
-             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Ø Ladezeit</CardTitle>
-                <Clock className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">0.9s</div>
-                <p className="text-xs text-muted-foreground">-0.3s seit letzter Optimierung</p>
-              </CardContent>
-            </Card>
-          </div>
-
           <Card>
             <CardHeader>
               <CardTitle>SEO Seiten Übersicht</CardTitle>
@@ -218,8 +199,7 @@ export default function AdminSeiteninhalte() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Seite</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Performance</TableHead>
+                    <TableHead>Titel</TableHead>
                     <TableHead>Zuletzt aktualisiert</TableHead>
                     <TableHead className="text-right">Aktionen</TableHead>
                   </TableRow>
@@ -227,19 +207,8 @@ export default function AdminSeiteninhalte() {
                 <TableBody>
                   {metadata.map((meta) => (
                     <TableRow key={meta.path}>
-                      <TableCell className="font-medium">
-                        <div className="font-bold">{meta.title.split('|')[0].trim()}</div>
-                        <div className="text-xs text-muted-foreground">{meta.path}</div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="text-green-600 border-green-600">Aktiv</Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Progress value={85 + (meta.path.length % 15)} className="w-24" />
-                          <span>{85 + (meta.path.length % 15)}%</span>
-                        </div>
-                      </TableCell>
+                      <TableCell className="font-medium">{meta.path}</TableCell>
+                      <TableCell>{meta.title}</TableCell>
                       <TableCell>{new Date(meta.updated_at).toLocaleString('de-DE')}</TableCell>
                       <TableCell className="text-right">
                         <Button variant="outline" size="sm" onClick={() => handleEditClick(meta)}><Edit className="h-4 w-4 mr-2" />Bearbeiten</Button>
@@ -259,7 +228,7 @@ export default function AdminSeiteninhalte() {
               <CardDescription>Hier können Sie die Bilder für spezifische Bereiche Ihrer Webseite in Echtzeit ändern.</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4"> {/* key={refreshKey} hier entfernt */}
+              <div className="space-y-4">
                 {pageSections.map(section => (
                   <div key={section.id} className="border rounded-lg">
                     <button onClick={() => toggleSection(section.id)} className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-accent rounded-t-lg">
@@ -276,7 +245,7 @@ export default function AdminSeiteninhalte() {
                             type={mediaSlot.type as 'image' | 'video'} 
                             pageContext={section.id} 
                             onMediaUpdate={handleMediaUpdate}
-                            refreshTrigger={refreshKey} // refreshKey als Prop übergeben
+                            refreshTrigger={refreshKey}
                           />
                         ))}
                       </div>

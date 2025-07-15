@@ -2,15 +2,21 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { useMedia } from '@/hooks/useMedia';
 
 const Galerie = () => {
+  const { media: heroBackground } = useMedia({ title: 'Galerie Header' });
+
   return (
     <div className="min-h-screen">
       <Header />
 
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('')] bg-cover bg-center opacity-20"></div>
+      <section 
+        className="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden bg-cover bg-center"
+        style={{ backgroundImage: `url(${heroBackground?.url || ''})` }}
+      >
+        <div className="absolute inset-0 bg-black opacity-50"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-6">

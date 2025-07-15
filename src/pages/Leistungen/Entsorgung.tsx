@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Trash2, Sofa, Zap, Leaf, Wrench, PackageX, CheckCircle } from 'lucide-react';
-// import { useMedia } from '@/hooks/useMedia'; // Nicht mehr benötigt
+import { useMedia } from '@/hooks/useMedia';
 
 const Entsorgung = () => {
-  // const { media: heroBackground, loading: loadingHeroBackground } = useMedia({ title: 'Entsorgung Hero Background' }); // Nicht mehr benötigt
+  const { media: heroBackground } = useMedia({ title: 'Leistungen Header Entsorgung' });
 
   const disposalServices = [
     {
@@ -49,10 +49,10 @@ const Entsorgung = () => {
 
       {/* Hero Section */}
       <section 
-        className="py-20 bg-gradient-to-r from-green-700 to-green-900 text-white relative overflow-hidden"
-        // style={{ backgroundImage: `url(${heroBackground?.url || 'https://placehold.co/1920x600/16a34a/ffffff?text=Entsorgung'})`, backgroundSize: 'cover', backgroundPosition: 'center' }} // Entfernt
+        className="py-20 bg-gradient-to-r from-green-700 to-green-900 text-white relative overflow-hidden bg-cover bg-center"
+        style={{ backgroundImage: `url(${heroBackground?.url || 'https://placehold.co/1920x600/16a34a/ffffff?text=Entsorgung'})` }}
       >
-        <div className="absolute inset-0 bg-black opacity-20"></div>
+        <div className="absolute inset-0 bg-black opacity-50"></div>
         <div className="container mx-auto px-4 relative z-10 text-center">
           <motion.h1 
             className="text-4xl md:text-5xl font-bold mb-6"
