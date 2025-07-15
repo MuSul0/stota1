@@ -277,7 +277,7 @@ export default function AdminServices() {
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="category" className="text-right">Kategorie*</Label>
                 <Select value={editingService?.category || 'reinigung'} onValueChange={(value) => setEditingService(prev => ({ ...prev, category: value }))}>
-                  <SelectTrigger className="col-span-3"><SelectValue /></SelectValue></SelectTrigger>
+                  <SelectTrigger className="col-span-3"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="reinigung">Reinigung</SelectItem>
                     <SelectItem value="transport">Transport</SelectItem>
