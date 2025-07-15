@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { PlusCircle, Edit, Trash2, Save, XCircle, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, AlertDialogFooter } from '@/components/ui/alert-dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, AlertDialogFooter, AlertDialogDescription } from '@/components/ui/alert-dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 
@@ -235,9 +235,9 @@ export default function AdminServices() {
                         <AlertDialogContent>
                           <AlertDialogHeader>
                             <AlertDialogTitle>Sind Sie sicher?</AlertDialogTitle>
-                            <DialogDescription>
+                            <AlertDialogDescription>
                               Diese Aktion kann nicht rückgängig gemacht werden. Der Service wird dauerhaft gelöscht.
-                            </DialogDescription>
+                            </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Abbrechen</AlertDialogCancel>
