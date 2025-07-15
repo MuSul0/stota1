@@ -57,8 +57,8 @@ export default function AdminServices() {
       // Ensure data types are correct for rendering
       const processedData = data.map(s => ({
         ...s,
-        price: Number(s.price), // Ensure price is a number
-        is_active: typeof s.is_active === 'boolean' ? s.is_active : true, // Ensure is_active is boolean
+        price: Number(s.price) || 0, // Sicherstellen, dass der Preis immer eine Zahl ist
+        is_active: typeof s.is_active === 'boolean' ? s.is_active : true,
       })) as Service[]; // Cast to Service[] to ensure type safety
 
       setServices(processedData || []);
