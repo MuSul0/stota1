@@ -105,22 +105,7 @@ const Entsorgung = () => {
                       {service.features.map((feature, fIndex) => (
                         <li key={fIndex} className="flex items-center">
                           <CheckCircle className="h-4 w-4 text-blue-500 mr-2 flex-shrink-0" />
-                          <think>Deciding which files are relevant...
-
-{
-  "complexity": "high",
-  "relevantFiles": [
-    "src/components/Hero.tsx",
-    "src/pages/Leistungen/Transporte.tsx",
-    "src/pages/Leistungen/GartenLandschaftsbau.tsx",
-    "src/pages/Leistungen/Reinigung.tsx",
-    "src/pages/Leistungen/Entsorgung.tsx",
-    "src/pages/Bewertungen.tsx",
-    "src/pages/Galerie.tsx",
-    "src/pages/Impressum.tsx",
-    "src/pages/Datenschutz.tsx"
-  ]
-}</think><dyad-codebase-context files="src/components/Hero.tsx,src/pages/Leistungen/Transporte.tsx,src/pages/Leistungen/GartenLandschaftsbau.tsx,src/pages/Leistungen/Reinigung.tsx,src/pages/Leistungen/Entsorgung.tsx,src/pages/Bewertungen.tsx,src/pages/Galerie.tsx,src/pages/Impressum.tsx,src/pages/Datenschutz.tsx">Complexity: high</dyad-codebase-context>{feature}
+                          {feature}
                         </li>
                       ))}
                     </ul>
