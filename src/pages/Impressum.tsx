@@ -44,7 +44,7 @@ const Impressum = () => {
               </CardHeader>
               <CardContent>
                 <p>Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:</p>
-                <p><strong>DE123456789</strong></p>
+                <p><strong>DE343126805</strong></p>
                 <p className="text-sm text-gray-500 mt-2">Bitte hier Ihre korrekte USt-IdNr. eintragen, falls vorhanden.</p>
               </CardContent>
             </Card>
