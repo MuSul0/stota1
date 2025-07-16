@@ -352,7 +352,7 @@ const Bewertungen = () => {
               <Link to="/kontakt">Jetzt anfragen</Link>
             </Button>
             <Button size="lg" variant="outline" className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors" asChild>
-              <a href="tel:+49123456789">Sofort anrufen</a>
+              <a href="tel:020988339457">Sofort anrufen</a>
             </Button>
           </motion.div>
         </div>

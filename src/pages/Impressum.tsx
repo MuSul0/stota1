@@ -32,7 +32,7 @@ const Impressum = () => {
                 <CardTitle>Kontakt</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <p><strong>Telefon:</strong> +49 176 41171386</p>
+                <p><strong>Telefon:</strong> 0209-88339457</p>
                 <p><strong>E-Mail:</strong> kontakt@info-stota.de</p>
                 <p><strong>Website:</strong> www.stota.de</p>
               </CardContent>

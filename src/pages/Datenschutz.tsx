@@ -73,7 +73,7 @@ const Datenschutz = () => {
                   Schalker Str. 143<br />
                   45881 Gelsenkirchen</p>
                   <p className="mt-2">
-                  Telefon: +49 123 456 789<br />
+                  Telefon: 0209-88339457<br />
                   E-Mail: kontakt@info-stota.de</p>
                 </div>
               </CardContent>
@@ -169,7 +169,7 @@ const Datenschutz = () => {
               </p>
               <p className="mt-2">
                 <strong>E-Mail:</strong> datenschutz@info-stota.de<br />
-                <strong>Telefon:</strong> +49 123 456 789
+                <strong>Telefon:</strong> 0209-88339457
               </p>
             </div>
           </div>

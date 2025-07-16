@@ -141,7 +141,7 @@ const Hero = () => {
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <Phone className="h-6 w-6 text-blue-600" />
-                  <a href="tel:+49123456789" className="text-lg text-gray-700 font-medium hover:text-blue-600 transition-colors">+49 123 456 789</a>
+                  <a href="tel:020988339457" className="text-lg text-gray-700 font-medium hover:text-blue-600 transition-colors">0209-88339457</a>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Mail className="h-6 w-6 text-blue-600" />

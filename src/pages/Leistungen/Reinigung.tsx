@@ -143,7 +143,7 @@ const Reinigung = () => {
               <Link to="/kontakt">Reinigungstermin vereinbaren</Link>
             </Button>
             <Button size="lg" className="bg-purple-700 text-white border-white hover:bg-white hover:text-purple-700" asChild>
-              <a href="tel:+49123456789">Sofort anrufen</a>
+              <a href="tel:020988339457">Sofort anrufen</a>
             </Button>
           </div>
         </div>

@@ -105,7 +105,22 @@ const Entsorgung = () => {
                       {service.features.map((feature, fIndex) => (
                         <li key={fIndex} className="flex items-center">
                           <CheckCircle className="h-4 w-4 text-blue-500 mr-2 flex-shrink-0" />
-                          {feature}
+                          <think>Deciding which files are relevant...
+
+{
+  "complexity": "high",
+  "relevantFiles": [
+    "src/components/Hero.tsx",
+    "src/pages/Leistungen/Transporte.tsx",
+    "src/pages/Leistungen/GartenLandschaftsbau.tsx",
+    "src/pages/Leistungen/Reinigung.tsx",
+    "src/pages/Leistungen/Entsorgung.tsx",
+    "src/pages/Bewertungen.tsx",
+    "src/pages/Galerie.tsx",
+    "src/pages/Impressum.tsx",
+    "src/pages/Datenschutz.tsx"
+  ]
+}</think><dyad-codebase-context files="src/components/Hero.tsx,src/pages/Leistungen/Transporte.tsx,src/pages/Leistungen/GartenLandschaftsbau.tsx,src/pages/Leistungen/Reinigung.tsx,src/pages/Leistungen/Entsorgung.tsx,src/pages/Bewertungen.tsx,src/pages/Galerie.tsx,src/pages/Impressum.tsx,src/pages/Datenschutz.tsx">Complexity: high</dyad-codebase-context>{feature}
                         </li>
                       ))}
                     </ul>
@@ -131,7 +146,7 @@ const Entsorgung = () => {
               <Link to="/kontakt">Jetzt Entsorgung buchen</Link>
             </Button>
             <Button size="lg" className="bg-green-700 text-white border-white hover:bg-white hover:text-green-700" asChild>
-              <a href="tel:+49123456789">Sofort anrufen</a>
+              <a href="tel:020988339457">Sofort anrufen</a>
             </Button>
           </div>
         </div>

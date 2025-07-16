@@ -137,7 +137,7 @@ const GartenLandschaftsbau = () => {
               <Link to="/kontakt">Jetzt beraten lassen</Link>
             </Button>
             <Button size="lg" className="bg-orange-700 text-white border-white hover:bg-white hover:text-orange-700" asChild>
-              <a href="tel:+49123456789">Sofort anrufen</a>
+              <a href="tel:020988339457">Sofort anrufen</a>
             </Button>
           </div>
         </div>

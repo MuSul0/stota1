@@ -55,7 +55,7 @@ const Galerie = () => {
               <Link to="/kontakt">Projekt anfragen</Link>
             </Button>
             <Button size="lg" className="bg-indigo-600 text-white border-white hover:bg-white hover:text-indigo-600 px-8 py-4" asChild>
-              <a href="tel:+49123456789">Sofort anrufen</a>
+              <a href="tel:020988339457">Sofort anrufen</a>
             </Button>
           </div>
         </div>
