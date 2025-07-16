@@ -506,7 +506,7 @@ const Index = () => {
               <Link to="/kontakt">Jetzt Kontakt aufnehmen</Link>
             </Button>
             <Button size="lg" className="bg-blue-600 text-white border-white hover:bg-white hover:text-blue-700 rounded-full px-12 py-5 shadow-xl font-semibold text-lg" asChild>
-              <a href="tel:+49123456789">Sofort anrufen</a>
+              <a href="tel:020988339457">Sofort anrufen</a>
             </Button>
           </motion.div>
         </div>

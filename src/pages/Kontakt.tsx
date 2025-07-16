@@ -259,7 +259,7 @@ const Kontakt = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Telefon</h3>
-                      <p className="text-gray-700">+49 123 456 789</p>
+                      <p className="text-gray-700">0209-88339457</p>
                       <p className="text-sm text-gray-500">Mo-Fr: 7:00-18:00 Uhr</p>
                     </div>
                   </div>
@@ -312,12 +312,12 @@ const Kontakt = () => {
                 </CardHeader>
                 <CardContent>
                   <Button asChild className="w-full bg-green-500 hover:bg-green-600 text-white">
-                    <a href="https://wa.me/49123456789" target="_blank" rel="noopener noreferrer">
+                    <a href="https://wa.me/4920988339457" target="_blank" rel="noopener noreferrer">
                       WhatsApp Chat starten
                     </a>
                   </Button>
                   <Button asChild className="w-full bg-blue-600 hover:bg-blue-700 text-white mt-4">
-                    <a href="tel:+49123456789">Sofort anrufen</a>
+                    <a href="tel:020988339457">Sofort anrufen</a>
                   </Button>
                 </CardContent>
               </Card>
